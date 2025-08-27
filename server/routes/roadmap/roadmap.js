@@ -1,8 +1,10 @@
+// routes/roadmap/roadmap.js
 const express = require("express");
 const router = express.Router();
-const { roadmapDB } = require("../../db/db"); // import connection
+const Roadmap = require("../../models/Roadmap"); // Mongoose model
 require("dotenv").config();
 
+// POST: generate roadmap and save
 router.post("/", async (req, res) => {
   const { prompt, email } = req.body;
   const apiKey = process.env.GEMINI_API_KEY;
@@ -24,51 +26,47 @@ router.post("/", async (req, res) => {
       data.candidates?.[0]?.content?.parts?.[0]?.text ||
       "No roadmap generated.";
 
-    roadmapDB.query(
-      "INSERT INTO roadmaps (user_email, prompt, roadmap) VALUES (?, ?, ?)",
-      [email, prompt, roadmap],
-      (err) => {
-        if (err) {
-          console.error("❌ DB Insert Error:", err);
-          return res.json({ success: false, message: "Database error" });
-        }
-        res.json({ success: true, roadmap });
-      }
-    );
+    // Save to MongoDB
+    const newRoadmap = new Roadmap({
+      user_email: email,
+      prompt,
+      roadmap,
+    });
+
+    await newRoadmap.save();
+
+    res.json({ success: true, roadmap, id: newRoadmap._id });
   } catch (error) {
-    console.error("❌ Gemini API Error:", error);
-    res.json({ success: false, message: "Gemini API error" });
+    console.error("❌ Error generating roadmap:", error);
+    res.json({ success: false, message: "Error generating roadmap" });
   }
 });
 
-// GET history
-router.get("/history", (req, res) => {
+// GET history for a user
+router.get("/history", async (req, res) => {
   const { email } = req.query;
 
-  roadmapDB.query(
-    "SELECT * FROM roadmaps WHERE user_email = ? ORDER BY created_at DESC",
-    [email],
-    (err, results) => {
-      if (err) {
-        console.error("❌ DB Fetch Error:", err);
-        return res.json({ success: false });
-      }
-      res.json({ success: true, history: results });
-    }
-  );
+  try {
+    const history = await Roadmap.find({ user_email: email }).sort({ created_at: -1 });
+    res.json({ success: true, history });
+  } catch (err) {
+    console.error("❌ DB Fetch Error:", err);
+    res.json({ success: false });
+  }
 });
 
-// DELETE history by id
-router.delete("/history/:id", (req, res) => {
+// DELETE history by _id
+router.delete("/history/:id", async (req, res) => {
   const { id } = req.params;
 
-  roadmapDB.query("DELETE FROM roadmaps WHERE id = ?", [id], (err) => {
-    if (err) {
-      console.error("❌ DB Delete Error:", err);
-      return res.json({ success: false });
-    }
+  try {
+    if (!id) throw new Error("No ID provided");
+    await Roadmap.findByIdAndDelete(id);
     res.json({ success: true });
-  });
+  } catch (err) {
+    console.error("❌ Error deleting roadmap:", err);
+    res.json({ success: false });
+  }
 });
 
 module.exports = router;

@@ -1,15 +1,15 @@
-const subscribeRoute = require('./subscribe'); // for email-only
-const subscribePathwayRoute = require('./subscribePathway'); // for pathway subscriptions
-const courseRoute = require('./course'); // for course enrollments
-const cartRoute = require('./cart'); // for cart handling
-const sendComparisonImage = require('./sendComparisonImage');
+const subscribeRoute = require('./subscribe');           // Email-only subscriptions
+const subscribePathwayRoute = require('./subscribePathway'); // Pathway subscriptions
+const courseRoute = require('./course');                 // Course enrollments
+const cartRoute = require('./cart');                     // Cart handling
+const sendComparisonImage = require('./sendComparisonImage'); // Email image sending
+const roadmapRoute = require('./roadmap/roadmap');       // Roadmap generation
 
-
-module.exports = function mainRoutes(app, subscribedDB, registeredDB) {
-  app.use('/api', subscribeRoute(subscribedDB));            // /api/email-subscribe
-  app.use('/api', subscribePathwayRoute(subscribedDB));     // /api/pathway-subscribe
-  app.use('/api', courseRoute(registeredDB));               // /api/course/enroll
-  app.use('/api', cartRoute(registeredDB));                 // /api/cart
+module.exports = function mainRoutes(app) {
+  app.use('/api', subscribeRoute);            // /api/email-subscribe
+  app.use('/api', subscribePathwayRoute);     // /api/pathway-subscribe
+  app.use('/api', courseRoute);               // /api/course
+  app.use('/api', cartRoute);                 // /api/cart
   app.use('/api/send-comparison-image', sendComparisonImage); 
- 
+  app.use('/api/roadmap', roadmapRoute);     // /api/roadmap
 };

@@ -1,54 +1,48 @@
-
-const express = require('express');
+const express = require("express");
 const router = express.Router();
+const Subscription = require("../models/Subscription");
 
-module.exports = (db) => {
-  router.post('/pathway-subscribe', (req, res) => {
+// ✅ Subscribe or unsubscribe to a pathway
+router.post("/pathway-subscribe", async (req, res) => {
+  try {
     const { userEmail, pathwayId, subscribed } = req.body;
 
     if (!userEmail || !pathwayId) {
-      return res.status(400).json({ error: 'Missing userEmail or pathwayId' });
+      return res.status(400).json({ error: "Missing userEmail or pathwayId" });
     }
 
     if (subscribed) {
-      const insertQuery = 'INSERT IGNORE INTO subscriptions (user_email, pathway_id) VALUES (?, ?)';
-      db.query(insertQuery, [userEmail, pathwayId], (err) => {
-        if (err) {
-          console.error('Insert error:', err);
-          return res.status(500).json({ error: 'Database insert error' });
-        }
-        return res.status(200).json({ message: 'Subscribed successfully' });
-      });
-    } else {
-      const deleteQuery = 'DELETE FROM subscriptions WHERE user_email = ? AND pathway_id = ?';
-      db.query(deleteQuery, [userEmail, pathwayId], (err) => {
-        if (err) {
-          console.error('Delete error:', err);
-          return res.status(500).json({ error: 'Database delete error' });
-        }
-        return res.status(200).json({ message: 'Unsubscribed successfully' });
-      });
-    }
-  });
-
-    router.get('/user-pathways', (req, res) => {
-    const { email } = req.query;
-
-    if (!email) {
-      return res.status(400).json({ error: 'Missing email' });
-    }
-
-    const query = 'SELECT pathway_id FROM subscriptions WHERE user_email = ?';
-    db.query(query, [email], (err, results) => {
-      if (err) {
-        console.error('Fetch error:', err);
-        return res.status(500).json({ error: 'Database fetch error' });
+      // Add subscription if it doesn't exist
+      const existing = await Subscription.findOne({ user_email: userEmail, pathway_id: pathwayId });
+      if (!existing) {
+        await Subscription.create({ user_email: userEmail, pathway_id: pathwayId });
       }
+      return res.status(200).json({ message: "Subscribed successfully" });
+    } else {
+      // Unsubscribe
+      await Subscription.deleteOne({ user_email: userEmail, pathway_id: pathwayId });
+      return res.status(200).json({ message: "Unsubscribed successfully" });
+    }
+  } catch (err) {
+    console.error("Pathway subscribe error:", err);
+    return res.status(500).json({ error: "Database error" });
+  }
+});
 
-      const pathwayIds = results.map((row) => row.pathway_id);
-      return res.status(200).json({ pathwayIds });
-    });
-  });
+// ✅ Get all pathways subscribed by a user
+router.get("/user-pathways", async (req, res) => {
+  try {
+    const { email } = req.query;
+    if (!email) return res.status(400).json({ error: "Missing email" });
 
-  return router;
-};
+    const subscriptions = await Subscription.find({ user_email: email, pathway_id: { $exists: true } }).select("pathway_id");
+    const pathwayIds = subscriptions.map(s => s.pathway_id);
+
+    return res.status(200).json({ pathwayIds });
+  } catch (err) {
+    console.error("Fetch user pathways error:", err);
+    return res.status(500).json({ error: "Database error" });
+  }
+});
+
+module.exports = router;

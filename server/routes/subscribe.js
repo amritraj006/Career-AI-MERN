@@ -1,29 +1,29 @@
-// routes/subscribe.js
-const express = require('express');
+const express = require("express");
 const router = express.Router();
+const Subscription = require("../models/Subscription"); // Only model you have
 
-module.exports = (db) => {
-  router.post('/email-subscribe', (req, res) => {
+// ✅ Subscribe an email
+router.post("/email-subscribe", async (req, res) => {
+  try {
     const { email } = req.body;
 
     if (!email) {
-      return res.status(400).json({ error: 'Email is required.' });
+      return res.status(400).json({ error: "Email is required." });
     }
 
-    const query = 'INSERT INTO user (email) VALUES (?)';
+    // Check if email already exists (any subscription with this email)
+    const existing = await Subscription.findOne({ user_email: email });
+    if (existing) {
+      return res.status(400).json({ error: "Email already subscribed." });
+    }
 
-    db.query(query, [email], (err, result) => {
-      if (err) {
-        if (err.code === 'ER_DUP_ENTRY') {
-          return res.status(400).json({ error: 'Email already subscribed.' });
-        }
-        console.error('Error inserting email:', err);
-        return res.status(500).json({ error: 'Database error.' });
-      }
+    // Create new subscription with no pathway (for general email subscription)
+    await Subscription.create({ user_email: email });
+    return res.status(200).json({ message: "Email subscribed successfully." });
+  } catch (err) {
+    console.error("Email subscribe error:", err);
+    return res.status(500).json({ error: "Database error" });
+  }
+});
 
-      res.status(200).json({ message: 'Email subscribed successfully.' });
-    });
-  });
-
-  return router;
-};
+module.exports = router;

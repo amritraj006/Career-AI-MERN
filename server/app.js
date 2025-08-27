@@ -1,34 +1,37 @@
-// app.js
 require('dotenv').config();
 const express = require('express');
-const bodyParser = require('body-parser');
 const cors = require('cors');
+const bodyParser = require('body-parser');
 
-const { subscribedDB, registeredDB } = require('./db/db');
-const setupRoutes = require('./routes/mainRoutes');
-
+const connectDB = require('./config/db');          // MongoDB connection
+const setupRoutes = require('./routes/mainRoutes'); // All API routes
 const adminMainRoutes = require('./routes/admin/adminMainRoute');
-
 const roadmapRoute = require("./routes/roadmap/roadmap");
-
 const chatbotRoutes = require("./routes/chatbot");
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+// Connect to MongoDB
+connectDB();
+
+// Middleware
 app.use(cors());
 app.use(bodyParser.json());
 app.use(express.json());
 
-// Bind all routes
-setupRoutes(app, subscribedDB, registeredDB);
+// Health check for Render
+app.get('/', (req, res) => {
+  res.send({ status: "Server is running ✅" });
+});
+
+// API Routes
+setupRoutes(app);                    // /api/... routes
 app.use('/api/admin', adminMainRoutes);
-
 app.use("/api/roadmap", roadmapRoute);
-
 app.use("/api/chatbot", chatbotRoutes);
 
-
+// Start server
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
+  console.log(`🚀 Server running on port ${PORT}`);
 });
