@@ -3,54 +3,57 @@ const preDefinedQuestions = {
   {
     question: "How would you architect a large-scale React application to ensure maintainability and performance?",
     options: [
+      { text: "I'd create a custom framework with SSR, code splitting, and advanced caching", score: 4 },
       { text: "I'd use create-react-app with standard folder structure", score: 1 },
-      { text: "I'd implement feature-based organization with lazy loading", score: 2 },
       { text: "I'd design a micro-frontend architecture with state management", score: 3 },
-      { text: "I'd create a custom framework with SSR, code splitting, and advanced caching", score: 4 }
+      { text: "I'd implement feature-based organization with lazy loading", score: 2 },
     ]
   },
   {
     question: "When implementing a complex form with 50+ fields, how would you optimize performance and UX?",
     options: [
+      { text: "I'd design a custom form engine with incremental saving, conflict resolution, and offline support", score: 4 },
       { text: "I'd use standard form elements with basic validation", score: 1 },
-      { text: "I'd implement field grouping and basic lazy rendering", score: 2 },
       { text: "I'd use controlled components with debounced validation and virtualization", score: 3 },
-      { text: "I'd design a custom form engine with incremental saving, conflict resolution, and offline support", score: 4 }
+      { text: "I'd implement field grouping and basic lazy rendering", score: 2 },
+
     ]
   },
   {
     question: "How would you handle state management for a real-time collaborative editing application?",
     options: [
+      { text: "I'd design a custom CRDT implementation with differential synchronization", score: 4 },
       { text: "I'd use React context or Redux", score: 1 },
       { text: "I'd implement WebSockets with basic conflict resolution", score: 2 },
       { text: "I'd use operational transforms with version vectors", score: 3 },
-      { text: "I'd design a custom CRDT implementation with differential synchronization", score: 4 }
+      
     ]
   },
   {
     question: "What strategies would you use to reduce a complex web app's bundle size by 60%?",
     options: [
       { text: "I'd enable basic code splitting", score: 1 },
-      { text: "I'd analyze dependencies and implement tree shaking", score: 2 },
       { text: "I'd optimize with lazy loading, asset compression, and bundle analysis", score: 3 },
+      { text: "I'd analyze dependencies and implement tree shaking", score: 2 },
       { text: "I'd implement module federation, WASM, and custom build optimizations", score: 4 }
     ]
   },
   {
     question: "How would you design an authentication system for a high-security financial application?",
     options: [
-      { text: "I'd use JWT with localStorage", score: 1 },
+      
       { text: "I'd implement session tokens with HttpOnly cookies", score: 2 },
-      { text: "I'd use OAuth 2.0 with PKCE and short-lived tokens", score: 3 },
-      { text: "I'd design a multi-factor system with hardware tokens, anomaly detection, and step-up authentication", score: 4 }
+      { text: "I'd use JWT with localStorage", score: 1 },
+      { text: "I'd design a multi-factor system with hardware tokens, anomaly detection, and step-up authentication", score: 4 },
+      { text: "I'd use OAuth 2.0 with PKCE and short-lived tokens", score: 3 }
     ]
   },
   {
     question: "What approach would you take to make a complex dashboard render in under 1 second with 10,000 data points?",
     options: [
+      { text: "I'd use Web Workers for processing and canvas rendering", score: 3 },
       { text: "I'd use standard charting libraries", score: 1 },
       { text: "I'd implement basic pagination and data sampling", score: 2 },
-      { text: "I'd use Web Workers for processing and canvas rendering", score: 3 },
       { text: "I'd design a custom WebGL renderer with predictive loading and edge computing", score: 4 }
     ]
   },
@@ -58,9 +61,9 @@ const preDefinedQuestions = {
     question: "How would you implement a fault-tolerant WebSocket connection for a trading platform?",
     options: [
       { text: "I'd use standard WebSocket API", score: 1 },
-      { text: "I'd implement basic reconnection logic", score: 2 },
       { text: "I'd design a queue-based system with message deduplication", score: 3 },
-      { text: "I'd create a hybrid SSE/WebSocket solution with state synchronization and conflict-free replication", score: 4 }
+      { text: "I'd create a hybrid SSE/WebSocket solution with state synchronization and conflict-free replication", score: 4 },
+      { text: "I'd implement basic reconnection logic", score: 2 },
     ]
   },
   {
@@ -76,9 +79,10 @@ const preDefinedQuestions = {
     question: "How would you design a CI/CD pipeline for a zero-downtime deployment of a global SaaS product?",
     options: [
       { text: "I'd use basic GitHub Actions or CircleCI", score: 1 },
+      {text: "I'd create a multi-region deployment system with traffic shifting and dark launches", score: 4 },
       { text: "I'd implement blue-green deployment for one region", score: 2 },
       { text: "I'd design canary releases with feature flags and automated rollback", score: 3 },
-      { text: "I'd create a multi-region deployment system with traffic shifting and dark launches", score: 4 }
+      
     ]
   },
   {
@@ -86,26 +90,27 @@ const preDefinedQuestions = {
     options: [
       { text: "I'd use a traditional client-server model", score: 1 },
       { text: "I'd implement basic operational transforms with local storage", score: 2 },
+      { text: "I'd design a hybrid CRDT/OT system with differential synchronization and compression", score: 4 },
       { text: "I'd use CRDTs with versioned snapshots and conflict resolution", score: 3 },
-      { text: "I'd design a hybrid CRDT/OT system with differential synchronization and compression", score: 4 }
+
     ]
   },
   {
     question: "How would you optimize a React application for 60fps animations on low-end mobile devices?",
     options: [
-      { text: "I'd use CSS animations where possible", score: 1 },
       { text: "I'd implement will-change and transform optimizations", score: 2 },
       { text: "I'd use React's useLayoutEffect and custom RAF-based animation loop", score: 3 },
-      { text: "I'd design a WebGL-based animation system with LOD adjustments and hardware prioritization", score: 4 }
+      { text: "I'd design a WebGL-based animation system with LOD adjustments and hardware prioritization", score: 4 },
+      { text: "I'd use CSS animations where possible", score: 1 },
     ]
   },
   {
     question: "What approach would you take to secure a public API against sophisticated DDoS attacks?",
     options: [
+      { text: "I'd design request fingerprinting with behavioral analysis", score: 3 },
       { text: "I'd implement basic rate limiting", score: 1 },
       { text: "I'd use Cloudflare or similar CDN protection", score: 2 },
-      { text: "I'd design request fingerprinting with behavioral analysis", score: 3 },
-      { text: "I'd implement a multi-layered defense with AI-based anomaly detection and proof-of-work challenges", score: 4 }
+      { text: "I'd implement a multi-layered defense with AI-based anomaly detection and proof-of-work challenges", score: 4 },
     ]
   },
   {
@@ -185,81 +190,82 @@ const preDefinedQuestions = {
       {
         question: "What's your experience with Python for data analysis?",
         options: [
+          { text: "I'm proficient in advanced libraries and optimization", score: 4 },
           { text: "I'm just starting to learn Python", score: 1 },
           { text: "I can write basic scripts and use pandas", score: 2 },
           { text: "I'm comfortable with data manipulation and visualization", score: 3 },
-          { text: "I'm proficient in advanced libraries and optimization", score: 4 }
         ]
       },
       {
         question: "How familiar are you with machine learning concepts?",
         options: [
-          { text: "I've heard about it but haven't practiced", score: 1 },
           { text: "I understand basic algorithms like linear regression", score: 2 },
           { text: "I can implement various ML models and evaluate them", score: 3 },
+          { text: "I've heard about it but haven't practiced", score: 1 },
           { text: "I can design and deploy production ML systems", score: 4 }
         ]
       },
       {
         question: "What's your experience with data visualization?",
         options: [
+          { text: "I design comprehensive analytics solutions", score: 4 },
           { text: "I'm new to data visualization", score: 1 },
-          { text: "I can create basic charts with matplotlib or seaborn", score: 2 },
           { text: "I create interactive dashboards with Plotly or Tableau", score: 3 },
-          { text: "I design comprehensive analytics solutions", score: 4 }
+          { text: "I can create basic charts with matplotlib or seaborn", score: 2 },
+
         ]
       },
       {
         question: "How comfortable are you with statistics and probability?",
         options: [
           { text: "I have basic understanding of statistics", score: 1 },
-          { text: "I can perform hypothesis testing and analysis", score: 2 },
           { text: "I understand advanced statistical concepts", score: 3 },
-          { text: "I can design and interpret complex statistical models", score: 4 }
+          { text: "I can design and interpret complex statistical models", score: 4 },
+          { text: "I can perform hypothesis testing and analysis", score: 2 },
         ]
       },
       {
         question: "What's your experience with big data technologies?",
         options: [
           { text: "I work with small datasets in Excel/CSV", score: 1 },
+          { text: "I design scalable data pipelines and architectures", score: 4 },
           { text: "I use SQL databases for data analysis", score: 2 },
           { text: "I'm familiar with Spark or Hadoop ecosystems", score: 3 },
-          { text: "I design scalable data pipelines and architectures", score: 4 }
         ]
       },
       {
         question: "How familiar are you with deep learning frameworks?",
         options: [
-          { text: "I don't use deep learning", score: 1 },
           { text: "I've experimented with TensorFlow/PyTorch", score: 2 },
           { text: "I've implemented neural networks for projects", score: 3 },
-          { text: "I design and optimize complex deep learning models", score: 4 }
+          { text: "I don't use deep learning", score: 1 },
+          { text: "I design and optimize complex deep learning models", score: 4 },
         ]
       },
       {
         question: "What's your experience with natural language processing?",
         options: [
+          { text: "I've implemented NLP models for specific tasks", score: 3 },
           { text: "I don't work with NLP", score: 1 },
           { text: "I've used basic text processing techniques", score: 2 },
-          { text: "I've implemented NLP models for specific tasks", score: 3 },
-          { text: "I design advanced NLP systems", score: 4 }
+          { text: "I design advanced NLP systems", score: 4 },
         ]
       },
       {
         question: "How would you approach feature engineering?",
         options: [
           { text: "I don't perform feature engineering", score: 1 },
+          { text: "I design comprehensive feature pipelines", score: 4 },
           { text: "I perform basic feature selection", score: 2 },
           { text: "I create new features from existing data", score: 3 },
-          { text: "I design comprehensive feature pipelines", score: 4 }
         ]
       },
       {
         question: "What's your experience with cloud-based data solutions?",
         options: [
-          { text: "I don't use cloud data solutions", score: 1 },
           { text: "I've used basic cloud storage", score: 2 },
           { text: "I've implemented cloud-based data processing", score: 3 },
+          { text: "I don't use cloud data solutions", score: 1 },
           { text: "I design complex cloud data architectures", score: 4 }
         ]
       },

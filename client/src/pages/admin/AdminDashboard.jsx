@@ -18,7 +18,7 @@ const AdminDashboardContent = () => {
 useEffect(() => {
   const fetchActiveUsers = async () => {
     try {
-      const res = await fetch('http://localhost:3001/api/admin/active-users');
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/active-users`);
       if (!res.ok) throw new Error('Network response was not ok');
 
       const data = await res.json();

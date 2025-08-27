@@ -11,8 +11,7 @@ const adminMainRoutes = require('./routes/admin/adminMainRoute');
 
 const roadmapRoute = require("./routes/roadmap/roadmap");
 
-
-
+const chatbotRoutes = require("./routes/chatbot");
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -27,7 +26,7 @@ app.use('/api/admin', adminMainRoutes);
 
 app.use("/api/roadmap", roadmapRoute);
 
-
+app.use("/api/chatbot", chatbotRoutes);
 
 
 app.listen(PORT, () => {

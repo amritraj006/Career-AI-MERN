@@ -121,7 +121,7 @@ const SkillsHub = () => {
                 skill.demand === "Very High" 
                   ? "bg-primary/10 border-primary/30" 
                   : "bg-gray-900/50 border-gray-700"
-              } hover:scale-[1.02] transition-transform`}
+              } hover:scale-[1.02] transition-transform duration-300`}
             >
               <div className="flex items-center gap-3 mb-4">
                 <div className="p-2 rounded-lg bg-gray-800">

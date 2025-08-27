@@ -12,8 +12,8 @@
   "type": "commonjs",
   "dependencies": {
     "@clerk/backend": "^2.4.1",
-    "@clerk/clerk-sdk-node": "^4.13.23",
-    "@clerk/express": "^1.7.5",
+    "@clerk/clerk-sdk-node": "^5.1.6",
+    "@clerk/express": "^1.7.24",
     "@google/generative-ai": "^0.24.1",
     "@sendgrid/mail": "^8.1.5",
     "body-parse": "^0.1.0",
@@ -22,12 +22,14 @@
     "express": "^5.1.0",
     "express-rate-limit": "^7.5.1",
     "helmet": "^8.1.0",
+    "inngest": "^3.40.1",
     "mongoose": "^8.16.2",
     "morgan": "^1.10.0",
     "multer": "^2.0.1",
     "mysql": "^2.18.1",
     "mysql2": "^3.14.1",
-    "nodemailer": "^7.0.5"
+    "nodemailer": "^7.0.5",
+    "svix": "^1.74.1"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"

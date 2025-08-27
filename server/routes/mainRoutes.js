@@ -11,4 +11,5 @@ module.exports = function mainRoutes(app, subscribedDB, registeredDB) {
   app.use('/api', courseRoute(registeredDB));               // /api/course/enroll
   app.use('/api', cartRoute(registeredDB));                 // /api/cart
   app.use('/api/send-comparison-image', sendComparisonImage); 
+ 
 };
