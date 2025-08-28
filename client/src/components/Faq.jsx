@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 
-const FAQ = () => {
+const Faq = () => {
   const [activeIndex, setActiveIndex] = useState(null);
 
   const faqs = [
@@ -107,4 +107,4 @@ const FAQ = () => {
   );
 };
 
-export default FAQ;
+export default Faq;
