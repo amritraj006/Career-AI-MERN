@@ -5,7 +5,7 @@ import CareerPathways from '../components/CareerPathways'
 import SkillsHub from '../components/SkillsHub'
 import IndustryTrends from '../components/IndustryTrends'
 import ComparisonTool from '../components/ComparisonTool'
-import FAQ from '../components/Faq'
+import Faq from '../components/Faq'
 import FinalCTA from '../components/FinalCTA'
 
 
@@ -19,7 +19,7 @@ const Home = () => {
         <SkillsHub />
         <IndustryTrends />
         <ComparisonTool />
-        <FAQ />
+        <Faq />
         <FinalCTA />
         
        
