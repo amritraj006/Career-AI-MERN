@@ -201,7 +201,7 @@ export default function RoadmapGenerator() {
     setMessages(prev => [...prev, userMessage]);
     setPrompt("");
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/roadmap`, {
+      const res = await fetch(`${url}/api/roadmap`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
