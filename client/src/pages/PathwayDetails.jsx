@@ -14,6 +14,7 @@ const PathwayDetails = () => {
   const { isSignedIn, user } = useUser();
   const [subscriptionStatus, setSubscriptionStatus] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const url = "https://career-ai-mern.onrender.com";
 
   const pathway = useMemo(() => pathways.find(p => p.id === pathwayId), [pathwayId]);
 
@@ -29,7 +30,7 @@ const PathwayDetails = () => {
     const checkSubscription = async () => {
       if (isSignedIn && user?.primaryEmailAddress?.emailAddress && pathwayId) {
         try {
-          const res = await fetch(`${import.meta.env.VITE_API_URL}/api/user-pathways?email=${user.primaryEmailAddress.emailAddress}`);
+          const res = await fetch(`${url}/api/user-pathways?email=${user.primaryEmailAddress.emailAddress}`);
           const data = await res.json();
           const isSubscribed = data.pathwayIds?.includes(pathwayId);
           setSubscriptionStatus(isSubscribed);
@@ -56,7 +57,7 @@ const PathwayDetails = () => {
     const newStatus = !subscriptionStatus;
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/pathway-subscribe`, {
+      const response = await fetch(`${url}/api/pathway-subscribe`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

@@ -14,6 +14,7 @@ const Chatbot = () => {
   const { isSignedIn } = useAuth();
   const { user } = useUser();
   const navigate = useNavigate();
+  const url = "https://career-ai-mern.onrender.com";
 
   // Auto-scroll to bottom when messages change
   useEffect(() => {
@@ -181,7 +182,7 @@ const Chatbot = () => {
     setIsTyping(true);
 
     try {
-      const res = await fetch("http://localhost:3001/api/chatbot/chat", {
+      const res = await fetch(`${url}/api/chatbot/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: input }),

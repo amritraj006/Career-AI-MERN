@@ -17,11 +17,12 @@ const Navbar = () => {
   const { openSignIn } = useClerk();
   const navigate = useNavigate();
   const [cartCount, setCartCount] = useState(0);
+  const url = "https://career-ai-mern.onrender.com";
 
  const fetchCartCount = async () => {
   if (user?.primaryEmailAddress?.emailAddress) {
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/course/count`, {
+      const res = await fetch(`${url}/api/course/count`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

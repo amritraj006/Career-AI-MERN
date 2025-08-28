@@ -72,6 +72,8 @@ export default function RoadmapGenerator() {
   const messagesEndRef = useRef(null);
   const containerRef = useRef(null);
   const searchInputRef = useRef(null);
+  const url = "https://career-ai-mern.onrender.com";
+  
 
   // Apply theme and sidebar preferences
   useEffect(() => {
@@ -101,7 +103,7 @@ export default function RoadmapGenerator() {
     try {
       if (!user?.primaryEmailAddress?.emailAddress) return;
       const res = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/roadmap/history?email=${user.primaryEmailAddress.emailAddress}`
+        `${url}/api/roadmap/history?email=${user.primaryEmailAddress.emailAddress}`
       );
       const data = await res.json();
       if (data.success) {
@@ -118,7 +120,7 @@ export default function RoadmapGenerator() {
   const deleteHistoryItem = async (id, e) => {
     e?.stopPropagation();
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/roadmap/history/${id}`, {
+      const res = await fetch(`${url}/api/roadmap/history/${id}`, {
         method: "DELETE"
       });
       const data = await res.json();

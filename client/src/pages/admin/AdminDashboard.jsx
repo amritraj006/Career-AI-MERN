@@ -9,6 +9,7 @@ import { pathways } from '../../assets/pathwaysData';
 
 const AdminDashboardContent = () => {
   const navigate = useNavigate();
+  const url = "https://career-ai-mern.onrender.com";
   const [activeSection, setActiveSection] = useState(() => {
     // Get last active section from localStorage
     return localStorage.getItem('adminActiveSection') || 'profile';
@@ -18,7 +19,7 @@ const AdminDashboardContent = () => {
 useEffect(() => {
   const fetchActiveUsers = async () => {
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/active-users`);
+      const res = await fetch(`${url}/api/admin/active-users`);
       if (!res.ok) throw new Error('Network response was not ok');
 
       const data = await res.json();

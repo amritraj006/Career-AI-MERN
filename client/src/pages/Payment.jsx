@@ -18,6 +18,7 @@ const Payment = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [activeCard, setActiveCard] = useState('visa');
   const [showConfirm, setShowConfirm] = useState(false);
+  const url = "https://career-ai-mern.onrender.com";
 
   const navigate = useNavigate();
 
@@ -71,7 +72,7 @@ const Payment = () => {
   const finalizePayment = async () => {
     setIsProcessing(true);
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/course/finalize-payment`, {
+      const res = await fetch(`${url}/api/course/finalize-payment`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

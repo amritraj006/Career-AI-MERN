@@ -81,7 +81,7 @@ const CourseCard = memo(({ course, navigate }) => {
 });
 
 const DashboardContent = () => {
-  const API_BASE_URL = import.meta.env.VITE_API_URL;
+  
   const { user } = useUser();
   const { signOut } = useClerk();
   const navigate = useNavigate();
@@ -89,6 +89,7 @@ const DashboardContent = () => {
   const [pathways, setPathways] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [enrolledCourses, setEnrolledCourses] = useState([]);
+  const url = "https://career-ai-mern.onrender.com";
 
   const sidebarItems = [
     { id: "profile", icon: <User className="w-5 h-5" />, label: "Profile" },
@@ -103,7 +104,7 @@ const DashboardContent = () => {
     const fetchSubscribedPathways = async () => {
       try {
         setIsLoading(true);
-        const res = await axios.get(`${API_BASE_URL}/api/user-pathways`, {
+        const res = await axios.get(`${url}/api/user-pathways`, {
           params: { email: user.primaryEmailAddress.emailAddress }
         });
 
@@ -128,7 +129,7 @@ const DashboardContent = () => {
   useEffect(() => {
     const fetchEnrolledCourses = async () => {
       try {
-        const res = await axios.post(`${API_BASE_URL}/api/course/enrolled-ids`, {
+        const res = await axios.post(`${url}/api/course/enrolled-ids`, {
           userEmail: user.primaryEmailAddress.emailAddress,
         });
 

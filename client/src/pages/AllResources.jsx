@@ -27,12 +27,13 @@ const AllResources = () => {
   const [filteredResources, setFilteredResources] = useState([]);
   const [enrolledIds, setEnrolledIds] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const url = "https://career-ai-mern.onrender.com";
 
   useEffect(() => {
     const fetchEnrolled = async () => {
       try {
         setIsLoading(true);
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/course/enrolled-ids`, {
+        const res = await fetch(`${url}/api/course/enrolled-ids`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ userEmail: user?.primaryEmailAddress?.emailAddress })

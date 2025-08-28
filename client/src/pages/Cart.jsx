@@ -12,6 +12,7 @@ const Cart = () => {
   const [enrolledResources, setEnrolledResources] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const url = "https://career-ai-mern.onrender.com";
 
   useEffect(() => {
     const fetchCartItems = async () => {
@@ -22,7 +23,7 @@ const Cart = () => {
       }
 
       try {
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/enrolled`, {
+        const res = await fetch(`${url}/api/enrolled`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -57,7 +58,7 @@ const Cart = () => {
     const userEmail = user.primaryEmailAddress.emailAddress;
 
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/course-toggle`, {
+      const res = await fetch(`${url}/api/course-toggle`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userEmail, resourceId, addedToCart: false })

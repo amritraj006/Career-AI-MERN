@@ -15,6 +15,7 @@ const ResourceDetails = () => {
   const [isAddedToCart, setIsAddedToCart] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [enrolledIds, setEnrolledIds] = useState([]);
+  const url = "https://career-ai-mern.onrender.com";
 
   const resource = useMemo(
     () => resources.find((r) => r.resourceId === resourceId),
@@ -42,7 +43,7 @@ const ResourceDetails = () => {
         setIsLoading(true);
         try {
           // 1. Check if this course is in user's cart
-          const res = await fetch(`${import.meta.env.VITE_API_URL}/api/enrolled`, {
+          const res = await fetch(`${url}/api/enrolled`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ userEmail: user.primaryEmailAddress.emailAddress })
@@ -54,7 +55,7 @@ const ResourceDetails = () => {
           }
 
           // 2. Fetch all enrolled course IDs
-          const res2 = await fetch(`${import.meta.env.VITE_API_URL}/api/course/enrolled-ids`, {
+          const res2 = await fetch(`${url}/api/course/enrolled-ids`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ userEmail: user.primaryEmailAddress.emailAddress })
@@ -82,7 +83,7 @@ const ResourceDetails = () => {
     const email = user?.primaryEmailAddress?.emailAddress;
 
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/course-toggle`, {
+      const res = await fetch(`${url}/api/course-toggle`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

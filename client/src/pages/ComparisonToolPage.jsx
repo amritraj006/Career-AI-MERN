@@ -13,6 +13,7 @@ const ComparisonToolPage = () => {
   const { user } = useUser(); 
   const pdfRef = useRef(null);
   const navigate = useNavigate();
+  const url = "https://career-ai-mern.onrender.com";
 
   // Sample career data with more detailed information
   const allCareers = [
@@ -144,7 +145,7 @@ const ComparisonToolPage = () => {
       toast.dismiss();
       toast.loading('Sending image to your email...');
 
-      await axios.post(`${import.meta.env.VITE_API_URL}/api/send-comparison-image`, formData, {
+      await axios.post(`${url}/api/send-comparison-image`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
 

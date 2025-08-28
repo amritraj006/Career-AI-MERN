@@ -40,33 +40,16 @@ const AboutPage = () => {
 
   const containerVariants = {
     hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2
-      }
-    }
+    visible: { opacity: 1, transition: { staggerChildren: 0.2 } }
   };
 
   const itemVariants = {
     hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: {
-        duration: 0.5
-      }
-    }
+    visible: { y: 0, opacity: 1, transition: { duration: 0.5 } }
   };
 
-  const cardVariants = {
-    hover: {
-      y: -10,
-      boxShadow: "0 15px 30px rgba(0,0,0,0.15)",
-      transition: {
-        duration: 0.3
-      }
-    }
+  const cardHoverVariants = {
+    hover: { y: -10, boxShadow: "0 15px 30px rgba(0,0,0,0.15)", transition: { duration: 0.3 } }
   };
 
   return (
@@ -101,46 +84,31 @@ const AboutPage = () => {
         </motion.div>
 
         {/* Team Section */}
-        <motion.div
-          className="mb-20"
-          initial="hidden"
-          animate="visible"
-          variants={containerVariants}
-        >
-          <motion.h2 
-            className="text-3xl font-bold text-center text-gray-800 mb-12"
-            variants={itemVariants}
-          >
+        <motion.div className="mb-20" initial="hidden" animate="visible" variants={containerVariants}>
+          <motion.h2 className="text-3xl font-bold text-center text-gray-800 mb-12" variants={itemVariants}>
             Meet Our Team
           </motion.h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {teamMembers.map((member, index) => (
+            {teamMembers.map((member) => (
               <motion.div
                 key={member.id}
-                className={`bg-white rounded-xl overflow-hidden shadow-md p-6 ${index === 0 ? "md:mt-0" : "md:mt-8"}`}
+                className="bg-white rounded-xl overflow-hidden shadow-md p-6"
                 variants={itemVariants}
-                whileHover="hover"
-                variants={cardVariants}
+                whileHover={cardHoverVariants.hover}
               >
                 <div className="flex flex-col items-center">
-                  <motion.div 
+                  <motion.div
                     className="w-32 h-32 rounded-full overflow-hidden border-4 border-indigo-100 mb-6"
                     whileHover={{ scale: 1.05 }}
                   >
-                    <img 
-                      src={member.image} 
-                      alt={member.name} 
-                      className="w-full h-full object-cover"
-                    />
+                    <img src={member.image} alt={member.name} className="w-full h-full object-cover" />
                   </motion.div>
-                  
+
                   <h3 className="text-2xl font-bold text-gray-800 mb-1">{member.name}</h3>
-                  <span className={`text-lg font-medium mb-4 ${index === 0 ? "text-indigo-600" : "text-indigo-500"}`}>
-                    {member.role}
-                  </span>
+                  <span className="text-lg font-medium mb-4 text-indigo-500">{member.role}</span>
                   <p className="text-gray-600 text-center mb-6">{member.bio}</p>
-                  
+
                   <div className="flex space-x-4">
                     <a href={member.linkedin} target="_blank" rel="noopener noreferrer" className="text-indigo-600 hover:text-indigo-800">
                       <FaLinkedin size={20} />
@@ -159,12 +127,7 @@ const AboutPage = () => {
         </motion.div>
 
         {/* Project Description */}
-        <motion.div 
-          className="bg-white rounded-xl shadow-lg p-8 mb-16"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-        >
+        <motion.div className="bg-white rounded-xl shadow-lg p-8 mb-16" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
           <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">About Our Project</h2>
           <p className="text-xl text-gray-600 text-center max-w-4xl mx-auto">
             Career AI is our full-stack project developed as part of our academic curriculum. 
@@ -174,12 +137,7 @@ const AboutPage = () => {
         </motion.div>
 
         {/* Call to Action */}
-        <motion.div 
-          className="text-center"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.6 }}
-        >
+        <motion.div className="text-center" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }}>
           <h2 className="text-2xl font-bold text-gray-800 mb-4">Want to see our work?</h2>
           <motion.button
             onClick={() => navigate("/")}

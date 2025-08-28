@@ -16,6 +16,7 @@ const AllPathways = () => {
   const [filter, setFilter] = useState('all');
   const [filteredPathways, setFilteredPathways] = useState([]);
   const [subscribedPathwayIds, setSubscribedPathwayIds] = useState([]);
+  const url = "https://career-ai-mern.onrender.com";
 
   // 🔁 Fetch subscribed pathway IDs
   useEffect(() => {
@@ -24,7 +25,7 @@ const AllPathways = () => {
 
       try {
         const res = await fetch(
-          `${import.meta.env.VITE_API_URL}/api/user-pathways?email=${user.primaryEmailAddress.emailAddress}`
+          `${url}/api/user-pathways?email=${user.primaryEmailAddress.emailAddress}`
         );
         const data = await res.json();
         if (res.ok && data.pathwayIds) {
