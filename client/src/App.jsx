@@ -16,7 +16,7 @@ import ResourceDetails from './pages/ResourceDetails';
 import Cart from './pages/Cart';
 import Payment from './pages/Payment';
 import Dashboard from './pages/Dashboard';
-import AboutPage from './pages/AboutPage';
+import About from './pages/About';
 import NotFound from './pages/NotFound';
 
 import AdminHome from './pages/admin/AdminHome';
@@ -74,7 +74,7 @@ const App = () => {
         <Route path='/cart' element={<Cart />} />
         <Route path='/cart/:payment' element={<Payment />} />
         <Route path='/my-dashboard' element={<Dashboard />} />
-        <Route path='/about' element={<AboutPage />} />
+        <Route path='/about' element={<About />} />
         <Route path='/admin' element={<AdminHome />} />
         <Route path='/admin/:dashboard' element={<AdminDashboard />} />
         <Route path='/roadmap' element={<RoadmapPage />} />
