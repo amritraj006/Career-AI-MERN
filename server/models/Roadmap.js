@@ -1,0 +1,10 @@
+const mongoose = require("mongoose");
+
+const roadmapSchema = new mongoose.Schema({
+  user_email: { type: String },
+  prompt: { type: String },
+  roadmap: { type: String },
+  created_at: { type: Date, default: Date.now }
+});
+
+module.exports = mongoose.model("Roadmap", roadmapSchema);

@@ -41,8 +41,7 @@ const Chatbot = () => {
       'career test': '/career-test',
       'test': '/career-test',
       'dashboard': '/my-dashboard',
-      'my dashboard': '/my-dashboard',
-      'cart' : '/cart'
+      'my dashboard': '/my-dashboard'
     };
 
     if (navigationMap[cmd]) {
@@ -105,7 +104,6 @@ const Chatbot = () => {
               { command: "roadmap", description: "Navigate to career roadmap" },
               { command: "test", description: "Navigate to career test" },
               { command: "dashboard", description: "Navigate to my dashboard" },
-              { command: "cart", description: "Navigate to cart" }
             ],
             timestamp: new Date()
           }
@@ -195,7 +193,7 @@ const Chatbot = () => {
       // Check if the response contains navigation instructions
       if (data.navigation) {
         // Special handling for protected routes
-        if ((data.navigation === '/career-test' || data.navigation === '/my-dashboard' || data.navigation === '/cart') && !isSignedIn) {
+        if ((data.navigation === '/career-test' || data.navigation === '/my-dashboard') && !isSignedIn) {
           setMessages((prev) => [
             ...prev,
             {
