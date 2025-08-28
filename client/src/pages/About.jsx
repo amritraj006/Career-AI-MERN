@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { FaLinkedin, FaGithub, FaEnvelope, FaHome } from "react-icons/fa";
 
-const AboutPage = () => {
+const About = () => {
   const navigate = useNavigate();
 
   const teamMembers = [
@@ -153,4 +153,4 @@ const AboutPage = () => {
   );
 };
 
-export default AboutPage;
+export default About;
