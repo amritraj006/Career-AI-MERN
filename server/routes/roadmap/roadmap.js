@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const Roadmap = require("../../models/Roadmap"); // MongoDB model
+const Roadmap = require("../../models/Roadmap"); // mongoose model
 require("dotenv").config();
 
 // POST: Generate roadmap and save
@@ -9,6 +9,7 @@ router.post("/", async (req, res) => {
   const apiKey = process.env.GEMINI_API_KEY;
 
   try {
+    // Call Gemini API
     const response = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
       {
@@ -21,13 +22,14 @@ router.post("/", async (req, res) => {
     );
 
     const data = await response.json();
-    const roadmapText =
+    const roadmap =
       data.candidates?.[0]?.content?.parts?.[0]?.text || "No roadmap generated.";
 
+    // Save to MongoDB
     const newRoadmap = await Roadmap.create({
       user_email: email,
       prompt,
-      roadmap: roadmapText
+      roadmap
     });
 
     res.json({ success: true, roadmap: newRoadmap.roadmap });
@@ -37,7 +39,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-// GET roadmap history for a user
+// GET: Roadmap history
 router.get("/history", async (req, res) => {
   try {
     const { email } = req.query;
@@ -49,11 +51,11 @@ router.get("/history", async (req, res) => {
   }
 });
 
-// DELETE a roadmap by id
+// DELETE: Remove roadmap by id
 router.delete("/history/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    await Roadmap.findByIdAndDelete(id);
+    await Roadmap.findByIdAndDelete(id); // uses MongoDB _id
     res.json({ success: true });
   } catch (err) {
     console.error("❌ DB Delete Error:", err);
