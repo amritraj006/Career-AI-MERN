@@ -1,6 +1,6 @@
 # 🎓 Career AI
 
-A full-stack career guidance platform built with **React** for the frontend, **Node.js + Express** for the backend, and **MySQL** (phpMyAdmin) as the database. It includes user authentication with **Clerk**, course enrollment features, admin content management, AI-powered roadmap generation, a career comparison tool, and a user dashboard to track personalized progress.
+A full-stack career guidance platform built with **React** for the frontend, **Node.js + Express** for the backend, and **MongoDB** (Atlas) as the database. It includes user authentication with **Clerk**, course enrollment features, admin content management, AI-powered roadmap generation, a career comparison tool, and a user dashboard to track personalized progress.
 
 ---
 
@@ -32,12 +32,12 @@ A full-stack career guidance platform built with **React** for the frontend, **N
 |------------------|----------------------------------|
 | Frontend         | React, Tailwind CSS              |
 | Backend          | Node.js, Express.js              |
-| Database         | MySQL + phpMyAdmin               |
+| Database         | MongoDB, Atlas                   |
 | Authentication   | Clerk.dev                        |
 | AI / Chatbot     | OpenAI API                       |
 | Comparison Tools | Custom logic with career metrics |
 | PDF / Email      | jsPDF, html-to-image, Nodemailer |
-| Hosting          | Vercel (frontend), Render/Railway (backend) |
+| Hosting          | Render                           |
 
 ---
 
@@ -50,12 +50,10 @@ career-ai/
 │ └── assets/
 ├── server/ # Node.js + Express backend
 │ ├── routes/
-│ ├── controllers/
-│ └── utils/
-├── database/ # SQL files for all tables
-│ ├── career_ai.sql
-│ ├── registered_course.sql
-│ └── subscribed_users.sql
+│ ├── config/
+│ └── models/
+│ ├── app.js
+│ ├── .env
 └── README.md
 
 
