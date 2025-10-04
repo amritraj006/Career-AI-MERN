@@ -29,7 +29,7 @@ const PathwayDetails = () => {
     const checkSubscription = async () => {
       if (isSignedIn && user?.primaryEmailAddress?.emailAddress && pathwayId) {
         try {
-          const res = await fetch(`${import.meta.env.VITE_API_URL}/api/user-pathways?email=${user.primaryEmailAddress.emailAddress}`);
+          const res = await fetch(`${url}/api/user-pathways?email=${user.primaryEmailAddress.emailAddress}`);
           const data = await res.json();
           const isSubscribed = data.pathwayIds?.includes(pathwayId);
           setSubscriptionStatus(isSubscribed);
@@ -56,7 +56,7 @@ const PathwayDetails = () => {
     const newStatus = !subscriptionStatus;
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/pathway-subscribe`, {
+      const response = await fetch(`${url}/api/pathway-subscribe`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
