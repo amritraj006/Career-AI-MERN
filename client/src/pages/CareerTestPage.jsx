@@ -55,7 +55,7 @@ export default function CareerTestPage() {
       step,
       domain,
       questions,
-      current,
+    current,
       answers,
       result
     };
@@ -80,122 +80,37 @@ export default function CareerTestPage() {
     }
   };
 
-  const callGeminiAI = async (prompt, maxTokens = 1000) => {
-    if (!apiKey) {
-      throw new Error('Gemini API key is required');
-    }
+const callGeminiAI = async (prompt, maxTokens = 1000) => {
+  if (!apiKey) {
+    throw new Error('Gemini API key is required');
+  }
 
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        contents: [{
-          parts: [{
-            text: prompt
-          }]
-        }],
-        generationConfig: {
-          temperature: 0.7,
-          maxOutputTokens: maxTokens
-        }
-      })
-    });
+  const model = 'gemini-1.5-flash'; // or 'gemini-pro'
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.error?.message || `Gemini API error: ${response.status}`);
-    }
-
-    const data = await response.json();
-    return data.candidates[0].content.parts[0].text;
-  };
-
-  // Start timer when question changes
-  useEffect(() => {
-    if (step === 'test' && questions.length > 0) {
-      setTimeLeft(60);
-      
-      timerRef.current = setInterval(() => {
-        setTimeLeft(prevTime => {
-          if (prevTime <= 1) {
-            clearInterval(timerRef.current);
-            handleAnswer(1);
-            return 0;
-          }
-          return prevTime - 1;
-        });
-      }, 1000);
-
-      return () => clearInterval(timerRef.current);
-    }
-  }, [current, questions, step]);
-
-  const generateQuestions = async (domainId) => {
-    if (preDefinedQuestions[domainId]) {
-      const shuffled = [...preDefinedQuestions[domainId]].sort(() => 0.5 - Math.random());
-      const selectedQuestions = shuffled.slice(0, 10);
-      return { questions: selectedQuestions };
-    }
-
-    const domainName = getDomainName(domainId);
-    const prompt = `Generate 10 career assessment questions for ${domainName} with multiple choice answers. Each question should test different aspects like technical knowledge, experience level, problem-solving, and career goals.
-
-Return the response in this exact JSON format without any markdown formatting or additional text:
-{
-  "questions": [
-    {
-      "question": "Question text here",
-      "options": [
-        {"text": "Option 1", "score": 1},
-        {"text": "Option 2", "score": 2},
-        {"text": "Option 3", "score": 3},
-        {"text": "Option 4", "score": 4}
-      ]
-    }
-  ]
-}
-
-Make sure scores range from 1 (beginner/low) to 4 (expert/high). Questions should cover:
-- Technical knowledge and skills
-- Experience with tools and technologies
-- Problem-solving scenarios
-- Career goals and interests
-- Industry awareness
-
-Make questions practical and relevant to current ${domainName} practices.`;
-
-    const response = await callGeminiAI(prompt, 1500);
-    return parseGeminiResponse(response);
-  };
-
-  const fetchQuestions = async (domainId) => {
-    setLoading(true);
-    setError(null);
-
-    try {
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      const data = await generateQuestions(domainId);
-      
-      if (!data.questions || !Array.isArray(data.questions)) {
-        throw new Error('Invalid question data received');
+  const response = await fetch(`https://generativelanguage.googleapis.com/v1/models/${model}:generateContent?key=${apiKey}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      contents: [{
+        parts: [{ text: prompt }]
+      }],
+      generationConfig: {
+        temperature: 0.7,
+        maxOutputTokens: maxTokens
       }
+    })
+  });
 
-      setQuestions(data.questions);
-      setDomain(domainId);
-      setStep('test');
-      setCurrent(0);
-      setAnswers([]);
-      setTimeLeft(50);
-    } catch (err) {
-      console.error('Question generation error:', err);
-      setError(err.message || 'Failed to generate questions. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.error?.message || `Gemini API error: ${response.status}`);
+  }
+
+  const data = await response.json();
+  return data.candidates?.[0]?.content?.parts?.[0]?.text ?? '';
+};
 
   const handleAnswer = (score) => {
     clearInterval(timerRef.current);
