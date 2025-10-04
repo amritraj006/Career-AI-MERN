@@ -16,6 +16,7 @@ const PathwayDetails = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const pathway = useMemo(() => pathways.find(p => p.id === pathwayId), [pathwayId]);
+  const url = "https://career-ai-mern.onrender.com";
 
   useEffect(() => {
     if (!pathway) {
