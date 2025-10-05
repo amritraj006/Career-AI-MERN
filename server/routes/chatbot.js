@@ -3,13 +3,16 @@ const router = express.Router();
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 require("dotenv").config();
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+const genAI = new GoogleGenerativeAI({
+  apiKey: process.env.GEMINI_API_KEY,
+});
 
 router.post("/chat", async (req, res) => {
   const { message } = req.body;
 
   try {
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
     const prompt = `
 You are the official assistant for the Career AI website, a comprehensive career development platform.
 
@@ -49,16 +52,19 @@ OR if navigation is requested:
 { "navigation": "/path-to-page" }
 `;
 
-    const result = await model.generateContent([prompt, message]);
-    const text = result.response.text();
+    const result = await model.generateContent({
+      contents: [{ role: "user", parts: [{ text: `${prompt}\n\n${message}` }] }],
+    });
 
-    // Clean JSON (Gemini sometimes wraps in ```json)
+    const text = result.response.text();
     const cleaned = text.replace(/```json|```/g, "").trim();
 
     res.json(JSON.parse(cleaned));
   } catch (error) {
     console.error("Gemini Chatbot Error:", error);
-    res.status(500).json({ error: "I'm experiencing technical difficulties. Please try again shortly." });
+    res.status(500).json({
+      error: "I'm experiencing technical difficulties. Please try again shortly.",
+    });
   }
 });
 
