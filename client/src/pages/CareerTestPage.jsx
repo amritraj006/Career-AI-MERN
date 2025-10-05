@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from 'react';
 import preDefinedQuestions from '../assets/carrier-test/preDefinedQuestions';
 import { useUser } from '@clerk/clerk-react';
@@ -125,8 +124,7 @@ export default function CareerTestPage() {
   const getDomainName = (domainId) =>
     domains.find(d => d.id === domainId)?.name || domainId;
 
-  
-const generateQuestions = async (domainId) => {
+  const generateQuestions = async (domainId) => {
   // ✅ Use predefined questions if available
   if (preDefinedQuestions[domainId]) {
     const shuffled = [...preDefinedQuestions[domainId]].sort(() => 0.5 - Math.random());
@@ -174,11 +172,7 @@ Make questions practical and relevant to current ${domainName} practices.
     return { questions: [] };
   }
 };
-  
 
-    const response = await callGeminiAI(prompt, 1500);
-    return parseGeminiResponse(response);
-  };
 
   const fetchQuestions = async (domainId) => {
     setLoading(true);
