@@ -125,7 +125,7 @@ export default function RoadmapGenerator() {
       });
       const data = await res.json();
       if (data.success) {
-        setHistory(prev => prev.filter(item => item.id !== id));
+        setHistory(prev => prev.filter(item => item._id !== id));
         if (selectedHistory === id) {
           setMessages([]);
           setSelectedHistory(null);
