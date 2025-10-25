@@ -59,8 +59,7 @@ const App = () => {
 
   return (
     <>
-      {!chatPage && !isDashboard && !isAboutPage && !isCartPaymentPage && !isAdminPage && !isRoadMapPage && <Navbar />}
-      {!isRoadMapPage && <Chatbot />}
+      
       <Toaster richColors position="top-center" />
 
       <Routes>
