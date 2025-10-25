@@ -59,6 +59,7 @@ const App = () => {
 
   return (
     <>
+      {!chatPage && !isDashboard && !isAboutPage && !isCartPaymentPage && !isAdminPage && !isRoadMapPage && <Navbar />}
       
       <Toaster richColors position="top-center" />
 
