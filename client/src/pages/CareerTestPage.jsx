@@ -428,7 +428,7 @@ Return JSON only:
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br pt-16 from-gray-900 via-blue-900 to-gray-900 text-white flex flex-col items-center py-10 px-4">
+    <div className="min-h-screen bg-gradient-to-br pt-16 md:pt-50 from-gray-900 via-blue-900 to-gray-900 text-white flex flex-col items-center py-10 px-4">
       <div className="w-full max-w-4xl">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
