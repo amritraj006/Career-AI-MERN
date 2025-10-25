@@ -52,15 +52,28 @@ router.get("/history", async (req, res) => {
 });
 
 // DELETE: Remove roadmap by id
+
 router.delete("/history/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    await Roadmap.findByIdAndDelete(id); // uses MongoDB _id
-    res.json({ success: true });
+
+    // Validate ID before using it in query
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ success: false, message: "Invalid ID format" });
+    }
+
+    const deleted = await Roadmap.findByIdAndDelete(id);
+
+    if (!deleted) {
+      return res.status(404).json({ success: false, message: "Roadmap not found" });
+    }
+
+    res.json({ success: true, message: "Deleted successfully" });
   } catch (err) {
     console.error("❌ DB Delete Error:", err);
-    res.json({ success: false });
+    res.status(500).json({ success: false, message: "Server error" });
   }
 });
+
 
 module.exports = router;
