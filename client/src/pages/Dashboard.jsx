@@ -11,7 +11,6 @@ import { useState, useEffect, Suspense, useMemo, memo } from "react";
 import {
   User,
   BookOpen,
-  Map,
   ChevronRight,
   ChevronDown,
   LogOut,
@@ -24,7 +23,6 @@ import {
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { pathways as allPathways } from "../assets/pathwaysData";
 import { resources } from "../assets/resources";
 
 // Optimized Course Card Component
@@ -86,45 +84,17 @@ const DashboardContent = () => {
   const { signOut } = useClerk();
   const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState("profile");
-  const [pathways, setPathways] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [enrolledCourses, setEnrolledCourses] = useState([]);
-  const url = "https://career-ai-mern.onrender.com";
+  const url = import.meta.env.VITE_BACKEND_URL;
 
   const sidebarItems = [
     { id: "profile", icon: <User className="w-5 h-5" />, label: "Profile" },
-    { id: "courses", icon: <BookOpen className="w-5 h-5" />, label: "My Courses" },
-    { id: "pathway", icon: <Map className="w-5 h-5" />, label: "Learning Path" }
+    { id: "courses", icon: <BookOpen className="w-5 h-5" />, label: "My Courses" }
   ];
 
   // Memoize the enrolled courses to prevent unnecessary re-renders
   const memoizedCourses = useMemo(() => enrolledCourses, [enrolledCourses]);
-
-  useEffect(() => {
-    const fetchSubscribedPathways = async () => {
-      try {
-        setIsLoading(true);
-        const res = await axios.get(`${url}/api/user-pathways`, {
-          params: { email: user.primaryEmailAddress.emailAddress }
-        });
-
-        const subscribedIds = res.data.pathwayIds;
-        const matchedPathways = allPathways.filter((path) =>
-          subscribedIds.includes(path.id)
-        );
-
-        setPathways(matchedPathways);
-      } catch (error) {
-        console.error("Failed to fetch subscribed pathways:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    if (user) {
-      fetchSubscribedPathways();
-    }
-  }, [user]);
 
   useEffect(() => {
     const fetchEnrolledCourses = async () => {
@@ -289,14 +259,10 @@ const DashboardContent = () => {
                       <Award className="w-4 h-4 text-amber-400" />
                       Premium Member
                     </p>
-                    <div className="grid grid-cols-2 gap-4 w-full">
+                    <div className="grid grid-cols-1 gap-4 w-full">
                       <div className="bg-gray-900 p-4 rounded-xl border border-gray-800/30 text-center hover:bg-gray-800/50 transition-colors">
                         <p className="text-sm text-gray-400 mb-1">Enrolled Courses</p>
                         <p className="font-bold text-white text-xl">{enrolledCourses.length}</p>
-                      </div>
-                      <div className="bg-gray-900 p-4 rounded-xl border border-gray-800/30 text-center hover:bg-gray-800/50 transition-colors">
-                        <p className="text-sm text-gray-400 mb-1">Learning Paths</p>
-                        <p className="font-bold text-white text-xl">{pathways.length}</p>
                       </div>
                     </div>
                   </div>
@@ -443,91 +409,7 @@ const DashboardContent = () => {
             </motion.section>
           )}
 
-          {/* Learning Path Section */}
-          {activeSection === "pathway" && (
-            <motion.section
-              key="pathway"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3 }}
-              className="bg-gray-900/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 border border-gray-800/50"
-            >
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
-                <div>
-                  <h2 className="text-3xl font-bold bg-gradient-to-r from-rose-500 to-amber-400 bg-clip-text text-transparent">
-                    Learning Paths
-                  </h2>
-                  <p className="text-gray-400">
-                    {pathways.length} active path{pathways.length !== 1 ? 's' : ''}
-                  </p>
-                </div>
-                <button 
-                  className="flex items-center bg-gradient-to-r from-rose-600 to-rose-500 hover:from-rose-700 hover:to-rose-600 text-white px-5 py-2.5 rounded-lg font-medium transition-all shadow-lg"
-                  onClick={() => navigate('/pathways')}
-                >
-                  Explore All Paths
-                </button>
-              </div>
 
-              {isLoading ? (
-                <div className="flex justify-center items-center py-16">
-                  <Loader2 className="w-8 h-8 animate-spin text-rose-500" />
-                </div>
-              ) : pathways.length === 0 ? (
-                <div className="text-center py-16">
-                  <div className="mx-auto w-24 h-24 bg-gray-900 rounded-full flex items-center justify-center mb-6 border border-gray-800/30">
-                    <Map className="w-10 h-10 text-rose-500" />
-                  </div>
-                  <h3 className="text-xl font-semibold mb-2">No Learning Paths Yet</h3>
-                  <p className="text-gray-400 mb-6 max-w-md mx-auto">
-                    You haven't subscribed to any learning paths yet. Explore our curated paths to start your career journey.
-                  </p>
-                  <button
-                    className="bg-gradient-to-r from-rose-600 to-rose-500 hover:from-rose-700 hover:to-rose-600 text-white px-6 py-3 rounded-lg font-medium transition-all shadow-lg"
-                    onClick={() => navigate("/pathways")}
-                  >
-                    Browse Learning Paths
-                  </button>
-                </div>
-              ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {pathways.map((path) => (
-                    <motion.div
-                      key={path.id}
-                      whileHover={{ y: -5 }}
-                      className="bg-gray-900 border border-gray-800/50 rounded-xl p-6 hover:shadow-lg transition-all group"
-                    >
-                      <div className="flex items-start mb-4">
-                        <div className="bg-rose-500/10 p-3 rounded-lg mr-4 border border-gray-800/30">
-                          <Map className="w-6 h-6 text-rose-400" />
-                        </div>
-                        <div>
-                          <h3 className="text-xl font-semibold group-hover:text-rose-400 transition-colors">
-                            {path.title}
-                          </h3>
-                          <p className="text-sm text-gray-400 line-clamp-2">{path.description}</p>
-                        </div>
-                      </div>
-                      
-                      <div className="flex justify-between items-center mt-6">
-                        <div className="flex items-center text-sm text-gray-400">
-                          <BookOpen className="w-4 h-4 mr-1" />
-                          {path.courses?.length || 0} courses
-                        </div>
-                        <button
-                          className="bg-gradient-to-r from-rose-600 to-rose-500 hover:from-rose-700 hover:to-rose-600 text-white py-2 px-4 rounded-lg transition-all text-sm font-medium shadow-sm"
-                          onClick={() => navigate(`/pathways/${path.id}`)}
-                        >
-                          View Details
-                        </button>
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-              )}
-            </motion.section>
-          )}
         </AnimatePresence>
       </main>
     </div>

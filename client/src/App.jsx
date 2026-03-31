@@ -3,9 +3,7 @@ import { Route, Routes, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import BlurCircle from './components/BlurCircle';
-import Chatbot from './components/Chatbot';
 import { Toaster } from 'sonner';
-
 import Home from './pages/Home';
 import ComparisonToolPage from './pages/ComparisonToolPage';
 import CareerTestPage from './pages/CareerTestPage';
@@ -13,7 +11,6 @@ import AllPathways from './pages/AllPathways';
 import PathwayDetails from './pages/PathwayDetails';
 import AllResources from './pages/AllResources';
 import ResourceDetails from './pages/ResourceDetails';
-import Cart from './pages/Cart';
 import Payment from './pages/Payment';
 import Dashboard from './pages/Dashboard';
 import About from './pages/About';
@@ -31,7 +28,7 @@ const App = () => {
 
   const isDashboard = location.pathname.startsWith("/my-dashboard");
   const isAboutPage = location.pathname.startsWith("/about");
-  const isCartPaymentPage = location.pathname === "/cart/payment";
+  const isPaymentPage = location.pathname === "/payment";
   const isAdminPage = location.pathname.startsWith("/admin");
   const isRoadMapPage = location.pathname === "/roadmap-generator";
   const chatPage = location.pathname.startsWith("/chatbot");
@@ -59,7 +56,7 @@ const App = () => {
 
   return (
     <>
-      {!chatPage && !isDashboard && !isAboutPage && !isCartPaymentPage && !isAdminPage && !isRoadMapPage && <Navbar />}
+      {!chatPage && !isDashboard && !isAboutPage && !isPaymentPage && !isAdminPage && !isRoadMapPage && <Navbar />}
       
       <Toaster richColors position="top-center" />
 
@@ -71,8 +68,7 @@ const App = () => {
         <Route path='/resources' element={<AllResources />} />
         <Route path='/resources/:resourceId' element={<ResourceDetails />} />
         <Route path='/resources/:learning-page/:resourceId' element={<LearningPage />} />
-        <Route path='/cart' element={<Cart />} />
-        <Route path='/cart/:payment' element={<Payment />} />
+        <Route path='/payment' element={<Payment />} />
         <Route path='/my-dashboard' element={<Dashboard />} />
         <Route path='/about' element={<About />} />
         <Route path='/admin' element={<AdminHome />} />
@@ -84,7 +80,7 @@ const App = () => {
         <Route path='*' element={<NotFound />} />
       </Routes>
 
-      {!isAdminPage && !isDashboard && !isCartPaymentPage && !isRoadMapPage && <Footer />}
+      {!isAdminPage && !isDashboard && !isPaymentPage && !isRoadMapPage && <Footer />}
     </>
   );
 };

@@ -15,29 +15,7 @@ const AllPathways = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filter, setFilter] = useState('all');
   const [filteredPathways, setFilteredPathways] = useState([]);
-  const [subscribedPathwayIds, setSubscribedPathwayIds] = useState([]);
-  const url = "https://career-ai-mern.onrender.com";
-
-  // 🔁 Fetch subscribed pathway IDs
-  useEffect(() => {
-    const fetchSubscribedPathways = async () => {
-      if (!isSignedIn || !user?.primaryEmailAddress?.emailAddress) return;
-
-      try {
-        const res = await fetch(
-          `${url}/api/user-pathways?email=${user.primaryEmailAddress.emailAddress}`
-        );
-        const data = await res.json();
-        if (res.ok && data.pathwayIds) {
-          setSubscribedPathwayIds(data.pathwayIds);
-        }
-      } catch (error) {
-        console.error('Error fetching subscribed pathways:', error);
-      }
-    };
-
-    fetchSubscribedPathways();
-  }, [isSignedIn, user]);
+  const url = import.meta.env.VITE_BACKEND_URL;
 
   // 🧠 Filter logic
   useEffect(() => {
@@ -46,9 +24,7 @@ const AllPathways = () => {
       return;
     }
 
-    let results = pathways.filter(
-      (p) => !subscribedPathwayIds.includes(p.id) // 🔥 filter out subscribed
-    );
+    let results = [...pathways];
 
     if (filter !== 'all') {
       results = results.filter((p) => p.category === filter);
@@ -64,7 +40,7 @@ const AllPathways = () => {
     }
 
     setFilteredPathways(results);
-  }, [searchTerm, filter, subscribedPathwayIds, isSignedIn]);
+  }, [searchTerm, filter, isSignedIn]);
 
   const handleNavigate = (pathwayId) => {
     navigate(`/pathways/${pathwayId}`);
@@ -80,10 +56,10 @@ const AllPathways = () => {
   }
 
   return (
-    <section className="py-16 md:pt-50 bg-gray-950">
+    <section className="relative min-h-screen pt-24 pb-16 bg-gradient-to-br from-gray-950 to-gray-900 overflow-hidden">
       <BlurCircle top="-80px" left="-100px" />
-      <BlurCircle bottom="100px" right="880px" />
-      <div className="container mx-auto px-6">
+      <BlurCircle bottom="10%" right="-50px" />
+      <div className="container mx-auto px-6 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -120,7 +96,7 @@ const AllPathways = () => {
               </p>
               <button
                 onClick={() => openSignIn()}
-                className="inline-flex items-center px-5 py-2.5 bg-gradient-to-r from-primary to-primary-dark hover:from-primary-dark hover:to-primary-darker text-white rounded-lg font-medium transition-all duration-300 shadow-md hover:shadow-lg"
+                className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-primary to-indigo-600 hover:from-primary-dull hover:to-indigo-700 text-white rounded-xl font-medium transition-all duration-300 shadow-md hover:shadow-primary/30"
               >
                 Sign In
               </button>
@@ -141,7 +117,7 @@ const AllPathways = () => {
                 </div>
                 <input
                   type="text"
-                  className="w-full pl-10 pr-4 py-2 bg-gray-900 border border-gray-800 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                  className="w-full pl-10 pr-4 py-3 bg-gray-900/50 backdrop-blur-md border border-gray-700/50 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary text-white transition-all duration-300"
                   placeholder="Search pathways..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
@@ -152,7 +128,7 @@ const AllPathways = () => {
                   <Filter className="h-5 w-5 text-gray-400" />
                 </div>
                 <select
-                  className="w-full pl-10 pr-4 py-2 bg-gray-900 border border-gray-800 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary appearance-none"
+                  className="w-full pl-10 pr-4 py-3 bg-gray-900/50 backdrop-blur-md border border-gray-700/50 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary text-white appearance-none transition-all duration-300"
                   value={filter}
                   onChange={(e) => setFilter(e.target.value)}
                 >

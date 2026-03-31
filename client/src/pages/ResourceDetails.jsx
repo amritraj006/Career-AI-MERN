@@ -12,10 +12,9 @@ const ResourceDetails = () => {
   const { resourceId } = useParams();
   const navigate = useNavigate();
   const { isSignedIn, user } = useUser();
-  const [isAddedToCart, setIsAddedToCart] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [enrolledIds, setEnrolledIds] = useState([]);
-  const url = "https://career-ai-mern.onrender.com";
+  const url = import.meta.env.VITE_BACKEND_URL;
 
   const resource = useMemo(
     () => resources.find((r) => r.resourceId === resourceId),
@@ -42,27 +41,15 @@ const ResourceDetails = () => {
       if (isSignedIn && user?.primaryEmailAddress?.emailAddress) {
         setIsLoading(true);
         try {
-          // 1. Check if this course is in user's cart
-          const res = await fetch(`${url}/api/enrolled`, {
+          // Fetch all enrolled course IDs
+          const res = await fetch(`${url}/api/course/enrolled-ids`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ userEmail: user.primaryEmailAddress.emailAddress })
           });
 
-          const data = await res.json();
-          if (res.ok && Array.isArray(data.resourceIds)) {
-            setIsAddedToCart(data.resourceIds.includes(resourceId));
-          }
-
-          // 2. Fetch all enrolled course IDs
-          const res2 = await fetch(`${url}/api/course/enrolled-ids`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ userEmail: user.primaryEmailAddress.emailAddress })
-          });
-
-          const enrolledData = await res2.json();
-          if (res2.ok && Array.isArray(enrolledData.enrolledIds)) {
+          const enrolledData = await res.json();
+          if (res.ok && Array.isArray(enrolledData.enrolledIds)) {
             setEnrolledIds(enrolledData.enrolledIds);
           }
         } catch (err) {
@@ -76,40 +63,25 @@ const ResourceDetails = () => {
     checkEnrollment();
   }, [resource, navigate, isSignedIn, resourceId, user]);
 
-  const handleCartToggle = async () => {
-    if (!isSignedIn) return;
-    setIsLoading(true);
-
-    const email = user?.primaryEmailAddress?.emailAddress;
-
-    try {
-      const res = await fetch(`${url}/api/course-toggle`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userEmail: email,
-          resourceId,
-          addedToCart: !isAddedToCart
-        })
-      });
-
-      if (res.ok) {
-        if (!isAddedToCart) {
-          toast.success('Course added to your cart!');
-        } else {
-          toast.info('Course removed from your cart.');
-        }
-        setIsAddedToCart(!isAddedToCart);
-      } else {
-        toast.error('Failed to update cart. Please try again.');
-      }
-    } catch (err) {
-      console.error('Toggle cart error:', err);
-      toast.error('Server error. Please try again later.');
-    } finally {
-      setIsLoading(false);
+  const handleBuyNow = () => {
+    if (!isSignedIn) {
+      toast.error('Please sign in to buy this course');
+      return;
     }
+    
+    // Parse price (e.g. "$49" -> 49)
+    const numericPrice = parseFloat(resource.price.replace(/[^0-9.]/g, ''));
+    
+    navigate('/payment', { 
+      state: { 
+        resourceId: resource.resourceId,
+        courseName: resource.name,
+        totalAmount: numericPrice || 0
+      } 
+    });
   };
+
+  const isEnrolled = enrolledIds.includes(resourceId);
 
   if (!resource) return null;
 
@@ -205,27 +177,26 @@ const ResourceDetails = () => {
 
                   {isSignedIn ? (
                     <motion.button
-                      onClick={handleCartToggle}
+                      onClick={isEnrolled ? () => navigate('/dashboard') : handleBuyNow}
                       whileHover={{ scale: 1.03 }}
                       whileTap={{ scale: 0.97 }}
                       disabled={isLoading}
-                      className={`w-full py-3 px-4 rounded-lg font-medium flex items-center justify-center ${
-                        isAddedToCart
-                          ? 'bg-gray-700 text-gray-300 hover:bg-gray-700/90'
+                      className={`w-full py-3 px-4 rounded-lg font-medium flex items-center justify-center transition-colors ${
+                        isEnrolled
+                          ? 'bg-gray-700 text-gray-300 hover:bg-gray-600'
                           : 'bg-gradient-to-r from-primary to-indigo-600 hover:from-primary-dull hover:to-indigo-700 text-white'
                       }`}
                     >
                       {isLoading ? (
                         <Loader2 className="animate-spin h-5 w-5 mr-2" />
-                      ) : isAddedToCart ? (
+                      ) : isEnrolled ? (
                         <>
                           <Check className="h-5 w-5 mr-2" />
-                          In Your Cart
+                          Already Enrolled
                         </>
                       ) : (
                         <>
-                          <ShoppingCart className="h-5 w-5 mr-2" />
-                          Add to Cart
+                          Buy Now
                         </>
                       )}
                     </motion.button>
@@ -236,8 +207,7 @@ const ResourceDetails = () => {
                         whileTap={{ scale: 0.97 }}
                         className="w-full py-3 px-4 rounded-lg font-medium bg-gradient-to-r from-primary to-indigo-600 hover:from-primary-dull hover:to-indigo-700 text-white flex items-center justify-center"
                       >
-                        <ShoppingCart className="h-5 w-5 mr-2" />
-                        Login to Enroll
+                        Buy Now
                       </motion.button>
                     </SignInButton>
                   )}

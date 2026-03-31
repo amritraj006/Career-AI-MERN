@@ -9,6 +9,8 @@ const Payment = () => {
   const { user } = useUser();
   const { state } = useLocation();
   const totalAmount = state?.totalAmount || 0;
+  const resourceId = state?.resourceId;
+  const courseName = state?.courseName;
 
   const [cardNumber, setCardNumber] = useState('');
   const [cardName, setCardName] = useState('');
@@ -18,7 +20,7 @@ const Payment = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [activeCard, setActiveCard] = useState('visa');
   const [showConfirm, setShowConfirm] = useState(false);
-  const url = "https://career-ai-mern.onrender.com";
+  const url = import.meta.env.VITE_BACKEND_URL;
 
   const navigate = useNavigate();
 
@@ -77,7 +79,9 @@ const Payment = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           userEmail: user.primaryEmailAddress.emailAddress,
-          totalAmount: totalAmount
+          totalAmount: totalAmount,
+          resourceId: resourceId,
+          courseName: courseName
         })
       });
 
@@ -88,7 +92,7 @@ const Payment = () => {
         style: { background: '#16a34a', color: 'white' },
         duration: 1000,
       });
-      setTimeout(() => navigate('/cart'), 1000);
+      setTimeout(() => navigate('/my-dashboard'), 1000);
     } catch (err) {
       toast.error('Payment failed: ' + err.message);
     } finally {

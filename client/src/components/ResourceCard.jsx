@@ -23,10 +23,10 @@ export const ResourceCard = ({
         damping: 15,
         duration: 0.3
       }}
-      className="relative group h-full bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl overflow-hidden border border-gray-700 shadow-lg hover:border-rose-500/30 transition-all duration-300"
+      className="relative group h-full bg-gray-900/40 backdrop-blur-md rounded-2xl overflow-hidden border border-gray-700/50 shadow-lg hover:border-primary/50 hover:shadow-primary/20 transition-all duration-300 flex flex-col"
     >
       {/* Glow effect */}
-      <div className="absolute inset-0 bg-gradient-to-br from-rose-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
       
       {/* Image with parallax effect */}
       <motion.div 
@@ -44,24 +44,24 @@ export const ResourceCard = ({
       </motion.div>
 
       {/* Card Content */}
-      <div className="p-5 relative z-10">
+      <div className="p-5 flex flex-col flex-grow relative z-10">
         {/* Price Badge with floating animation */}
         <motion.div 
-          className="flex justify-between items-center mb-3"
+          className="flex justify-between items-center mb-4"
           whileHover={{ x: 2 }}
           transition={{ type: "spring", stiffness: 300 }}
         >
-          <span className="inline-flex items-center px-3 py-1 rounded-full bg-rose-500/10 text-rose-400 text-xs font-medium tracking-wider">
+          <span className="inline-flex items-center px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-semibold tracking-wider">
             COURSE
           </span>
-          <span className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-rose-500">
+          <span className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary to-indigo-400">
             {price}
           </span>
         </motion.div>
 
         {/* Title with text gradient on hover */}
         <motion.h3 
-          className="text-xl font-bold text-white mb-2 line-clamp-2 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r from-amber-300 to-rose-400 transition-all duration-300"
+          className="text-xl font-bold text-white mb-2 line-clamp-2 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-primary group-hover:to-indigo-400 transition-all duration-300"
           whileHover={{ x: 2 }}
         >
           {name}
@@ -77,18 +77,20 @@ export const ResourceCard = ({
           {description}
         </motion.p>
 
+        {/* Automated push down to pin CTA to bottom */}
+        <div className="flex-grow"></div>
+
         {/* Animated CTA Button */}
         <motion.button
           onClick={() => onNavigate(resourceId)}
-          className="w-full py-2.5 px-4 bg-gradient-to-r from-rose-600 to-rose-500 hover:from-rose-700 hover:to-rose-600 text-white rounded-lg font-medium transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center overflow-hidden"
+          className="w-full mt-4 py-2.5 px-4 bg-gradient-to-r from-primary to-indigo-600 hover:from-primary-dull hover:to-indigo-700 text-white rounded-xl font-medium transition-all duration-300 shadow-lg hover:shadow-primary/30 flex items-center justify-center overflow-hidden"
           whileHover={{ 
-            scale: 1.02,
-            boxShadow: "0 10px 15px -3px rgba(244, 63, 94, 0.3), 0 4px 6px -2px rgba(244, 63, 94, 0.2)"
+            scale: 1.02
           }}
         >
           <span className="relative z-10">View Details</span>
           <motion.span 
-            className="absolute inset-0 bg-gradient-to-r from-rose-700 to-rose-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+            className="absolute inset-0 bg-gradient-to-r from-primary-dull to-indigo-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
             initial={{ opacity: 0 }}
           />
           <motion.svg 

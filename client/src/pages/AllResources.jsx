@@ -27,7 +27,7 @@ const AllResources = () => {
   const [filteredResources, setFilteredResources] = useState([]);
   const [enrolledIds, setEnrolledIds] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const url = "https://career-ai-mern.onrender.com";
+  const url = import.meta.env.VITE_BACKEND_URL;
 
   useEffect(() => {
     const fetchEnrolled = async () => {
@@ -81,7 +81,7 @@ const AllResources = () => {
   if (!isLoaded) {
     return (
       <section className="min-h-screen pt-16 md:pt-50 bg-gradient-to-br from-gray-950 to-gray-900 py-12 px-4 sm:px-6 lg:px-8 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-rose-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
       </section>
     );
   }
@@ -99,7 +99,7 @@ const AllResources = () => {
           transition={{ duration: 0.5 }}
           className="text-center mb-16"
         >
-          <h1 className="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-rose-500 mb-4">
+          <h1 className="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary to-indigo-500 mb-4">
             Discover Learning Resources
           </h1>
           <p className="text-lg text-gray-400 max-w-2xl mx-auto">
@@ -114,8 +114,8 @@ const AllResources = () => {
             className="text-center py-16 bg-gray-900/50 rounded-xl border border-gray-800"
           >
             <div className="mx-auto max-w-md">
-              <div className="w-20 h-20 bg-gradient-to-r from-rose-600/20 to-rose-500/10 rounded-full flex items-center justify-center mx-auto mb-6 border border-gray-800">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8 text-rose-500">
+              <div className="w-20 h-20 bg-gradient-to-r from-primary/20 to-indigo-500/10 rounded-full flex items-center justify-center mx-auto mb-6 border border-gray-800">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8 text-primary">
                   <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
                   <circle cx="12" cy="7" r="4"></circle>
                 </svg>
@@ -128,7 +128,7 @@ const AllResources = () => {
               </p>
               <button
                 onClick={() => openSignIn()}
-                className="inline-flex items-center px-5 py-2.5 bg-gradient-to-r from-rose-600 to-rose-500 hover:from-rose-700 hover:to-rose-600 text-white rounded-lg font-medium transition-all duration-300 shadow-md hover:shadow-lg"
+                className="inline-flex items-center px-5 py-2.5 bg-gradient-to-r from-primary to-indigo-600 hover:from-primary-dull hover:to-indigo-700 text-white rounded-lg font-medium transition-all duration-300 shadow-md hover:shadow-primary/30"
               >
                 Sign In
               </button>
@@ -149,7 +149,7 @@ const AllResources = () => {
                   </div>
                   <input
                     type="text"
-                    className="w-full pl-10 pr-10 py-3 bg-gray-900/50 backdrop-blur-sm border border-gray-700 rounded-xl focus:ring-2 focus:ring-rose-500 focus:border-rose-500 text-white placeholder-gray-500 transition-all duration-200"
+                    className="w-full pl-10 pr-10 py-3 bg-gray-900/50 backdrop-blur-sm border border-gray-700 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary text-white placeholder-gray-500 transition-all duration-200"
                     placeholder="Search courses..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
@@ -169,7 +169,7 @@ const AllResources = () => {
                     <Filter className="h-5 w-5 text-gray-400" />
                   </div>
                   <select
-                    className="w-full pl-10 pr-8 py-3 bg-gray-900/50 backdrop-blur-sm border border-gray-700 rounded-xl focus:ring-2 focus:ring-rose-500 focus:border-rose-500 text-white appearance-none transition-all duration-200"
+                    className="w-full pl-10 pr-8 py-3 bg-gray-900/50 backdrop-blur-sm border border-gray-700 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary text-white appearance-none transition-all duration-200"
                     value={filter}
                     onChange={(e) => setFilter(e.target.value)}
                   >
@@ -217,7 +217,7 @@ const AllResources = () => {
                   </div>
                   <button
                     onClick={clearFilters}
-                    className="text-sm text-rose-400 hover:text-rose-300 flex items-center"
+                    className="text-sm text-primary hover:text-primary-dull flex items-center"
                   >
                     Clear all
                     <X className="ml-1 w-4 h-4" />
@@ -238,7 +238,7 @@ const AllResources = () => {
 
               {isLoading ? (
                 <div className="flex justify-center items-center py-20">
-                  <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-rose-500"></div>
+                  <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
                 </div>
               ) : filteredResources.length > 0 ? (
                 <motion.div
@@ -273,8 +273,8 @@ const AllResources = () => {
                   className="text-center py-16 bg-gray-900/50 rounded-xl border border-gray-800"
                 >
                   <div className="mx-auto max-w-md">
-                    <div className="w-20 h-20 bg-gradient-to-r from-rose-600/20 to-rose-500/10 rounded-full flex items-center justify-center mx-auto mb-6 border border-gray-800">
-                      <Search className="w-8 h-8 text-rose-500" />
+                    <div className="w-20 h-20 bg-gradient-to-r from-primary/20 to-indigo-500/10 rounded-full flex items-center justify-center mx-auto mb-6 border border-gray-800">
+                      <Search className="w-8 h-8 text-primary" />
                     </div>
                     <h3 className="text-xl font-semibold text-white mb-2">
                       No resources found
@@ -286,7 +286,7 @@ const AllResources = () => {
                     </p>
                     <button
                       onClick={clearFilters}
-                      className="inline-flex items-center px-5 py-2.5 bg-gradient-to-r from-rose-600 to-rose-500 hover:from-rose-700 hover:to-rose-600 text-white rounded-lg font-medium transition-all duration-300 shadow-md hover:shadow-lg"
+                      className="inline-flex items-center px-5 py-2.5 bg-gradient-to-r from-primary to-indigo-600 hover:from-primary-dull hover:to-indigo-700 text-white rounded-lg font-medium transition-all duration-300 shadow-md hover:shadow-primary/30"
                     >
                       Clear filters
                     </button>

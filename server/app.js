@@ -17,7 +17,7 @@ connectDB();
 
 // Middleware
 app.use(cors({
-  origin: "https://career-ai-web.onrender.com",
+  origin: "*",
   credentials: true
 }));
 app.use(bodyParser.json());

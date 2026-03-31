@@ -4,6 +4,7 @@ import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CareerPathwayCard } from './CareerPathwayCard';
 import { carouselPathways } from '../assets/pathwaysData';
+import BlurCircle from './BlurCircle';
 
 const CareerPathways = () => {
   const navigate = useNavigate();
@@ -26,8 +27,10 @@ const CareerPathways = () => {
   };
 
   return (
-    <section className="py-16 md:py-24 bg-gray-950">
-      <div className="container mx-auto px-6">
+    <section className="relative py-16 md:py-24 bg-gray-950 overflow-hidden">
+      <BlurCircle top="-100px" left="-150px" />
+      <BlurCircle bottom="-100px" right="-150px" />
+      <div className="container mx-auto px-6 relative z-10">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -50,14 +53,14 @@ const CareerPathways = () => {
           <div className="flex justify-between items-center mb-6">
             <button 
               onClick={() => scrollToIndex(Math.max(0, currentIndex - 1))}
-              className="p-2 rounded-full bg-gray-800 hover:bg-gray-700 transition-colors"
+              className="p-3 rounded-full bg-gray-800/50 hover:bg-primary border border-gray-700/50 hover:border-primary/50 text-gray-400 hover:text-white backdrop-blur-sm transition-all shadow-lg hover:shadow-primary/20"
               aria-label="Previous career"
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
             <button 
               onClick={() => scrollToIndex(Math.min(carouselPathways.length - 1, currentIndex + 1))}
-              className="p-2 rounded-full bg-gray-800 hover:bg-gray-700 transition-colors"
+              className="p-3 rounded-full bg-gray-800/50 hover:bg-primary border border-gray-700/50 hover:border-primary/50 text-gray-400 hover:text-white backdrop-blur-sm transition-all shadow-lg hover:shadow-primary/20"
               aria-label="Next career"
             >
               <ChevronRight className="w-5 h-5" />
@@ -85,14 +88,16 @@ const CareerPathways = () => {
 
           {/* Carousel Indicators */}
           
-                  <motion.div
+        <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
-          viewport={{ once: false }}
+          viewport={{ once: true }}
           className="text-center mt-16"
         >
-          <button onClick={()=> {navigate('/pathways');scrollTo(0,0)}}
-          className="px-8 py-3.5 bg-primary hover:bg-primary-dull rounded-full font-medium shadow-lg shadow-primary/20 transition-all">
+          <button 
+            onClick={()=> {navigate('/pathways');scrollTo(0,0)}}
+            className="px-8 py-3.5 bg-gradient-to-r from-primary to-indigo-600 hover:from-primary-dull hover:to-indigo-700 rounded-full font-medium text-white shadow-lg shadow-primary/30 transition-all duration-300"
+          >
             View All Pathways
           </button>
         </motion.div>

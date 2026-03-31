@@ -12,11 +12,9 @@ const PathwayDetails = () => {
   const { pathwayId } = useParams();
   const navigate = useNavigate();
   const { isSignedIn, user } = useUser();
-  const [subscriptionStatus, setSubscriptionStatus] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
 
   const pathway = useMemo(() => pathways.find(p => p.id === pathwayId), [pathwayId]);
-  const url = "https://career-ai-mern.onrender.com";
+  const url = import.meta.env.VITE_BACKEND_URL;
 
   useEffect(() => {
     if (!pathway) {
@@ -26,70 +24,11 @@ const PathwayDetails = () => {
     }
   }, [pathway, navigate]);
 
-  useEffect(() => {
-    const checkSubscription = async () => {
-      if (isSignedIn && user?.primaryEmailAddress?.emailAddress && pathwayId) {
-        try {
-          const res = await fetch(`${url}/api/user-pathways?email=${user.primaryEmailAddress.emailAddress}`);
-          const data = await res.json();
-          const isSubscribed = data.pathwayIds?.includes(pathwayId);
-          setSubscriptionStatus(isSubscribed);
-          localStorage.setItem(`subscribed-${user.id}-${pathwayId}`, isSubscribed.toString());
-        } catch (err) {
-          console.error("Failed to check subscription:", err);
-        }
-      }
-    };
-    checkSubscription();
-  }, [isSignedIn, user, pathwayId]);
-
-  const handleSubscription = async () => {
-    if (!isSignedIn) {
-      return toast.error('Please sign in to subscribe to pathway updates', {
-        action: {
-          label: 'Sign In',
-          onClick: () => navigate('/sign-in'),
-        },
-      });
-    }
-
-    setIsLoading(true);
-    const newStatus = !subscriptionStatus;
-
-    try {
-      const response = await fetch(`${url}/api/pathway-subscribe`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userEmail: user.primaryEmailAddress.emailAddress,
-          pathwayId,
-          subscribed: newStatus,
-        }),
-      });
-
-      if (!response.ok) throw new Error('Subscription update failed');
-
-      setSubscriptionStatus(newStatus);
-      localStorage.setItem(`subscribed-${user.id}-${pathwayId}`, newStatus.toString());
-
-      toast.success(
-        newStatus
-          ? 'Subscribed to pathway updates!'
-          : 'Unsubscribed from pathway updates',
-        { icon: <CheckCircle className="text-green-500" /> }
-      );
-    } catch (error) {
-      console.error('Subscription error:', error);
-      toast.error('Failed to update subscription. Please try again.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   if (!pathway) return <LoadingSpinner fullScreen />;
 
   return (
-    <div className="min-h-screen pt-20 md:pt-50 bg-gray-950 py-12 px-4 sm:px-6 lg:px-8 overflow-x-hidden">
+    <div className="min-h-screen pt-20 md:pt-50 bg-gradient-to-br from-gray-950 to-gray-900 py-12 px-4 sm:px-6 lg:px-8 overflow-x-hidden">
       <BlurCircle top='-80px' right='100px' />
       <BlurCircle bottom='-80px' left='200px' />
       <BlurCircle top='-10px' left='100px' />
@@ -98,11 +37,6 @@ const PathwayDetails = () => {
         <NavigationBackButton onClick={() => {navigate('/pathways'); scrollTo(0, 0)}} />
         <PathwayHeader
           pathway={pathway}
-          isSignedIn={isSignedIn}
-          subscriptionStatus={subscriptionStatus}
-          isLoading={isLoading}
-          onSubscribe={handleSubscription}
-          pathwayId={pathwayId}
         />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12">
           <SkillsSection skills={pathway.skills} />
@@ -143,7 +77,7 @@ const NavigationBackButton = ({ onClick }) => (
   </button>
 );
 
-const PathwayHeader = ({ pathway, isSignedIn, subscriptionStatus, isLoading, onSubscribe, pathwayId }) => (
+const PathwayHeader = ({ pathway }) => (
   <motion.section
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
@@ -157,23 +91,17 @@ const PathwayHeader = ({ pathway, isSignedIn, subscriptionStatus, isLoading, onS
       <h1 className="text-3xl font-bold mb-2 text-white">{pathway.title}</h1>
       <PathwayStats growth={pathway.growth} salary={pathway.salary} />
       <p className="text-gray-300 mb-6">{pathway.description}</p>
-      <SubscriptionButton
-        isSignedIn={isSignedIn}
-        status={subscriptionStatus}
-        loading={isLoading}
-        onClick={onSubscribe}
-        pathwayId={pathwayId}
-      />
     </div>
   </motion.section>
 );
 
 const PathwayImage = ({ image, title }) => (
-  <div className="bg-gray-900 rounded-xl overflow-hidden aspect-square">
+  <div className="bg-gray-900 rounded-2xl overflow-hidden aspect-square border border-gray-700/50 shadow-lg shadow-primary/20 relative group">
+    <div className="absolute inset-0 bg-gradient-to-t from-gray-950/80 via-transparent to-transparent z-10 pointer-events-none" />
     <img
       src={image}
       alt={`${title} career pathway`}
-      className="w-full h-full object-cover"
+      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
       loading="lazy"
       onError={(e) => {
         e.target.src = '/pathway-fallback.jpg';
@@ -184,47 +112,18 @@ const PathwayImage = ({ image, title }) => (
 );
 
 const PathwayStats = ({ growth, salary }) => (
-  <div className="flex items-center gap-4 mb-4">
-    <div className="flex items-center gap-2">
-      <div className="w-3 h-3 rounded-full bg-green-500"></div>
-      <span className="text-sm text-gray-300">{growth}% job growth</span>
+  <div className="flex flex-wrap items-center gap-4 mb-6">
+    <div className="flex items-center gap-2 bg-gray-800/50 px-4 py-2 rounded-xl border border-gray-700/50 shadow-inner">
+      <div className="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.6)]"></div>
+      <span className="text-sm text-gray-200 font-medium">{growth}% job growth</span>
     </div>
-    <div className="flex items-center gap-2">
-      <span className="text-primary font-medium">{salary}</span>
-      <span className="text-gray-500 text-sm">average salary</span>
+    <div className="flex items-center gap-2 bg-gray-800/50 px-4 py-2 rounded-xl border border-gray-700/50 shadow-inner">
+      <span className="text-primary font-bold">{salary}</span>
+      <span className="text-gray-400 text-xs uppercase tracking-wider mt-0.5">avg. salary</span>
     </div>
   </div>
 );
 
-const SubscriptionButton = ({ isSignedIn, status, loading, onClick, pathwayId }) => {
-  if (!isSignedIn) {
-    return (
-      <SignInButton mode="modal" afterSignInUrl={`/pathways/${pathwayId}`}>
-        <button
-          className="px-6 py-3 rounded-lg font-medium transition-colors bg-primary hover:bg-primary-dull text-white"
-          aria-label="Sign in to subscribe"
-        >
-          Sign In to Subscribe
-        </button>
-      </SignInButton>
-    );
-  }
-
-  return (
-    <button
-      onClick={onClick}
-      disabled={loading}
-      className={`px-6 py-3 rounded-lg font-medium transition-colors ${
-        status
-          ? 'bg-green-900 text-green-400 hover:bg-green-800'
-          : 'bg-primary hover:bg-primary-dull text-white'
-      } disabled:opacity-70`}
-      aria-label={status ? 'Unsubscribe' : 'Subscribe for updates'}
-    >
-      {loading ? 'Processing...' : status ? 'Subscribed' : 'Subscribe for Updates'}
-    </button>
-  );
-};
 
 const SkillsSection = ({ skills }) => (
   <DetailSection title="Key Skills Required" delay={0.2}>
@@ -297,12 +196,15 @@ const CertificationsSection = ({ certifications }) => (
 
 const DetailSection = ({ title, children, delay = 0, listStyle = false }) => (
   <motion.div
-    initial={{ opacity: 0 }}
-    animate={{ opacity: 1 }}
-    transition={{ delay }}
-    className="bg-gray-900/50 border border-gray-800 rounded-xl p-6"
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ delay, type: "spring", stiffness: 100 }}
+    className="bg-gray-900/40 backdrop-blur-md border border-gray-700/50 rounded-2xl p-6 hover:border-primary/30 transition-all duration-300 hover:shadow-lg hover:shadow-primary/5"
   >
-    <h2 className="text-xl font-bold mb-4 text-white">{title}</h2>
+    <h2 className="text-xl font-bold mb-5 text-white flex items-center gap-2">
+      <div className="w-1.5 h-6 bg-primary rounded-full"></div>
+      {title}
+    </h2>
     {children}
   </motion.div>
 );

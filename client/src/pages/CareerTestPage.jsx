@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import preDefinedQuestions from '../assets/carrier-test/preDefinedQuestions';
 import { useUser } from '@clerk/clerk-react';
-import { GoogleGenerativeAI } from "@google/generative-ai"; // ✅ Correct import
 
 export default function CareerTestPage() {
   const [step, setStep] = useState('select');
@@ -14,12 +13,7 @@ export default function CareerTestPage() {
   const [error, setError] = useState(null);
   const [timeLeft, setTimeLeft] = useState(50);
   const timerRef = useRef(null);
-
-  const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
   const { user } = useUser();
-
-  // ✅ Initialize Gemini SDK
-  const genAI = apiKey ? new GoogleGenerativeAI(apiKey) : null;
 
   const domains = [
     { id: 'webdev', name: 'Web Development', icon: '🌐' },
@@ -32,46 +26,78 @@ export default function CareerTestPage() {
     { id: 'devops', name: 'DevOps', icon: '🔧' }
   ];
 
-  // ------------------ Helpers ------------------ //
-  const extractJsonFromMarkdown = (markdownText) => {
-    const jsonMatch = markdownText.match(/```(?:json)?\n([\s\S]*?)\n```/);
-    if (jsonMatch && jsonMatch[1]) return jsonMatch[1];
-    return markdownText;
+  const getLevelFromPercentage = (percentage) => {
+    if (percentage >= 85) return 'expert';
+    if (percentage >= 70) return 'advanced';
+    if (percentage >= 50) return 'intermediate';
+    return 'beginner';
   };
 
-  const parseGeminiResponse = (response) => {
-    try {
-      const cleaned = extractJsonFromMarkdown(response);
-      return JSON.parse(cleaned);
-    } catch {
-      try {
-        return JSON.parse(response.trim());
-      } catch (err) {
-        console.error('Failed to parse response:', response);
-        throw new Error('Invalid response format from Gemini API');
-      }
+  const levelDescriptions = {
+    beginner: 'You have early interest and a starting foundation. Focus on core concepts, consistency, and hands-on practice.',
+    intermediate: 'You have usable fundamentals and are ready to deepen your skills through structured projects and real-world problem solving.',
+    advanced: 'You show strong applied capability and should now emphasize system design, optimization, and portfolio-quality execution.',
+    expert: 'You demonstrate high readiness for complex work. Continue refining leadership, architecture, and domain specialization.'
+  };
+
+  const domainInsights = {
+    webdev: {
+      strengths: ['UI implementation', 'responsive thinking', 'frontend problem solving'],
+      improvement: ['performance optimization', 'security best practices', 'system design depth'],
+      nextSteps: ['Build and deploy a full-stack project', 'Practice React performance and API integration', 'Learn testing and web security fundamentals']
+    },
+    datascience: {
+      strengths: ['data analysis mindset', 'pattern recognition', 'statistical thinking'],
+      improvement: ['model evaluation', 'feature engineering', 'production-ready workflows'],
+      nextSteps: ['Complete an end-to-end data project', 'Strengthen SQL, pandas, and visualization skills', 'Practice model validation and storytelling with data']
+    },
+    cybersecurity: {
+      strengths: ['security awareness', 'risk thinking', 'defensive mindset'],
+      improvement: ['network security depth', 'incident response practice', 'tool familiarity'],
+      nextSteps: ['Set up a home lab for security practice', 'Study common vulnerabilities and mitigations', 'Work through CTFs or security labs consistently']
+    },
+    cloud: {
+      strengths: ['infrastructure thinking', 'service selection', 'deployment awareness'],
+      improvement: ['cost optimization', 'resilience design', 'automation depth'],
+      nextSteps: ['Deploy a project on AWS, Azure, or GCP', 'Learn IAM, networking, and monitoring basics', 'Automate infrastructure with Terraform or similar tools']
+    },
+    blockchain: {
+      strengths: ['distributed systems curiosity', 'protocol awareness', 'problem-solving'],
+      improvement: ['smart contract security', 'ecosystem tooling', 'practical architecture'],
+      nextSteps: ['Build a simple dApp or smart contract project', 'Study wallet, gas, and token standards carefully', 'Practice auditing basic contract logic']
+    },
+    ai: {
+      strengths: ['model intuition', 'applied experimentation', 'learning agility'],
+      improvement: ['evaluation rigor', 'data quality discipline', 'deployment understanding'],
+      nextSteps: ['Ship a small AI-powered application', 'Practice prompt design and model evaluation', 'Learn vector search, APIs, and responsible AI basics']
+    },
+    mobile: {
+      strengths: ['app flow thinking', 'user experience awareness', 'platform fundamentals'],
+      improvement: ['performance tuning', 'state management', 'release readiness'],
+      nextSteps: ['Build and publish a mobile portfolio app', 'Practice API integration and offline handling', 'Learn testing, accessibility, and app performance tuning']
+    },
+    devops: {
+      strengths: ['automation mindset', 'delivery awareness', 'systems thinking'],
+      improvement: ['observability depth', 'container orchestration', 'security automation'],
+      nextSteps: ['Create a CI/CD pipeline for a sample app', 'Practice Docker, Kubernetes, and monitoring tools', 'Learn infrastructure as code and deployment rollback strategies']
     }
   };
 
-  // ✅ Gemini API call using SDK
-  const callGeminiAI = async (prompt, maxTokens = 1000) => {
-    if (!genAI) throw new Error("Gemini API key missing");
+  const buildLocalResult = (domainId, percentage) => {
+    const level = getLevelFromPercentage(percentage);
+    const insights = domainInsights[domainId] || {
+      strengths: ['problem solving', 'technical curiosity', 'learning consistency'],
+      improvement: ['practical experience', 'tool familiarity', 'project depth'],
+      nextSteps: ['Build a project in this domain', 'Follow a structured learning path', 'Practice regularly with real-world scenarios']
+    };
 
-    try {
-      const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
-      const response = await model.generateContent({
-        contents: [{ role: "user", parts: [{ text: prompt }] }],
-        generationConfig: {
-          maxOutputTokens: maxTokens,
-          temperature: 0.7,
-        },
-      });
-
-      return response.response.text();
-    } catch (err) {
-      console.error("Gemini API Error:", err);
-      throw new Error(err.message || "Failed to fetch from Gemini API");
-    }
+    return {
+      level,
+      recommendation: `${levelDescriptions[level]} In ${getDomainName(domainId)}, your next gains will come from focused practice and progressively harder projects.`,
+      strengths: insights.strengths,
+      areas_for_improvement: insights.improvement,
+      next_steps: insights.nextSteps
+    };
   };
 
   // ------------------ State Persistence ------------------ //
@@ -125,53 +151,13 @@ export default function CareerTestPage() {
     domains.find(d => d.id === domainId)?.name || domainId;
 
   const generateQuestions = async (domainId) => {
-  // ✅ Use predefined questions if available
-  if (preDefinedQuestions[domainId]) {
-    const shuffled = [...preDefinedQuestions[domainId]].sort(() => 0.5 - Math.random());
-    const selectedQuestions = shuffled.slice(0, 10);
-    return { questions: selectedQuestions };
-  }
-
-  // ✅ Otherwise generate using Gemini
-  const domainName = getDomainName(domainId);
-  const prompt = `
-Generate 10 career assessment questions for ${domainName} with multiple choice answers.
-Each question should test different aspects like technical knowledge, experience level, problem-solving, and career goals.
-Return the response in this exact JSON format without any markdown formatting or additional text:
-
-{
-  "questions": [
-    {
-      "question": "Question text here",
-      "options": [
-        { "text": "Option 1", "score": 1 },
-        { "text": "Option 2", "score": 2 },
-        { "text": "Option 3", "score": 3 },
-        { "text": "Option 4", "score": 4 }
-      ]
+    if (!preDefinedQuestions[domainId]) {
+      throw new Error(`No assessment questions available for ${getDomainName(domainId)} yet.`);
     }
-  ]
-}
 
-Make sure scores range from 1 (beginner/low) to 4 (expert/high).
-Questions should cover:
-- Technical knowledge and skills
-- Experience with tools and technologies
-- Problem-solving scenarios
-- Career goals and interests
-- Industry awareness
-
-Make questions practical and relevant to current ${domainName} practices.
-  `;
-
-  try {
-    const response = await callGeminiAI(prompt, 1500);
-    return parseGeminiResponse(response);
-  } catch (err) {
-    console.error("Error generating questions:", err);
-    return { questions: [] };
-  }
-};
+    const shuffled = [...preDefinedQuestions[domainId]].sort(() => 0.5 - Math.random());
+    return { questions: shuffled.slice(0, 10) };
+  };
 
 
   const fetchQuestions = async (domainId) => {
@@ -222,24 +208,7 @@ Make questions practical and relevant to current ${domainName} practices.
     const percentage = Math.round((totalScore / maxPossibleScore) * 100);
 
     try {
-      const domainName = getDomainName(domain);
-      const prompt = `Based on ${domainName} assessment:
-- Score: ${totalScore}/${maxPossibleScore}
-- Percentage: ${percentage}%
-- Questions: ${questions.length}
-
-Return JSON only:
-{
-  "level": "beginner|intermediate|advanced|expert",
-  "recommendation": "2-3 sentences recommendation",
-  "strengths": ["strength1", "strength2"],
-  "areas_for_improvement": ["area1", "area2"],
-  "next_steps": ["step1", "step2", "step3"]
-}`;
-
-      const response = await callGeminiAI(prompt, 800);
-      const data = parseGeminiResponse(response);
-
+      const data = buildLocalResult(domain, percentage);
       setResult({ ...data, percentage, totalScore, maxPossibleScore });
       setStep('result');
     } catch (err) {
@@ -299,7 +268,7 @@ Return JSON only:
                 >
                   <div className="text-4xl mb-3">{d.icon}</div>
                   <span className="text-lg font-medium text-center">{d.name}</span>
-                  <span className="text-sm text-gray-400 mt-1">AI-generated assessment</span>
+                  <span className="text-sm text-gray-400 mt-1">10-question skill assessment</span>
                 </button>
               ))}
             </div>
@@ -436,18 +405,10 @@ Return JSON only:
           </h1>
           <p className="text-gray-300 text-lg">
             {user?.firstName
-              ? `${user.firstName}, discover your career readiness with Gemini AI insights`
-              : "Discover your career readiness with Gemini AI insights"}
+              ? `${user.firstName}, discover your career readiness with a guided assessment`
+              : "Discover your career readiness with a guided assessment"}
           </p>
         </div>
-
-        {!apiKey && (
-          <div className="mb-6 p-4 bg-yellow-900/50 border border-yellow-500 rounded-lg">
-            <p className="text-yellow-200">
-              Please add your Gemini API key to <code>.env</code> as <b>VITE_GEMINI_API_KEY</b>.
-            </p>
-          </div>
-        )}
 
         {error && (
           <div className="mb-6 p-4 bg-red-900/50 border border-red-500 rounded-lg">

@@ -1,79 +1,14 @@
 const express = require("express");
 const router = express.Router();
-const Roadmap = require("../../models/Roadmap"); // mongoose model
-require("dotenv").config();
+const roadmapController = require("../../controllers/roadmapController");
 
 // POST: Generate roadmap and save
-router.post("/", async (req, res) => {
-  const { prompt, email } = req.body;
-  const apiKey = process.env.GEMINI_API_KEY;
-
-  try {
-    // Call Gemini API
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: `Generate a roadmap to: ${prompt}` }] }],
-        }),
-      }
-    );
-
-    const data = await response.json();
-    const roadmap =
-      data.candidates?.[0]?.content?.parts?.[0]?.text || "No roadmap generated.";
-
-    // Save to MongoDB
-    const newRoadmap = await Roadmap.create({
-      user_email: email,
-      prompt,
-      roadmap
-    });
-
-    res.json({ success: true, roadmap: newRoadmap.roadmap });
-  } catch (error) {
-    console.error("❌ Gemini API Error:", error);
-    res.json({ success: false, message: "Gemini API error" });
-  }
-});
+router.post("/", roadmapController.generateRoadmap);
 
 // GET: Roadmap history
-router.get("/history", async (req, res) => {
-  try {
-    const { email } = req.query;
-    const history = await Roadmap.find({ user_email: email }).sort({ created_at: -1 });
-    res.json({ success: true, history });
-  } catch (err) {
-    console.error("❌ DB Fetch Error:", err);
-    res.json({ success: false });
-  }
-});
+router.get("/history", roadmapController.getHistory);
 
 // DELETE: Remove roadmap by id
-
-router.delete("/history/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-
-    // Validate ID before using it in query
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ success: false, message: "Invalid ID format" });
-    }
-
-    const deleted = await Roadmap.findByIdAndDelete(id);
-
-    if (!deleted) {
-      return res.status(404).json({ success: false, message: "Roadmap not found" });
-    }
-
-    res.json({ success: true, message: "Deleted successfully" });
-  } catch (err) {
-    console.error("❌ DB Delete Error:", err);
-    res.status(500).json({ success: false, message: "Server error" });
-  }
-});
-
+router.delete("/history/:id", roadmapController.deleteRoadmap);
 
 module.exports = router;

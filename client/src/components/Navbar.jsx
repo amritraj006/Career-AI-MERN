@@ -3,8 +3,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import {
   BoxIcon,
   MenuIcon,
-  SearchIcon,
-  ShoppingCart,
   TicketPlus,
   XIcon,
 } from 'lucide-react';
@@ -16,35 +14,7 @@ const Navbar = () => {
   const { user } = useUser();
   const { openSignIn } = useClerk();
   const navigate = useNavigate();
-  const [cartCount, setCartCount] = useState(0);
-  const url = "https://career-ai-mern.onrender.com";
-
- const fetchCartCount = async () => {
-  if (user?.primaryEmailAddress?.emailAddress) {
-    try {
-      const res = await fetch(`${url}/api/course/count`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ userEmail: user.primaryEmailAddress.emailAddress }),
-      });
-      const data = await res.json();
-      if (typeof data.count === 'number') {
-        setCartCount(data.count);
-      }
-    } catch (err) {
-      console.error('Failed to fetch cart count:', err);
-    }
-  }
-};
-
-
-  useEffect(() => {
-    fetchCartCount();
-    const interval = setInterval(fetchCartCount, 100); // poll every 2s for live update
-    return () => clearInterval(interval);
-  }, [user]);
+  const url = import.meta.env.VITE_BACKEND_URL;
 
   return (
     <div className='fixed top-0 left-0 z-[9999] w-full flex items-center justify-between px-6 md:px-16 lg:px-36 py-5'>
@@ -83,30 +53,6 @@ const Navbar = () => {
       </div>
 
       <div className='flex items-center gap-8'>
-
-        <div className='relative cursor-pointer'
-        onClick={() => {
-          if (!user) {
-          toast('Please Login to navigate', {
-          duration: 1000,
-          style: {
-          backgroundColor: '#dcfce7', // light green
-          color: '#166534',           // dark green text
-          border: '1px solid #86efac', // green border
-        },
-        });
-         } else {
-          navigate('/cart');
-          scrollTo(0, 0);
-        }
-      }}>
-      <ShoppingCart className='w-6 h-6' />
-          {cartCount > 0 && (
-            <span className='absolute -top-2 -right-2 text-xs bg-red-500 text-white w-5 h-5 flex items-center justify-center rounded-full'>
-              {cartCount}
-            </span>
-            )}
-        </div>
 
         {!user ? (
           <button
