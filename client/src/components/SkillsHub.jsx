@@ -169,15 +169,7 @@ const SkillsHub = () => {
           </div>
         </div>
 
-        {/* CTA */}
-        <div className="text-center mt-16">
-          <button 
-            onClick={()=> {navigate('/resources');scrollTo(0,0)}}
-            className="px-8 py-3.5 bg-primary hover:bg-primary-dull text-white rounded-full font-medium shadow-md transition-all"
-          >
-            View All Learning Resources
-          </button>
-        </div>
+       
       </div>
 
       {/* Resource Details Modal */}

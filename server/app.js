@@ -5,8 +5,7 @@ const bodyParser = require('body-parser');
 
 const connectDB = require('./config/db');          // MongoDB connection
 const setupRoutes = require('./routes/mainRoutes'); // All API routes
-const roadmapRoute = require("./routes/roadmap/roadmap");
-const chatbotRoutes = require("./routes/chatbot");
+
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -29,8 +28,6 @@ app.get('/', (req, res) => {
 
 // API Routes
 setupRoutes(app);                    // /api/... routes
-app.use("/api/roadmap", roadmapRoute);
-app.use("/api/chatbot", chatbotRoutes);
 
 // Start server
 app.listen(PORT, () => {

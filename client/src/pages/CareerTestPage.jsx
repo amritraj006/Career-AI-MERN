@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import preDefinedQuestions from '../assets/carrier-test/preDefinedQuestions';
 import { useUser } from '@clerk/clerk-react';
 import { domains, levelDescriptions, domainInsights } from '../utils/constants';
+import { apiService } from '../services/apiService';
 
 export default function CareerTestPage() {
   const [step, setStep] = useState('select');
@@ -39,6 +40,28 @@ export default function CareerTestPage() {
       next_steps: insights.nextSteps
     };
   };
+
+  // ------------------ Fetch Saved Assessment ------------------ //
+  useEffect(() => {
+    const fetchSavedAssessment = async () => {
+      if (user?.primaryEmailAddress?.emailAddress && step === 'select') {
+        try {
+          setLoading(true);
+          const res = await apiService.getAssessment(user.primaryEmailAddress.emailAddress);
+          if (res.success && res.assessment) {
+            setResult(res.assessment);
+            setDomain(res.assessment.domain);
+            setStep('result');
+          }
+        } catch (error) {
+          console.log("No saved assessment found or error fetching.");
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+    fetchSavedAssessment();
+  }, [user]);
 
   // ------------------ State Persistence ------------------ //
   useEffect(() => {
@@ -148,8 +171,22 @@ export default function CareerTestPage() {
 
     try {
       const data = buildLocalResult(domain, percentage);
-      setResult({ ...data, percentage, totalScore, maxPossibleScore });
+      const finalResult = { ...data, percentage, totalScore, maxPossibleScore };
+      setResult(finalResult);
       setStep('result');
+
+      // Save to backend
+      if (user?.primaryEmailAddress?.emailAddress) {
+        try {
+          await apiService.saveAssessment({
+            email: user.primaryEmailAddress.emailAddress,
+            domain,
+            ...finalResult
+          });
+        } catch (saveError) {
+          console.error("Failed to save assessment to backend", saveError);
+        }
+      }
     } catch (err) {
       console.error("Evaluation error:", err);
       setError(err.message || "Failed to evaluate results.");

@@ -9,16 +9,11 @@ import ComparisonToolPage from './pages/ComparisonToolPage';
 import CareerTestPage from './pages/CareerTestPage';
 import AllPathways from './pages/AllPathways';
 import PathwayDetails from './pages/PathwayDetails';
-import AllResources from './pages/AllResources';
-import ResourceDetails from './pages/ResourceDetails';
-import Payment from './pages/Payment';
 import Dashboard from './pages/Dashboard';
 import About from './pages/About';
 import NotFound from './pages/NotFound';
 
 import { RoadmapPage } from './pages/roadmap/RoadmapPage';
-import RoadmapGenerator from './pages/roadmap/RoadmapGenerator';
-import LearningPage from './pages/LearningPage';
 
 const App = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -26,10 +21,8 @@ const App = () => {
 
   const isDashboard = location.pathname.startsWith("/my-dashboard");
   const isAboutPage = location.pathname.startsWith("/about");
-  const isPaymentPage = location.pathname === "/payment";
 
-  const isRoadMapPage = location.pathname === "/roadmap-generator";
-  const chatPage = location.pathname.startsWith("/chatbot");
+
 
   useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 1000);
@@ -47,7 +40,7 @@ const App = () => {
 
   return (
     <>
-      {!chatPage && !isDashboard && !isAboutPage && !isPaymentPage && !isRoadMapPage && <Navbar />}
+      {!isDashboard && !isAboutPage && <Navbar />}
       
       <Toaster richColors position="top-center" />
 
@@ -56,22 +49,18 @@ const App = () => {
         <Route path='/comparison-tool-page' element={<ComparisonToolPage />} />
         <Route path='/career-test' element={<CareerTestPage />} />
         <Route path='/pathways' element={<AllPathways />} />
-        <Route path='/resources' element={<AllResources />} />
-        <Route path='/resources/:resourceId' element={<ResourceDetails />} />
-        <Route path='/resources/:learning-page/:resourceId' element={<LearningPage />} />
-        <Route path='/payment' element={<Payment />} />
+ 
         <Route path='/my-dashboard' element={<Dashboard />} />
         <Route path='/about' element={<About />} />
         
        
         <Route path='/roadmap' element={<RoadmapPage />} />
-        <Route path='/roadmap-generator' element={<RoadmapGenerator />} />
         <Route path='/pathways/:pathwayId' element={<PathwayDetails />} />
         <Route path='/not-found' element={<NotFound />} />
         <Route path='*' element={<NotFound />} />
       </Routes>
 
-      { !isDashboard && !isPaymentPage && !isRoadMapPage && <Footer />}
+      { !isDashboard && !isAboutPage && <Footer />}
     </>
   );
 };

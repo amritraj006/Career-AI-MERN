@@ -38,7 +38,6 @@ const Navbar = () => {
 
         <Link onClick={() => { scrollTo(0, 0); setIsOpen(false); }} to='/' className="text-gray-600 hover:text-primary font-medium transition-colors">Home</Link>
         <Link onClick={() => { scrollTo(0, 0); setIsOpen(false); }} to='/pathways' className="text-gray-600 hover:text-primary font-medium transition-colors">Pathways</Link>
-        <Link onClick={() => { scrollTo(0, 0); setIsOpen(false); }} to='/resources' className="text-gray-600 hover:text-primary font-medium transition-colors">Resources</Link>
         <Link onClick={() => { scrollTo(0, 0); setIsOpen(false); }} to='/comparison-tool-page' className="text-gray-600 hover:text-primary font-medium transition-colors">Career Tool</Link>
         <Link onClick={() => { scrollTo(0, 0); setIsOpen(false); }} to='/roadmap' className="text-gray-600 hover:text-primary font-medium transition-colors">Roadmap AI</Link>
       </div>

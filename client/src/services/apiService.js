@@ -35,6 +35,17 @@ export const apiService = {
     const res = await api.delete(`/api/roadmap/history/${id}`);
     return res.data;
   },
+
+  // Assessment endpoints
+  saveAssessment: async (assessmentData) => {
+    const res = await api.post('/api/assessment', assessmentData);
+    return res.data;
+  },
+
+  getAssessment: async (email) => {
+    const res = await api.get('/api/assessment', { params: { email } });
+    return res.data;
+  },
 };
 
 export default apiService;
