@@ -5,7 +5,6 @@ const bodyParser = require('body-parser');
 
 const connectDB = require('./config/db');          // MongoDB connection
 const setupRoutes = require('./routes/mainRoutes'); // All API routes
-const adminMainRoutes = require('./routes/admin/adminMainRoute');
 const roadmapRoute = require("./routes/roadmap/roadmap");
 const chatbotRoutes = require("./routes/chatbot");
 
@@ -30,7 +29,6 @@ app.get('/', (req, res) => {
 
 // API Routes
 setupRoutes(app);                    // /api/... routes
-app.use('/api/admin', adminMainRoutes);
 app.use("/api/roadmap", roadmapRoute);
 app.use("/api/chatbot", chatbotRoutes);
 

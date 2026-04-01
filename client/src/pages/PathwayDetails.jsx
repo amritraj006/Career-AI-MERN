@@ -1,20 +1,14 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { CheckCircle } from 'lucide-react';
 import { Toaster, toast } from 'sonner';
 import { pathways } from '../assets/pathwaysData';
 import LoadingSpinner from '../components/LoadingSpinner';
-import { useUser, SignInButton } from '@clerk/clerk-react';
-import BlurCircle from '../components/BlurCircle';
 
 const PathwayDetails = () => {
   const { pathwayId } = useParams();
   const navigate = useNavigate();
-  const { isSignedIn, user } = useUser();
 
   const pathway = useMemo(() => pathways.find(p => p.id === pathwayId), [pathwayId]);
-  const url = import.meta.env.VITE_BACKEND_URL;
 
   useEffect(() => {
     if (!pathway) {
@@ -24,21 +18,17 @@ const PathwayDetails = () => {
     }
   }, [pathway, navigate]);
 
-
   if (!pathway) return <LoadingSpinner fullScreen />;
 
   return (
-    <div className="min-h-screen pt-20 md:pt-50 bg-gradient-to-br from-gray-950 to-gray-900 py-12 px-4 sm:px-6 lg:px-8 overflow-x-hidden">
-      <BlurCircle top='-80px' right='100px' />
-      <BlurCircle bottom='-80px' left='200px' />
-      <BlurCircle top='-10px' left='100px' />
-      <div className="relative max-w-5xl mx-auto">
+    <div className="min-h-screen pt-24 pb-12 bg-gray-50 text-gray-900 px-4 sm:px-6 lg:px-8 font-sans">
+      <div className="max-w-5xl mx-auto space-y-8">
         <Toaster position="top-center" richColors />
-        <NavigationBackButton onClick={() => {navigate('/pathways'); scrollTo(0, 0)}} />
-        <PathwayHeader
-          pathway={pathway}
-        />
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12">
+        <NavigationBackButton onClick={() => {navigate('/pathways'); window.scrollTo(0, 0)}} />
+        
+        <PathwayHeader pathway={pathway} />
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
           <SkillsSection skills={pathway.skills} />
           <ResponsibilitiesSection responsibilities={pathway.responsibilities} />
           <EducationSection education={pathway.education} />
@@ -58,7 +48,7 @@ const PathwayDetails = () => {
 const NavigationBackButton = ({ onClick }) => (
   <button
     onClick={onClick}
-    className="flex items-center text-gray-400 hover:text-primary transition-colors mb-8"
+    className="inline-flex items-center text-gray-500 hover:text-primary font-medium transition-colors"
     aria-label="Go back"
   >
     <svg
@@ -78,26 +68,20 @@ const NavigationBackButton = ({ onClick }) => (
 );
 
 const PathwayHeader = ({ pathway }) => (
-  <motion.section
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.5 }}
-    className="flex flex-col md:flex-row gap-8"
-  >
-    <div className="w-full md:w-1/3">
+  <section className="flex flex-col md:flex-row gap-8 items-start bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-200">
+    <div className="w-full md:w-1/3 flex-shrink-0">
       <PathwayImage image={pathway.image} title={pathway.title} />
     </div>
-    <div className="w-full md:w-2/3">
-      <h1 className="text-3xl font-bold mb-2 text-white">{pathway.title}</h1>
+    <div className="w-full md:w-2/3 flex flex-col justify-center">
+      <h1 className="text-3xl md:text-4xl font-extrabold mb-4 text-gray-900 tracking-tight">{pathway.title}</h1>
       <PathwayStats growth={pathway.growth} salary={pathway.salary} />
-      <p className="text-gray-300 mb-6">{pathway.description}</p>
+      <p className="text-gray-600 leading-relaxed text-lg">{pathway.description}</p>
     </div>
-  </motion.section>
+  </section>
 );
 
 const PathwayImage = ({ image, title }) => (
-  <div className="bg-gray-900 rounded-2xl overflow-hidden aspect-square border border-gray-700/50 shadow-lg shadow-primary/20 relative group">
-    <div className="absolute inset-0 bg-gradient-to-t from-gray-950/80 via-transparent to-transparent z-10 pointer-events-none" />
+  <div className="bg-gray-100 rounded-xl overflow-hidden aspect-video md:aspect-square border border-gray-200 shadow-sm relative group w-full">
     <img
       src={image}
       alt={`${title} career pathway`}
@@ -105,7 +89,7 @@ const PathwayImage = ({ image, title }) => (
       loading="lazy"
       onError={(e) => {
         e.target.src = '/pathway-fallback.jpg';
-        e.target.className = 'w-full h-full object-contain bg-gray-800 p-4';
+        e.target.className = 'w-full h-full object-cover bg-gray-50';
       }}
     />
   </div>
@@ -113,23 +97,22 @@ const PathwayImage = ({ image, title }) => (
 
 const PathwayStats = ({ growth, salary }) => (
   <div className="flex flex-wrap items-center gap-4 mb-6">
-    <div className="flex items-center gap-2 bg-gray-800/50 px-4 py-2 rounded-xl border border-gray-700/50 shadow-inner">
-      <div className="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.6)]"></div>
-      <span className="text-sm text-gray-200 font-medium">{growth}% job growth</span>
+    <div className="flex items-center gap-2 bg-green-50 px-4 py-2 rounded-xl border border-green-100 shadow-sm text-green-800">
+      <div className="w-2.5 h-2.5 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.4)]"></div>
+      <span className="text-sm font-semibold">{growth}% job growth</span>
     </div>
-    <div className="flex items-center gap-2 bg-gray-800/50 px-4 py-2 rounded-xl border border-gray-700/50 shadow-inner">
-      <span className="text-primary font-bold">{salary}</span>
-      <span className="text-gray-400 text-xs uppercase tracking-wider mt-0.5">avg. salary</span>
+    <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 bg-blue-50 px-4 py-2 rounded-xl border border-blue-100 shadow-sm text-blue-900">
+      <span className="font-bold text-lg">{salary}</span>
+      <span className="text-xs uppercase font-medium tracking-wider opacity-80">avg. salary</span>
     </div>
   </div>
 );
 
-
 const SkillsSection = ({ skills }) => (
-  <DetailSection title="Key Skills Required" delay={0.2}>
+  <DetailSection title="Key Skills Required">
     <div className="flex flex-wrap gap-2">
       {skills.map((skill, index) => (
-        <span key={index} className="px-3 py-1 text-sm rounded-full bg-primary/10 text-primary">
+        <span key={index} className="px-3 py-1.5 text-sm font-medium rounded-lg bg-primary/10 text-primary border border-primary/20">
           {skill}
         </span>
       ))}
@@ -138,12 +121,12 @@ const SkillsSection = ({ skills }) => (
 );
 
 const ResponsibilitiesSection = ({ responsibilities }) => (
-  <DetailSection title="Typical Responsibilities" delay={0.3} listStyle>
-    <ul className="space-y-2">
+  <DetailSection title="Typical Responsibilities">
+    <ul className="space-y-3">
       {responsibilities.map((item, index) => (
-        <li key={index} className="flex items-start">
-          <span className="text-primary mr-2">•</span>
-          <span className="text-gray-300">{item}</span>
+        <li key={index} className="flex items-start text-gray-700">
+          <span className="text-primary mr-3 mt-1 font-bold">•</span>
+          <span className="leading-relaxed">{item}</span>
         </li>
       ))}
     </ul>
@@ -151,16 +134,16 @@ const ResponsibilitiesSection = ({ responsibilities }) => (
 );
 
 const EducationSection = ({ education }) => (
-  <DetailSection title="Education Requirements" delay={0.4}>
-    <p className="text-gray-300">{education}</p>
+  <DetailSection title="Education Requirements">
+    <p className="text-gray-700 leading-relaxed">{education}</p>
   </DetailSection>
 );
 
 const CompaniesSection = ({ companies }) => (
-  <DetailSection title="Top Hiring Companies" delay={0.5}>
+  <DetailSection title="Top Hiring Companies">
     <div className="flex flex-wrap gap-2">
       {companies.map((company, index) => (
-        <span key={index} className="px-3 py-1 text-sm rounded-full bg-gray-800 text-gray-300">
+        <span key={index} className="px-3 py-1.5 text-sm font-medium rounded-lg bg-gray-100 border border-gray-200 text-gray-800 shadow-sm">
           {company}
         </span>
       ))}
@@ -169,12 +152,12 @@ const CompaniesSection = ({ companies }) => (
 );
 
 const ExperienceLevelsSection = ({ experienceLevels }) => (
-  <DetailSection title="Experience Levels" delay={0.6}>
-    <div className="space-y-3">
+  <DetailSection title="Experience Levels">
+    <div className="space-y-4">
       {Object.entries(experienceLevels).map(([level, description]) => (
-        <div key={level} className="border-l-2 border-primary pl-3">
-          <h3 className="text-primary font-medium capitalize">{level}</h3>
-          <p className="text-gray-300 text-sm">{description}</p>
+        <div key={level} className="border-l-4 border-primary/40 pl-4 py-1">
+          <h3 className="text-gray-900 font-bold capitalize mb-1">{level}</h3>
+          <p className="text-gray-600 text-sm leading-relaxed">{description}</p>
         </div>
       ))}
     </div>
@@ -182,31 +165,28 @@ const ExperienceLevelsSection = ({ experienceLevels }) => (
 );
 
 const CertificationsSection = ({ certifications }) => (
-  <DetailSection title="Recommended Certifications" delay={0.7}>
-    <ul className="space-y-2">
+  <DetailSection title="Recommended Certifications">
+    <ul className="space-y-3">
       {certifications.map((cert, index) => (
-        <li key={index} className="flex items-start">
-          <span className="text-primary mr-2">•</span>
-          <span className="text-gray-300">{cert}</span>
+        <li key={index} className="flex items-start text-gray-700">
+          <span className="text-primary mr-3 mt-1 font-bold">•</span>
+          <span className="leading-relaxed">{cert}</span>
         </li>
       ))}
     </ul>
   </DetailSection>
 );
 
-const DetailSection = ({ title, children, delay = 0, listStyle = false }) => (
-  <motion.div
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ delay, type: "spring", stiffness: 100 }}
-    className="bg-gray-900/40 backdrop-blur-md border border-gray-700/50 rounded-2xl p-6 hover:border-primary/30 transition-all duration-300 hover:shadow-lg hover:shadow-primary/5"
-  >
-    <h2 className="text-xl font-bold mb-5 text-white flex items-center gap-2">
+const DetailSection = ({ title, children }) => (
+  <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300 h-full flex flex-col">
+    <h2 className="text-xl font-bold mb-5 text-gray-900 flex items-center gap-3 pb-3 border-b border-gray-100">
       <div className="w-1.5 h-6 bg-primary rounded-full"></div>
       {title}
     </h2>
-    {children}
-  </motion.div>
+    <div className="flex-grow">
+      {children}
+    </div>
+  </div>
 );
 
 export default PathwayDetails;

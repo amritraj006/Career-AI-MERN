@@ -1,19 +1,16 @@
 import React, { useState, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X, ChevronDown, BarChart2, BookOpen, Clock, DollarSign, ArrowLeft, Download, Mail, Lock } from 'lucide-react';
+import { X, ChevronDown, BarChart2, BookOpen, Clock, DollarSign, Download, Mail, Lock } from 'lucide-react';
 import * as htmlToImage from 'html-to-image';
 import { jsPDF } from 'jspdf';
-import axios from 'axios';
-import { useUser, useSignIn } from '@clerk/clerk-react';
-import { toast, Toaster } from 'sonner';
+import apiService from '../services/apiService';
+import { useUser } from '@clerk/clerk-react';
+import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
-import BlurCircle from '../components/BlurCircle';
 
 const ComparisonToolPage = () => {
   const { user } = useUser(); 
   const pdfRef = useRef(null);
   const navigate = useNavigate();
-  const url = import.meta.env.VITE_BACKEND_URL;
 
   // Sample career data with more detailed information
   const allCareers = [
@@ -70,44 +67,37 @@ const ComparisonToolPage = () => {
   const handleExportPDF = async () => {
     try {
       if (!pdfRef.current) return;
-
       toast.loading('Generating PDF report...');
 
       const element = pdfRef.current;
-      element.style.opacity = '0.8';
+      element.style.opacity = '0.9';
       
-      // Convert the element to an image
       const dataUrl = await htmlToImage.toPng(element, {
         quality: 1,
         pixelRatio: 2,
-        backgroundColor: '#0f172a',
+        backgroundColor: '#ffffff',
         style: {
           transform: 'scale(1.1)',
           transformOrigin: 'top left'
         }
       });
 
-      // Create PDF
       const pdf = new jsPDF('landscape');
       const imgProps = pdf.getImageProperties(dataUrl);
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
 
-      // Add image to PDF
       pdf.addImage(dataUrl, 'PNG', 0, 0, pdfWidth, pdfHeight);
       
-      // Add metadata
       pdf.setFontSize(18);
-      pdf.setTextColor(255, 255, 255);
+      pdf.setTextColor(15, 23, 42); // slate-900
       pdf.text('Career Comparison Report', 15, 20);
       
       pdf.setFontSize(12);
       pdf.text(`Generated on ${new Date().toLocaleDateString()}`, 15, 30);
       
-      // Save PDF
       pdf.save('career-comparison.pdf');
       
-      // Reset loading state
       element.style.opacity = '1';
       toast.dismiss();
       toast.success('PDF report generated successfully!');
@@ -134,7 +124,7 @@ const ComparisonToolPage = () => {
       const dataUrl = await htmlToImage.toPng(pdfRef.current, {
         quality: 0.95,
         pixelRatio: 2,
-        backgroundColor: '#0f172a',
+        backgroundColor: '#ffffff',
       });
 
       const imageBlob = await (await fetch(dataUrl)).blob();
@@ -145,10 +135,7 @@ const ComparisonToolPage = () => {
       toast.dismiss();
       toast.loading('Sending image to your email...');
 
-      await axios.post(`${url}/api/send-comparison-image`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-
+      await apiService.sendComparisonImage(formData);
 
       toast.dismiss();
       toast.success('📩 Comparison sent to your email!');
@@ -159,288 +146,196 @@ const ComparisonToolPage = () => {
     }
   };
 
-  // Animation variants
-  const fadeIn = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.5 } }
-  };
-
-  const staggerContainer = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1
-      }
-    }
-  };
-
-  const scaleUp = {
-    hidden: { scale: 0.95, opacity: 0 },
-    visible: { scale: 1, opacity: 1, transition: { duration: 0.3 } }
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-br pt-16 md:pt-50 from-gray-950 to-gray-900 text-white">
-      
-      <BlurCircle top='-80px' left='100px'/>
-      <BlurCircle top='-80px' right='120px' color='from-purple-500/20' />
-   
-      {/* Header */}
-     
-
-      <main className="container mx-auto px-6 py-12">
+    <div className="min-h-screen bg-gray-50 pt-24 pb-12 text-gray-900">
+      <main className="container mx-auto px-6">
         {/* Career Selection */}
-        <motion.div 
-          variants={fadeIn}
-          initial="hidden"
-          animate="visible"
-          className="mb-12"
-        >
+        <div className="mb-12">
           <div className="flex flex-wrap items-center gap-4 mb-6">
-            <h2 className="text-xl font-semibold text-gray-300">Compare up to 4 careers:</h2>
+            <h2 className="text-xl font-semibold text-gray-700">Compare up to 4 careers:</h2>
             
             {/* Selected careers chips */}
-            <AnimatePresence>
-              {selectedCareers.map(career => (
-                <motion.div 
-                  key={career.id}
-                  layout
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.8 }}
-                  transition={{ type: "spring", stiffness: 500, damping: 30 }}
-                  className="flex items-center bg-gray-800/50 hover:bg-gray-800 rounded-full px-4 py-2 border border-gray-700 shadow-md"
-                  
+            {selectedCareers.map(career => (
+              <div 
+                key={career.id}
+                className="relative flex items-center bg-white hover:bg-gray-50 rounded-full px-4 py-2 border border-gray-200 shadow-sm transition-all"
+                onMouseEnter={() => setHoveredCareer(career.id)}
+                onMouseLeave={() => setHoveredCareer(null)}
+              >
+                <span className="font-medium text-gray-800">{career.title}</span>
+                <button 
+                  onClick={() => removeCareer(career.id)}
+                  className="ml-2 text-gray-400 hover:text-rose-500 transition-colors"
                 >
-                  <span className="font-medium">{career.title}</span>
-                  <motion.button 
-                    onClick={() => removeCareer(career.id)}
-                    className="ml-2 text-gray-400 hover:text-white"
-                    whileHover={{ scale: 1.2 }}
-                  >
-                    <X className="w-4 h-4" />
-                  </motion.button>
-                  
-                  {/* Career description tooltip */}
-                  {hoveredCareer === career.id && (
-                    <motion.div 
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="absolute z-10 mt-10 w-64 bg-gray-800 border border-gray-700 rounded-lg p-3 shadow-xl"
-                    >
-                      <p className="text-sm text-gray-300">{career.description}</p>
-                    </motion.div>
-                  )}
-                </motion.div>
-              ))}
-            </AnimatePresence>
+                  <X className="w-4 h-4" />
+                </button>
+                
+                {/* Career description tooltip */}
+                {hoveredCareer === career.id && (
+                  <div className="absolute top-full left-0 mt-2 w-64 bg-white border border-gray-200 rounded-lg p-3 shadow-xl z-10 transition-opacity duration-200">
+                    <p className="text-sm text-gray-600">{career.description}</p>
+                  </div>
+                )}
+              </div>
+            ))}
 
             {/* Add career dropdown */}
             {selectedCareers.length < 4 && (
               <div className="relative">
-                <motion.button
+                <button
                   onClick={() => setShowDropdown(!showDropdown)}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="flex items-center gap-2 bg-gradient-to-r from-primary to-blue-600 hover:from-primary-dull hover:to-blue-500 px-4 py-2 rounded-full transition-all shadow-lg"
+                  className="flex items-center gap-2 bg-primary hover:bg-primary-dull text-white px-5 py-2.5 rounded-full transition-colors shadow-sm"
                 >
-                  <span>Add Career</span> 
+                  <span className="font-medium">Add Career</span> 
                   <ChevronDown className={`w-4 h-4 transition-transform ${showDropdown ? 'rotate-180' : ''}`} />
-                </motion.button>
+                </button>
 
-                <AnimatePresence>
-                  {showDropdown && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                      className="absolute top-full left-0 mt-2 w-72 bg-gray-800 border border-gray-700 rounded-xl shadow-2xl z-50 overflow-hidden"
-                    >
-                      <div className="p-3 border-b border-gray-700">
-                        <input
-                          type="text"
-                          placeholder="Search careers..."
-                          className="w-full bg-gray-900 text-white px-3 py-2 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-                          value={searchTerm}
-                          onChange={(e) => setSearchTerm(e.target.value)}
-                          autoFocus
-                        />
-                      </div>
-                      <div className="max-h-60 overflow-y-auto">
-                        {filteredCareers
-                          .filter(career => !selectedCareers.some(c => c.id === career.id))
-                          .map(career => (
-                            <motion.button
-                              key={career.id}
-                              onClick={() => addCareer(career)}
-                              whileHover={{ backgroundColor: 'rgba(30, 41, 59, 0.5)' }}
-                              className="w-full text-left px-4 py-3 hover:bg-gray-700/50 transition-colors flex justify-between items-center border-b border-gray-700/50 last:border-b-0"
-                            >
-                              <div>
-                                <p className="font-medium">{career.title}</p>
-                                <p className="text-xs text-gray-400">{career.salary} • {career.growth} growth</p>
-                              </div>
-                              <span className="text-xs bg-primary/20 text-primary px-2 py-1 rounded-full">
-                                {career.education}
-                              </span>
-                            </motion.button>
-                          ))}
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                {showDropdown && (
+                  <div className="absolute top-full left-0 mt-2 w-72 bg-white border border-gray-200 rounded-xl shadow-xl z-50 overflow-hidden">
+                    <div className="p-3 border-b border-gray-100">
+                      <input
+                        type="text"
+                        placeholder="Search careers..."
+                        className="w-full bg-gray-50 border border-gray-200 text-gray-900 px-3 py-2 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition-shadow"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        autoFocus
+                      />
+                    </div>
+                    <div className="max-h-60 overflow-y-auto">
+                      {filteredCareers
+                        .filter(career => !selectedCareers.some(c => c.id === career.id))
+                        .map(career => (
+                          <button
+                            key={career.id}
+                            onClick={() => addCareer(career)}
+                            className="w-full text-left px-4 py-3 hover:bg-gray-50 transition-colors flex justify-between items-center border-b border-gray-100 last:border-b-0"
+                          >
+                            <div>
+                              <p className="font-medium text-gray-800">{career.title}</p>
+                              <p className="text-xs text-gray-500">{career.salary} • {career.growth} growth</p>
+                            </div>
+                            <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full font-medium">
+                              {career.education}
+                            </span>
+                          </button>
+                        ))}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>
 
           {selectedCareers.length === 0 && (
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.3 }}
-              className="bg-gray-900/50 border-2 border-dashed border-gray-700 rounded-2xl p-12 text-center"
-            >
+            <div className="bg-white border-2 border-dashed border-gray-300 rounded-2xl p-12 text-center shadow-sm">
               <div className="max-w-md mx-auto">
-                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gray-800 flex items-center justify-center">
+                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gray-50 flex items-center justify-center border border-gray-100">
                   <BarChart2 className="w-8 h-8 text-primary" />
                 </div>
-                <h3 className="text-xl font-semibold mb-2">Start Comparing Careers</h3>
-                <p className="text-gray-400 mb-4">
+                <h3 className="text-xl font-semibold mb-2 text-gray-900">Start Comparing Careers</h3>
+                <p className="text-gray-500 mb-6">
                   Select up to 4 careers to compare their salaries, growth rates, required education, and more.
                 </p>
-                <motion.button
+                <button
                   onClick={() => setShowDropdown(true)}
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.97 }}
-                  className="px-6 py-2 bg-gradient-to-r from-primary to-blue-600 rounded-full font-medium"
+                  className="px-6 py-2.5 bg-primary hover:bg-primary-dull text-white rounded-full font-medium transition-colors shadow-sm"
                 >
                   Add First Career
-                </motion.button>
+                </button>
               </div>
-            </motion.div>
+            </div>
           )}
-        </motion.div>
+        </div>
 
         {/* Comparison Table */}
         {selectedCareers.length > 0 && (
-          <motion.div
-            variants={fadeIn}
-            initial="hidden"
-            animate="visible"
-            transition={{ delay: 0.2 }}
-            className="mb-16"
-          >
+          <div className="mb-16">
             <div 
               ref={pdfRef} 
-              className="bg-gray-900/70 border border-gray-700 rounded-2xl overflow-hidden backdrop-blur-sm shadow-2xl"
+              className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm"
             >
               <div className="overflow-x-auto">
-                <table className="w-full">
+                <table className="w-full text-left border-collapse">
                   <thead>
-                    <tr className="border-b border-gray-700">
-                      <th className="p-5 text-left min-w-[220px]">
-                        <span className="text-gray-300 font-medium">Comparison Metric</span>
+                    <tr className="bg-gray-50 border-b border-gray-200">
+                      <th className="p-5 min-w-[220px]">
+                        <span className="text-gray-600 font-medium">Comparison Metric</span>
                       </th>
                       {selectedCareers.map((career, index) => (
-                        <motion.th 
+                        <th 
                           key={career.id}
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: 0.1 * index }}
-                          className="p-5 text-center min-w-[220px] relative"
+                          className="p-5 text-center min-w-[220px] relative border-l border-gray-200 first:border-l-0"
                         >
                           <div className="flex flex-col items-center">
-                            <span className="font-bold text-lg mb-1">{career.title}</span>
-                            <span className="text-sm text-primary font-medium">{career.salary}</span>
+                            <span className="font-bold text-lg text-gray-900 mb-1">{career.title}</span>
+                            <span className="text-sm text-primary font-semibold">{career.salary}</span>
                           </div>
-                          {index > 0 && (
-                            <div className="absolute left-0 top-1/2 transform -translate-y-1/2 h-8 w-px bg-gray-700"></div>
-                          )}
-                        </motion.th>
+                        </th>
                       ))}
                     </tr>
                   </thead>
                   <tbody>
-                    {metrics.map((metric, metricIndex) => (
-                      <motion.tr 
+                    {metrics.map((metric) => (
+                      <tr 
                         key={metric.key}
-                        variants={scaleUp}
-                        className="border-b border-gray-700 last:border-b-0 hover:bg-gray-800/50 transition-colors"
+                        className="border-b border-gray-100 last:border-b-0 hover:bg-gray-50 transition-colors"
                       >
-                        <td className="p-5 flex items-center gap-3 text-gray-300">
-                          <div className="p-2 rounded-lg bg-gray-800">
+                        <td className="p-5 flex items-center gap-3 text-gray-700">
+                          <div className="p-2 rounded-lg bg-white shadow-sm border border-gray-100 text-gray-500">
                             {metric.icon}
                           </div>
                           <span className="font-medium">{metric.name}</span>
                         </td>
                         {selectedCareers.map(career => (
-                          <td key={`${metric.key}-${career.id}`} className="p-5 text-center">
+                          <td key={`${metric.key}-${career.id}`} className="p-5 text-center border-l border-gray-100">
                             {metric.key === 'skills' ? (
                               <div className="flex flex-wrap justify-center gap-2">
-                                {career.skills.map((skill, skillIndex) => (
-                                  <motion.span 
+                                {career.skills.map((skill) => (
+                                  <span 
                                     key={skill}
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: 0.05 * skillIndex }}
-                                    className="text-xs bg-primary/10 text-primary px-3 py-1.5 rounded-full"
+                                    className="text-xs bg-primary/10 text-primary px-3 py-1.5 rounded-full font-medium"
                                   >
                                     {skill}
-                                  </motion.span>
+                                  </span>
                                 ))}
                               </div>
                             ) : (
-                              <motion.div
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                transition={{ delay: 0.1 * metricIndex }}
-                              >
+                              <div>
                                 {metric.key === 'workLife' ? (
                                   <div className="flex justify-center">
-                                    <div className={`px-3 py-1 rounded-full text-xs font-medium ${
-                                      career.workLife === "Excellent" ? "bg-green-900/30 text-green-400" :
-                                      career.workLife === "Good" ? "bg-blue-900/30 text-blue-400" :
-                                      career.workLife === "Moderate" ? "bg-yellow-900/30 text-yellow-400" :
-                                      "bg-red-900/30 text-red-400"
+                                    <div className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                                      career.workLife === "Excellent" ? "bg-green-100 text-green-700" :
+                                      career.workLife === "Good" ? "bg-blue-100 text-blue-700" :
+                                      career.workLife === "Moderate" ? "bg-yellow-100 text-yellow-700" :
+                                      "bg-red-100 text-red-700"
                                     }`}>
                                       {career.workLife}
                                     </div>
                                   </div>
                                 ) : (
-                                  <span className="font-medium">{career[metric.key]}</span>
+                                  <span className="font-medium text-gray-800">{career[metric.key]}</span>
                                 )}
-                              </motion.div>
+                              </div>
                             )}
                           </td>
                         ))}
-                      </motion.tr>
+                      </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
             </div>
-          </motion.div>
+          </div>
         )}
 
         {/* Key Takeaways */}
         {selectedCareers.length > 1 && (
-          <motion.div
-            variants={fadeIn}
-            initial="hidden"
-            animate="visible"
-            transition={{ delay: 0.4 }}
-            className="mb-16"
-          >
-            <h2 className="text-2xl font-bold mb-8 text-center bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
+          <div className="mb-16">
+            <h2 className="text-2xl font-bold mb-8 text-center text-gray-900">
               Key Insights
             </h2>
-            <motion.div 
-              variants={staggerContainer}
-              initial="hidden"
-              animate="visible"
-              className="grid grid-cols-1 md:grid-cols-3 gap-6"
-            >
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {[
                 {
                   title: "Highest Salary",
@@ -448,7 +343,7 @@ const ComparisonToolPage = () => {
                     parseFloat(career.salary.replace(/\D/g, '')) > parseFloat(max.salary.replace(/\D/g, '')) ? career : max
                   ),
                   icon: "💵",
-                  color: "from-green-500 to-emerald-500"
+                  color: "bg-emerald-50 text-emerald-900 border-emerald-200"
                 },
                 {
                   title: "Fastest Growth",
@@ -456,7 +351,7 @@ const ComparisonToolPage = () => {
                     parseInt(career.growth) > parseInt(max.growth) ? career : max
                   ),
                   icon: "📈",
-                  color: "from-blue-500 to-cyan-500"
+                  color: "bg-blue-50 text-blue-900 border-blue-200"
                 },
                 {
                   title: "Best Work-Life",
@@ -464,109 +359,65 @@ const ComparisonToolPage = () => {
                          selectedCareers.find(career => career.workLife === "Good") ||
                          selectedCareers[0],
                   icon: "⚖️",
-                  color: "from-purple-500 to-indigo-500"
+                  color: "bg-purple-50 text-purple-900 border-purple-200"
                 }
               ].map((item, index) => (
-                <motion.div 
+                <div 
                   key={index}
-                  variants={scaleUp}
-                  whileHover={{ y: -5 }}
-                  className={`bg-gradient-to-br ${item.color} rounded-2xl p-0.5 shadow-lg`}
+                  className={`rounded-2xl p-6 border ${item.color} shadow-sm hover:shadow-md transition-shadow`}
                 >
-                  <div className="bg-gray-900/90 rounded-[calc(1rem-2px)] h-full p-6">
-                    <div className="flex items-start gap-4">
-                      <span className="text-3xl">{item.icon}</span>
-                      <div>
-                        <h3 className="font-bold mb-1 text-gray-300">{item.title}</h3>
-                        <p className="text-xl font-bold mb-2">{item.value.title}</p>
-                        <p className="text-sm text-gray-400">
-                          {item.title === "Highest Salary" && `${item.value.salary} annually`}
-                          {item.title === "Fastest Growth" && `${item.value.growth} projected growth`}
-                          {item.title === "Best Work-Life" && `${item.value.workLife} balance`}
-                        </p>
-                      </div>
+                  <div className="flex items-start gap-4">
+                    <span className="text-3xl">{item.icon}</span>
+                    <div>
+                      <h3 className="font-semibold mb-1 opacity-80">{item.title}</h3>
+                      <p className="text-xl font-bold mb-2">{item.value.title}</p>
+                      <p className="text-sm opacity-90">
+                        {item.title === "Highest Salary" && `${item.value.salary} annually`}
+                        {item.title === "Fastest Growth" && `${item.value.growth} projected growth`}
+                        {item.title === "Best Work-Life" && `${item.value.workLife} balance`}
+                      </p>
                     </div>
                   </div>
-                </motion.div>
+                </div>
               ))}
-            </motion.div>
-          </motion.div>
+            </div>
+          </div>
         )}
 
         {/* Save/Share Options */}
-        {/* Save/Share Options */}
-{/* Save/Share Options */}
-{selectedCareers.length > 0 && (
-  <motion.div
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ delay: 0.6 }}
-    className="flex flex-wrap justify-center gap-6"
-  >
-    <motion.button 
-      onClick={handleExportPDF}
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.95 }}
-      className="px-8 py-3 bg-gradient-to-r from-primary to-blue-600 hover:from-primary-dull hover:to-blue-500 rounded-xl font-medium flex items-center gap-3 shadow-lg"
-    >
-      <Download className="w-5 h-5" />
-      Export as PDF
-    </motion.button>
-    
-    {user ? (
-      <motion.button
-        onClick={handleSendEmail}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        className="px-8 py-3 bg-gradient-to-r from-gray-700 to-gray-600 hover:from-gray-600 hover:to-gray-500 rounded-xl font-medium flex items-center gap-3 shadow-lg"
-      >
-        <Mail className="w-5 h-5" />
-        Send to Email
-      </motion.button>
-    ) : (
-      <motion.button
-        onClick={() => window.Clerk?.openSignIn({
-          afterSignInUrl: window.location.href,
-          redirectUrl: window.location.href
-        })}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        className="px-8 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 rounded-xl font-medium flex items-center gap-3 shadow-lg"
-      >
-        <Mail className="w-5 h-5" />
-        <Lock className="w-5 h-5" />
-        Login to Email Report
-      </motion.button>
-    )}
-  </motion.div>
-)}
+        {selectedCareers.length > 0 && (
+          <div className="flex flex-wrap justify-center gap-6">
+            <button 
+              onClick={handleExportPDF}
+              className="px-8 py-3 bg-white border border-gray-200 text-gray-800 hover:bg-gray-50 hover:shadow-md rounded-xl font-medium flex items-center gap-3 transition-all"
+            >
+              <Download className="w-5 h-5 text-gray-500" />
+              Export as PDF
+            </button>
+            
+            {user ? (
+              <button
+                onClick={handleSendEmail}
+                className="px-8 py-3 bg-primary text-white hover:bg-primary-dull shadow-sm hover:shadow-md rounded-xl font-medium flex items-center gap-3 transition-all"
+              >
+                <Mail className="w-5 h-5" />
+                Send to Email
+              </button>
+            ) : (
+              <button
+                onClick={() => window.Clerk?.openSignIn({
+                  afterSignInUrl: window.location.href,
+                  redirectUrl: window.location.href
+                })}
+                className="px-8 py-3 bg-gray-900 text-white hover:bg-gray-800 shadow-sm hover:shadow-md rounded-xl font-medium flex items-center gap-3 transition-all"
+              >
+                <Lock className="w-5 h-5" />
+                Login to Email Report
+              </button>
+            )}
+          </div>
+        )}
       </main>
-
-      {/* Animated background elements */}
-      <div className="fixed inset-0 overflow-hidden -z-10 pointer-events-none">
-        {[...Array(10)].map((_, i) => (
-          <motion.div
-            key={i}
-            initial={{ opacity: 0, x: Math.random() * 100 - 50, y: Math.random() * 100 - 50 }}
-            animate={{ 
-              opacity: [0, 0.1, 0],
-              x: Math.random() * 200 - 100,
-              y: Math.random() * 200 - 100,
-            }}
-            transition={{ 
-              duration: Math.random() * 20 + 10,
-              repeat: Infinity,
-              repeatType: "reverse",
-              delay: Math.random() * 5
-            }}
-            className="absolute w-1 h-1 bg-primary rounded-full"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-            }}
-          />
-        ))}
-      </div>
     </div>
   );
 };

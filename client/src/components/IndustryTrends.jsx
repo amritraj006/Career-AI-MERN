@@ -1,6 +1,3 @@
-import { motion } from 'framer-motion';
-import { ArrowUpRight } from 'lucide-react';
-
 const IndustryTrends = () => {
   const trends = [
     { 
@@ -42,41 +39,31 @@ const IndustryTrends = () => {
   ];
 
   return (
-    <section className="py-16 md:py-24 bg-gray-900">
+    <section className="py-16 md:py-24 bg-white text-gray-900 border-t border-gray-100">
       <div className="container mx-auto px-6">
         {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: false }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-16"
-        >
+        <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
             Emerging <span className="text-primary">Industry Trends</span>
           </h2>
-          <p className="text-gray-400 max-w-2xl mx-auto">
+          <p className="text-gray-600 max-w-2xl mx-auto">
             Stay ahead with the fastest growing sectors and in-demand roles
           </p>
-        </motion.div>
+        </div>
 
         {/* Trends Visualization */}
         <div className="max-w-4xl mx-auto mb-16">
           {trends.map((trend, index) => (
-            <motion.div
+            <div
               key={index}
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: false }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
               className="mb-8"
             >
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-3">
                 <div className="flex items-center gap-3">
-                  <h3 className="text-xl font-medium">
+                  <h3 className="text-xl font-medium text-gray-800">
                     {trend.name} {trend.hot && "🔥"}
                   </h3>
-                  <span className="text-xs px-2 py-1 rounded-full bg-gray-700">
+                  <span className="text-xs px-3 py-1 rounded-full bg-gray-100 text-gray-700 font-medium border border-gray-200">
                     {trend.growth}% growth
                   </span>
                 </div>
@@ -85,56 +72,37 @@ const IndustryTrends = () => {
                 </span>
               </div>
               
-              <div className="w-full bg-gray-700 rounded-full h-2.5 mb-3">
+              <div className="w-full bg-gray-100 rounded-full h-2.5 mb-3 overflow-hidden">
                 <div 
-                  className="bg-gradient-to-r from-primary to-primary-dull h-2.5 rounded-full" 
+                  className="bg-primary h-2.5 rounded-full" 
                   style={{ width: `${Math.min(trend.growth, 100)}%` }}
                 ></div>
               </div>
               
-              <p className="text-gray-400 text-sm">
+              <p className="text-gray-500 text-sm">
                 {trend.description}
               </p>
-            </motion.div>
+            </div>
           ))}
         </div>
 
         {/* Insights Section */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: false }}
-          className="bg-gray-800/50 border border-gray-700 rounded-xl p-8 mb-12"
-        >
-          <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
+        <div className="max-w-4xl mx-auto bg-gray-50 border border-gray-200 rounded-xl p-8 mb-12 shadow-sm">
+          <h3 className="text-xl font-bold mb-6 flex items-center gap-2 text-gray-900">
             <span className="text-primary">📊</span> Key Market Insights
           </h3>
           <ul className="space-y-4">
             {insights.map((insight, index) => (
-              <motion.li
+              <li
                 key={index}
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: false }}
-                transition={{ duration: 0.3, delay: index * 0.2 }}
-                className="flex items-start gap-3"
+                className="flex items-start gap-3 text-gray-700"
               >
-                <span className="text-primary mt-1">•</span>
-                <span>{insight}</span>
-              </motion.li>
+                <span className="text-primary mt-1 font-bold">•</span>
+                <span className="font-medium">{insight}</span>
+              </li>
             ))}
           </ul>
-        </motion.div>
-
-        {/* Reports CTA */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: false }}
-          className="text-center"
-        >
-         
-        </motion.div>
+        </div>
       </div>
     </section>
   );

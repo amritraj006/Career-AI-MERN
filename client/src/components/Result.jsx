@@ -1,5 +1,4 @@
 // components/Result.jsx
-import { motion } from 'framer-motion';
 
 const Result = ({ result, onRestart }) => {
   const getCareerSuggestion = () => {
@@ -27,45 +26,36 @@ const Result = ({ result, onRestart }) => {
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
-      className="max-w-md mx-auto p-6 bg-gray-900 rounded-xl border border-gray-800"
-    >
-      <h2 className="text-2xl font-bold text-center mb-6 text-primary">
+    <div className="max-w-md mx-auto p-8 bg-white rounded-2xl border border-gray-200 shadow-sm fade-in">
+      <h2 className="text-2xl font-bold text-center mb-8 text-primary">
         Your Career Matches
       </h2>
       
       <div className="space-y-4">
         {getCareerSuggestion().map((career, index) => (
-          <motion.div
+          <div
             key={index}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1 }}
-            className="p-4 border border-gray-700 rounded-lg hover:bg-gray-800 transition-colors"
+            className="p-5 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors shadow-sm cursor-default slide-up"
+            style={{ animationDelay: `${index * 100}ms` }}
           >
-            <div className="flex items-center gap-3">
-              <span className="text-3xl">{career.emoji}</span>
+            <div className="flex items-center gap-4">
+              <span className="text-4xl">{career.emoji}</span>
               <div>
-                <h3 className="font-bold text-lg text-white">{career.name}</h3>
-                <p className="text-gray-300">{career.desc}</p>
+                <h3 className="font-bold text-lg text-gray-900 mb-1">{career.name}</h3>
+                <p className="text-gray-600 text-sm">{career.desc}</p>
               </div>
             </div>
-          </motion.div>
+          </div>
         ))}
       </div>
       
-      <motion.button
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
+      <button
         onClick={onRestart}
-        className="mt-8 w-full py-3 bg-primary hover:bg-primary-dull text-white rounded-lg font-medium transition-colors"
+        className="mt-8 w-full py-3.5 bg-primary hover:bg-primary-dull text-white rounded-xl font-bold transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
       >
         Take Test Again
-      </motion.button>
-    </motion.div>
+      </button>
+    </div>
   );
 };
 

@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { FaLinkedin, FaGithub, FaEnvelope, FaHome } from "react-icons/fa";
 
@@ -38,116 +37,90 @@ const About = () => {
     }
   ];
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { staggerChildren: 0.2 } }
-  };
-
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: { y: 0, opacity: 1, transition: { duration: 0.5 } }
-  };
-
-  const cardHoverVariants = {
-    hover: { y: -10, boxShadow: "0 15px 30px rgba(0,0,0,0.15)", transition: { duration: 0.3 } }
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4 sm:px-6 lg:px-8 font-sans">
       <div className="max-w-7xl mx-auto">
         {/* Home Button */}
-        <motion.button
+        <button
           onClick={() => navigate("/")}
-          className="fixed top-6 left-6 bg-white p-3 rounded-full shadow-lg z-50 hover:bg-indigo-50 transition-colors"
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.95 }}
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.2 }}
+          className="fixed top-6 left-6 bg-white p-4 rounded-full shadow-lg z-50 hover:bg-indigo-50 transition-colors hover:shadow-xl transform hover:-translate-y-1"
         >
           <FaHome className="text-indigo-600 text-xl" />
-        </motion.button>
+        </button>
 
         {/* Header */}
-        <motion.div
-          className="text-center mb-16"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
+        <div className="text-center mb-16 fade-in pt-12">
           <h1 className="text-4xl font-extrabold text-gray-900 sm:text-5xl sm:tracking-tight lg:text-6xl mb-4">
             About <span className="text-indigo-600">Career AI</span>
           </h1>
-          <p className="max-w-3xl mx-auto text-xl text-gray-600">
+          <p className="max-w-3xl mx-auto text-xl text-gray-600 font-medium">
             A student project to help job seekers with AI-powered career guidance
           </p>
-        </motion.div>
+        </div>
 
         {/* Team Section */}
-        <motion.div className="mb-20" initial="hidden" animate="visible" variants={containerVariants}>
-          <motion.h2 className="text-3xl font-bold text-center text-gray-800 mb-12" variants={itemVariants}>
+        <div className="mb-20 slide-up">
+          <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">
             Meet Our Team
-          </motion.h2>
+          </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {teamMembers.map((member) => (
-              <motion.div
+              <div
                 key={member.id}
-                className="bg-white rounded-xl overflow-hidden shadow-md p-6"
-                variants={itemVariants}
-                whileHover={cardHoverVariants.hover}
+                className="bg-white rounded-2xl overflow-hidden shadow-md p-8 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border border-blue-50"
               >
                 <div className="flex flex-col items-center">
-                  <motion.div
-                    className="w-32 h-32 rounded-full overflow-hidden border-4 border-indigo-100 mb-6"
-                    whileHover={{ scale: 1.05 }}
-                  >
-                    <img src={member.image} alt={member.name} className="w-full h-full object-cover" />
-                  </motion.div>
+                  <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-indigo-100 mb-6 group cursor-pointer">
+                    <img 
+                      src={member.image} 
+                      alt={member.name} 
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" 
+                    />
+                  </div>
 
-                  <h3 className="text-2xl font-bold text-gray-800 mb-1">{member.name}</h3>
-                  <span className="text-lg font-medium mb-4 text-indigo-500">{member.role}</span>
-                  <p className="text-gray-600 text-center mb-6">{member.bio}</p>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-1">{member.name}</h3>
+                  <span className="text-lg font-bold mb-4 text-indigo-500 bg-indigo-50 px-3 py-1 rounded-full uppercase tracking-wider text-xs">{member.role}</span>
+                  <p className="text-gray-600 text-center mb-8 leading-relaxed">{member.bio}</p>
 
-                  <div className="flex space-x-4">
-                    <a href={member.linkedin} target="_blank" rel="noopener noreferrer" className="text-indigo-600 hover:text-indigo-800">
-                      <FaLinkedin size={20} />
+                  <div className="flex space-x-5">
+                    <a href={member.linkedin} target="_blank" rel="noopener noreferrer" className="text-indigo-600 hover:text-indigo-800 transition-colors transform hover:scale-110">
+                      <FaLinkedin size={24} />
                     </a>
-                    <a href={member.github} target="_blank" rel="noopener noreferrer" className="text-gray-700 hover:text-gray-900">
-                      <FaGithub size={20} />
+                    <a href={member.github} target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-gray-900 transition-colors transform hover:scale-110">
+                      <FaGithub size={24} />
                     </a>
-                    <a href={`mailto:${member.email}`} className="text-gray-600 hover:text-gray-800">
-                      <FaEnvelope size={20} />
+                    <a href={`mailto:${member.email}`} className="text-gray-500 hover:text-primary transition-colors transform hover:scale-110">
+                      <FaEnvelope size={24} />
                     </a>
                   </div>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
-        </motion.div>
+        </div>
 
         {/* Project Description */}
-        <motion.div className="bg-white rounded-xl shadow-lg p-8 mb-16" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
-          <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">About Our Project</h2>
-          <p className="text-xl text-gray-600 text-center max-w-4xl mx-auto">
+        <div className="bg-white rounded-2xl shadow-lg p-10 mb-16 border border-blue-50 slide-up">
+          <h2 className="text-3xl font-bold text-center text-gray-900 mb-6">About Our Project</h2>
+          <p className="text-xl text-gray-600 text-center max-w-4xl mx-auto leading-relaxed">
             Career AI is our full-stack project developed as part of our academic curriculum. 
             It combines frontend technologies with backend services to provide career recommendations 
             and job search assistance using AI algorithms.
           </p>
-        </motion.div>
+        </div>
 
         {/* Call to Action */}
-        <motion.div className="text-center" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }}>
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">Want to see our work?</h2>
-          <motion.button
+        <div className="text-center fade-in">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">Want to see our work?</h2>
+          <button
             onClick={() => navigate("/")}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded-full text-lg"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 px-10 rounded-full text-lg shadow-md hover:shadow-lg transition-all transform hover:-translate-y-1 inline-flex items-center gap-2"
           >
+            <FaHome className="text-xl" />
             Back to Home
-          </motion.button>
-        </motion.div>
+          </button>
+        </div>
       </div>
     </div>
   );

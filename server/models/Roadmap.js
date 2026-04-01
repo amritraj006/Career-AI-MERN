@@ -7,4 +7,7 @@ const roadmapSchema = new mongoose.Schema({
   created_at: { type: Date, default: Date.now }
 });
 
+// Create compound index for querying history
+roadmapSchema.index({ user_email: 1, created_at: -1 });
+
 module.exports = mongoose.model("Roadmap", roadmapSchema);

@@ -1,98 +1,36 @@
 import React from 'react';
-import { motion } from 'framer-motion';
-import { ArrowRight, Mail, MessageSquare } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const FinalCTA = () => {
   const navigate = useNavigate();
   return (
-    <section className="relative py-24 md:py-32 bg-gradient-to-br from-primary-dull to-primary overflow-hidden">
-      {/* Background elements */}
-      <div className="absolute inset-0 opacity-10 [mask-image:radial-gradient(ellipse_at_center,white,transparent_70%)]">
-        <div className="absolute inset-0 [background-image:linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[length:40px_40px]"></div>
-      </div>
-      
-      {/* Floating elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {[...Array(8)].map((_, i) => (
-          <motion.div
-            key={i}
-            initial={{ y: 0, x: Math.random() * 100 }}
-            animate={{ 
-              y: [0, -20, 0],
-              x: [Math.random() * 10, Math.random() * 10]
-            }}
-            transition={{
-              duration: 15 + Math.random() * 20,
-              repeat: Infinity,
-              repeatType: 'reverse'
-            }}
-            className="absolute text-4xl opacity-20"
-            style={{
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
-              rotate: Math.random() * 360
-            }}
-          >
-            {['💼', '🎓', '🚀', '📊', '🧠', '💡', '🌟', '📈'][i]}
-          </motion.div>
-        ))}
+    <section className="relative py-24 md:py-32 bg-gray-50 overflow-hidden border-t border-gray-100">
+      {/* Subtle Pattern Background */}
+      <div className="absolute inset-0 z-0 opacity-[0.05]">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,#000_1px,transparent_1px)] bg-[size:24px_24px]"></div>
       </div>
 
       <div className="container mx-auto px-6 relative z-10">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: false }}
-          transition={{ duration: 0.8 }}
-          className="text-center"
-        >
-          <h2 className="text-3xl md:text-5xl font-bold mb-6 text-white">
-            Ready to Discover Your Ideal Career Path?
+        <div className="text-center max-w-4xl mx-auto bg-white rounded-3xl p-10 md:p-16 shadow-xl border border-gray-100">
+          <h2 className="text-3xl md:text-5xl font-bold mb-6 text-gray-900 tracking-tight">
+            Ready to Discover Your <span className="text-primary italic">Ideal Career Path?</span>
           </h2>
           
-          <motion.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: false }}
-            transition={{ delay: 0.3 }}
-            className="text-white/90 max-w-2xl mx-auto mb-10 text-lg"
-          >
-            Join thousands who found their perfect career match with our AI-powered system
-          </motion.p>
+          <p className="text-gray-600 max-w-2xl mx-auto mb-10 text-lg">
+            Join thousands who found their perfect career match with our AI-powered system.
+          </p>
 
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: false }}
-            transition={{ delay: 0.6 }}
-            className="flex flex-col sm:flex-row justify-center gap-4 mb-10"
-          >
-            <motion.button
-            onClick={() => {navigate('/career-test'); scrollTo(0, 0);}}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="flex items-center gap-2 px-8 py-4 bg-white text-gray-900 hover:bg-gray-100 rounded-full font-bold shadow-lg"
+          <div className="flex flex-col sm:flex-row justify-center gap-4">
+            <button
+              onClick={() => {navigate('/career-test'); window.scrollTo(0, 0);}}
+              className="flex items-center justify-center gap-2 px-8 py-4 bg-primary text-white hover:bg-primary-dull rounded-full font-bold shadow-md hover:shadow-lg transition-all transform hover:-translate-y-1"
             >
               Start Free Assessment <ArrowRight className="w-5 h-5" />
-            </motion.button>
-            
-            
-          </motion.div>
-
-        </motion.div>
+            </button>
+          </div>
+        </div>
       </div>
-
-      {/* Floating contact option */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: false }}
-        transition={{ delay: 1.2 }}
-        className="fixed right-6 bottom-6 z-50"
-      >
-        
-      </motion.div>
     </section>
   );
 };

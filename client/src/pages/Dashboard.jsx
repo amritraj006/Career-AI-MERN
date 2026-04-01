@@ -6,7 +6,6 @@ import {
   SignedOut,
   RedirectToSignIn
 } from "@clerk/clerk-react";
-import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect, Suspense, useMemo, memo } from "react";
 import {
   User,
@@ -22,51 +21,50 @@ import {
   Award
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+import apiService from "../services/apiService";
 import { resources } from "../assets/resources";
 
 // Optimized Course Card Component
 const CourseCard = memo(({ course, navigate }) => {
   return (
-    <div className="relative rounded-xl overflow-hidden border border-gray-800 bg-gradient-to-br from-gray-900/50 to-gray-900/70 p-5 shadow-lg hover:shadow-xl transition-all duration-200 h-full">
+    <div className="relative rounded-xl overflow-hidden border border-gray-200 bg-white p-5 shadow-sm hover:shadow-lg transition-all duration-300 h-full">
       {/* Course Thumbnail */}
-      <div className="overflow-hidden rounded-lg mb-4 aspect-video relative">
+      <div className="overflow-hidden rounded-lg mb-4 aspect-video relative group">
         <img
           src={course.image}
           alt={course.name}
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
           loading="lazy"
-          decoding="async"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 hover:opacity-100 transition-opacity"></div>
+        <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
       </div>
 
       {/* Category + Price Row */}
       <div className="flex justify-between items-center mb-3">
-        <span className="text-xs bg-rose-500/20 text-rose-400 px-2.5 py-1 rounded-full font-medium tracking-wide">
+        <span className="text-xs bg-rose-50 text-primary px-2.5 py-1 rounded-full font-medium tracking-wide">
           {course.category || "General"}
         </span>
-        <span className="text-sm text-gray-300 font-medium bg-gray-800/50 px-2.5 py-1 rounded-md">
+        <span className="text-sm text-gray-700 font-medium bg-gray-100 px-2.5 py-1 rounded-md">
           {course.price || "Free"}
         </span>
       </div>
 
       {/* Course Title */}
-      <h3 className="text-lg font-bold text-white mb-4 leading-tight line-clamp-2 hover:text-rose-400 transition-colors duration-150">
+      <h3 className="text-lg font-bold text-gray-900 mb-4 leading-tight line-clamp-2 hover:text-primary transition-colors duration-150">
         {course.name}
       </h3>
 
       {/* Progress Bar */}
-      <div className="w-full bg-gray-800 rounded-full h-1.5 mb-4">
+      <div className="w-full bg-gray-100 rounded-full h-1.5 mb-4">
         <div 
-          className="bg-gradient-to-r from-rose-500 to-amber-400 h-1.5 rounded-full" 
+          className="bg-primary h-1.5 rounded-full" 
           style={{ width: `${course.progress || 0}%` }}
         ></div>
       </div>
 
       {/* CTA Button */}
       <button 
-        className="w-full bg-gradient-to-r from-rose-600 to-rose-500 hover:from-rose-700 hover:to-rose-600 text-white py-2.5 rounded-lg text-sm font-semibold shadow-md transition-all duration-200 hover:shadow-lg flex items-center justify-center gap-2"
+        className="w-full bg-primary hover:bg-primary-dull text-white py-2.5 rounded-lg text-sm font-semibold shadow-sm transition-all duration-200 hover:shadow-md flex items-center justify-center gap-2"
         onClick={() => navigate(`/resources/learning-page/${course.resourceId}`)}
       >
         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
@@ -79,35 +77,27 @@ const CourseCard = memo(({ course, navigate }) => {
 });
 
 const DashboardContent = () => {
-  
   const { user } = useUser();
   const { signOut } = useClerk();
   const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState("profile");
-  const [isLoading, setIsLoading] = useState(true);
   const [enrolledCourses, setEnrolledCourses] = useState([]);
-  const url = import.meta.env.VITE_BACKEND_URL;
 
   const sidebarItems = [
     { id: "profile", icon: <User className="w-5 h-5" />, label: "Profile" },
     { id: "courses", icon: <BookOpen className="w-5 h-5" />, label: "My Courses" }
   ];
 
-  // Memoize the enrolled courses to prevent unnecessary re-renders
   const memoizedCourses = useMemo(() => enrolledCourses, [enrolledCourses]);
 
   useEffect(() => {
     const fetchEnrolledCourses = async () => {
       try {
-        const res = await axios.post(`${url}/api/course/enrolled-ids`, {
-          userEmail: user.primaryEmailAddress.emailAddress,
-        });
-
-        const enrolledIds = res.data.enrolledIds || [];
+        const data = await apiService.getEnrolledCourses(user.primaryEmailAddress.emailAddress);
+        const enrolledIds = data.enrolledIds || [];
         const matchedCourses = resources.filter(resource =>
           enrolledIds.includes(resource.resourceId)
         );
-
         setEnrolledCourses(matchedCourses);
       } catch (error) {
         console.error("Failed to fetch enrolled courses:", error);
@@ -120,48 +110,35 @@ const DashboardContent = () => {
   }, [user]);
 
   return (
-    <div className="flex min-h-screen bg-gradient-to-br from-gray-900 to-gray-950 font-sans text-gray-100">
-      {/* Enhanced Glass Sidebar */}
-      <motion.aside
-        initial={{ x: -100 }}
-        animate={{ x: 0 }}
-        transition={{ type: "spring", stiffness: 300 }}
-        className="w-72 bg-gray-900/80 backdrop-blur-md shadow-2xl flex flex-col border-r border-gray-800/50"
-      >
-        {/* Logo with subtle animation */}
-        <div className="p-6 border-b border-gray-800/50">
+    <div className="flex min-h-screen bg-gray-50 font-sans text-gray-900">
+      {/* Sidebar */}
+      <aside className="w-72 bg-white shadow-lg flex flex-col border-r border-gray-200">
+        <div className="p-6 border-b border-gray-100">
            <Link to='/' className='max-md:flex-1 flex items-center gap-2'>
                   <div className="flex items-center">
-                    <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center mr-2">
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" className="w-6 h-6">
+                    <div className="w-10 h-10 rounded-lg bg-primary flex items-center justify-center mr-2">
+                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" className="w-6 h-6">
                         <path d="M12 3L1 9l11 6 9-4.91V17h2V9M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82Z" />
                       </svg>
                     </div>
-                    <span className="text-xl max-md:hidden font-medium ">CareerAI</span>
+                    <span className="text-xl max-md:hidden font-medium text-gray-900">CareerAI</span>
                   </div>
               </Link>
         </div>
 
-        {/* User Profile Section */}
-        <div className="p-6 border-b border-gray-800/50 flex items-center justify-between">
+        <div className="p-6 border-b border-gray-100 flex items-center justify-between">
           <div className="flex items-center">
-            <motion.div 
-              whileHover={{ scale: 1.05 }} 
-              whileTap={{ scale: 0.95 }}
-              className="relative"
-            >
+            <div className="relative hover:scale-105 transition-transform">
               <img
                 src={user.imageUrl}
                 alt="Profile"
-                className="w-12 h-12 rounded-full object-cover border-2 border-rose-500/50 shadow-md"
+                className="w-12 h-12 rounded-full object-cover border-2 border-primary shadow-sm"
               />
-              <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 rounded-full border-2 border-gray-900 flex items-center justify-center">
-                <div className="w-2 h-2 bg-white rounded-full"></div>
-              </div>
-            </motion.div>
+              <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white"></div>
+            </div>
             <div className="ml-3">
-              <p className="font-semibold text-white truncate max-w-[120px]">{user.fullName}</p>
-              <p className="text-xs text-gray-400/80 truncate max-w-[120px]">
+              <p className="font-semibold text-gray-900 truncate max-w-[120px]">{user.fullName}</p>
+              <p className="text-xs text-gray-500 truncate max-w-[120px]">
                 {user.primaryEmailAddress.emailAddress}
               </p>
             </div>
@@ -169,154 +146,118 @@ const DashboardContent = () => {
           <UserButton 
             appearance={{
               elements: {
-                userButtonAvatarBox: "w-8 h-8",
-                userButtonPopoverCard: "bg-gray-900 border border-gray-800/50 backdrop-blur-lg",
-                userButtonPopoverActionButtonText: "text-white",
-                userButtonPopoverActionButton: "hover:bg-gray-800/50"
+                userButtonAvatarBox: "w-8 h-8"
               }
             }} 
           />
         </div>
 
-        {/* Navigation Menu */}
         <nav className="flex flex-col p-4 space-y-1 flex-grow">
           {sidebarItems.map((item) => (
-            <motion.button
+            <button
               key={item.id}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
               onClick={() => setActiveSection(item.id)}
               className={`flex items-center justify-between w-full px-4 py-3 rounded-lg transition-all ${
                 activeSection === item.id
-                  ? "bg-gradient-to-r from-rose-600/20 to-rose-500/10 text-rose-400 shadow-md"
-                  : "text-gray-400 hover:bg-gray-800/30"
+                  ? "bg-rose-50 text-primary font-medium"
+                  : "text-gray-600 hover:bg-gray-100"
               }`}
             >
               <div className="flex items-center">
                 <span className="mr-3">{item.icon}</span>
-                <span className="font-medium">{item.label}</span>
+                <span>{item.label}</span>
               </div>
               {activeSection === item.id ? (
-                <ChevronDown className="w-5 h-5 text-rose-400" />
+                <ChevronDown className="w-5 h-5 text-primary" />
               ) : (
-                <ChevronRight className="w-5 h-5 text-gray-500" />
+                <ChevronRight className="w-5 h-5 text-gray-400" />
               )}
-            </motion.button>
+            </button>
           ))}
         </nav>
 
-        {/* Sign Out Button */}
-        <div className="p-4 border-t border-gray-800/50">
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+        <div className="p-4 border-t border-gray-100">
+          <button
             onClick={() => signOut(() => navigate("/"))}
-            className="flex items-center w-full px-4 py-3 text-gray-400 hover:bg-gray-800/30 rounded-lg transition-all"
+            className="flex items-center w-full px-4 py-3 text-gray-600 hover:bg-gray-100 rounded-lg transition-all"
           >
-            <LogOut className="w-5 h-5 mr-3 text-rose-500" />
+            <LogOut className="w-5 h-5 mr-3 text-primary" />
             <span className="font-medium">Sign Out</span>
-          </motion.button>
+          </button>
         </div>
-      </motion.aside>
+      </aside>
 
-      {/* Main Content Area */}
+      {/* Main Content Areas */}
       <main className="flex-1 p-8 overflow-y-auto">
-        <AnimatePresence mode="wait">
-          {/* Profile Section */}
           {activeSection === "profile" && (
-            <motion.section
-              key="profile"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3 }}
-              className="bg-gray-900/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 border border-gray-800/50"
-            >
+            <section className="bg-white rounded-2xl shadow-sm p-8 border border-gray-200 fade-in">
               <div className="flex flex-col lg:flex-row gap-8">
                 {/* Profile Card */}
-                <motion.div 
-                  whileHover={{ scale: 1.01 }}
-                  className="bg-gray-900 rounded-2xl p-6 border border-gray-800/50 shadow-lg w-full lg:w-1/3"
-                >
-                  <div className="flex flex-col items-center">
-                    <motion.div 
-                      whileHover={{ scale: 1.05 }} 
-                      className="relative mb-6"
-                    >
-                      <img
-                        src={user.imageUrl}
-                        alt="Profile"
-                        className="w-32 h-32 rounded-full object-cover border-4 border-rose-500/30 shadow-xl"
-                      />
-                      <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-green-500 rounded-full border-4 border-gray-900 flex items-center justify-center">
-                        <CheckCircle className="w-4 h-4 text-white" />
-                      </div>
-                    </motion.div>
-                    <h1 className="text-2xl font-bold text-center mb-1">
-                      {user.firstName} {user.lastName}
-                    </h1>
-                    <p className="text-gray-400 text-sm mb-6 flex items-center gap-1">
-                      <Award className="w-4 h-4 text-amber-400" />
-                      Premium Member
-                    </p>
-                    <div className="grid grid-cols-1 gap-4 w-full">
-                      <div className="bg-gray-900 p-4 rounded-xl border border-gray-800/30 text-center hover:bg-gray-800/50 transition-colors">
-                        <p className="text-sm text-gray-400 mb-1">Enrolled Courses</p>
-                        <p className="font-bold text-white text-xl">{enrolledCourses.length}</p>
-                      </div>
-                    </div>
+                <div className="bg-gray-50 rounded-2xl p-6 border border-gray-100 w-full lg:w-1/3 text-center">
+                  <div className="flex justify-center mb-6">
+                    <img
+                      src={user.imageUrl}
+                      alt="Profile"
+                      className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-md mx-auto"
+                    />
                   </div>
-                </motion.div>
+                  <h1 className="text-2xl font-bold mb-1 text-gray-900">
+                    {user.firstName} {user.lastName}
+                  </h1>
+                  <p className="text-gray-500 text-sm mb-6 flex items-center justify-center gap-1">
+                    <Award className="w-4 h-4 text-primary" />
+                    Premium Member
+                  </p>
+                  <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
+                    <p className="text-sm text-gray-500 mb-1">Enrolled Courses</p>
+                    <p className="font-bold text-gray-900 text-xl">{enrolledCourses.length}</p>
+                  </div>
+                </div>
 
-                {/* Profile Details */}
                 <div className="flex-1">
-                  <h2 className="text-3xl font-bold mb-8 bg-gradient-to-r from-rose-500 to-amber-400 bg-clip-text text-transparent">
+                  <h2 className="text-3xl font-bold mb-8 text-gray-900">
                     Personal Dashboard
                   </h2>
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                    {/* Account Details Card */}
-                    <div className="bg-gray-900 p-6 rounded-xl border border-gray-800/30 shadow-md hover:shadow-lg transition-shadow">
+                    <div className="bg-gray-50 p-6 rounded-xl border border-gray-100">
                       <div className="flex items-center mb-4">
-                        <div className="bg-rose-500/10 p-2 rounded-lg mr-3">
-                          <User className="w-5 h-5 text-rose-400" />
+                        <div className="bg-white p-2 rounded-lg mr-3 shadow-sm">
+                          <User className="w-5 h-5 text-primary" />
                         </div>
-                        <h3 className="font-semibold">Account Details</h3>
+                        <h3 className="font-semibold text-gray-800">Account Details</h3>
                       </div>
                       <div className="space-y-4">
                         <div>
-                          <p className="text-xs text-gray-400/80 mb-1">Email</p>
-                          <p className="font-medium text-gray-200">{user.primaryEmailAddress.emailAddress}</p>
+                          <p className="text-xs text-gray-500 mb-1">Email</p>
+                          <p className="font-medium text-gray-900">{user.primaryEmailAddress.emailAddress}</p>
                         </div>
                         <div>
-                          <p className="text-xs text-gray-400/80 mb-1">Username</p>
-                          <p className="font-medium text-gray-200">{user.username || "Not set"}</p>
+                          <p className="text-xs text-gray-500 mb-1">Username</p>
+                          <p className="font-medium text-gray-900">{user.username || "Not set"}</p>
                         </div>
                       </div>
                     </div>
 
-                    {/* Membership Card */}
-                    <div className="bg-gray-900 p-6 rounded-xl border border-gray-800/30 shadow-md hover:shadow-lg transition-shadow">
+                    <div className="bg-gray-50 p-6 rounded-xl border border-gray-100">
                       <div className="flex items-center mb-4">
-                        <div className="bg-rose-500/10 p-2 rounded-lg mr-3">
-                          <CheckCircle className="w-5 h-5 text-rose-400" />
+                        <div className="bg-white p-2 rounded-lg mr-3 shadow-sm">
+                          <CheckCircle className="w-5 h-5 text-primary" />
                         </div>
-                        <h3 className="font-semibold">Membership</h3>
+                        <h3 className="font-semibold text-gray-800">Membership</h3>
                       </div>
                       <div className="space-y-4">
                         <div>
-                          <p className="text-xs text-gray-400/80 mb-1">Member Since</p>
-                          <p className="font-medium text-gray-200">
+                          <p className="text-xs text-gray-500 mb-1">Member Since</p>
+                          <p className="font-medium text-gray-900">
                             {new Date(user.createdAt).toLocaleDateString('en-US', { 
-                              year: 'numeric', 
-                              month: 'long', 
-                              day: 'numeric' 
+                              year: 'numeric', month: 'long', day: 'numeric' 
                             })}
                           </p>
                         </div>
                         <div>
-                          <p className="text-xs text-gray-400/80 mb-1">Status</p>
-                          <p className="font-medium text-gray-200 flex items-center gap-1">
+                          <p className="text-xs text-gray-500 mb-1">Status</p>
+                          <p className="font-medium text-gray-900 flex items-center gap-1">
                             <span className="w-2 h-2 bg-green-500 rounded-full"></span>
                             Active
                           </p>
@@ -325,25 +266,24 @@ const DashboardContent = () => {
                     </div>
                   </div>
 
-                  {/* Activity Overview */}
-                  <div className="bg-gray-900 p-6 rounded-xl border border-gray-800/30 shadow-md">
+                  <div className="bg-gray-50 p-6 rounded-xl border border-gray-100">
                     <div className="flex items-center mb-4">
-                      <div className="bg-rose-500/10 p-2 rounded-lg mr-3">
-                        <BarChart2 className="w-5 h-5 text-rose-400" />
+                      <div className="bg-white p-2 rounded-lg mr-3 shadow-sm">
+                        <BarChart2 className="w-5 h-5 text-primary" />
                       </div>
-                      <h3 className="font-semibold">Learning Activity</h3>
+                      <h3 className="font-semibold text-gray-800">Learning Activity</h3>
                     </div>
                     <div className="grid grid-cols-2 gap-4">
-                      <div className="bg-gray-800/30 p-4 rounded-lg">
-                        <p className="text-xs text-gray-400 mb-1">Last Active</p>
-                        <p className="font-medium text-gray-200 flex items-center gap-1">
-                          <Clock className="w-4 h-4" />
+                      <div className="bg-white p-4 rounded-lg shadow-sm">
+                        <p className="text-xs text-gray-500 mb-1">Last Active</p>
+                        <p className="font-medium text-gray-900 flex items-center gap-1">
+                          <Clock className="w-4 h-4 text-gray-400" />
                           Today
                         </p>
                       </div>
-                      <div className="bg-gray-800/30 p-4 rounded-lg">
-                        <p className="text-xs text-gray-400 mb-1">Completion Rate</p>
-                        <p className="font-medium text-gray-200">
+                      <div className="bg-white p-4 rounded-lg shadow-sm">
+                        <p className="text-xs text-gray-500 mb-1">Completion Rate</p>
+                        <p className="font-medium text-gray-900">
                           {enrolledCourses.length > 0 
                             ? `${Math.round(enrolledCourses.reduce((acc, course) => acc + (course.progress || 0), 0) / enrolledCourses.length)}%` 
                             : "0%"}
@@ -353,30 +293,20 @@ const DashboardContent = () => {
                   </div>
                 </div>
               </div>
-            </motion.section>
+            </section>
           )}
 
-          {/* Courses Section */}
           {activeSection === "courses" && (
-            <motion.section
-              key="courses"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3 }}
-              className="bg-gray-900/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 border border-gray-800/50"
-            >
+            <section className="bg-white rounded-2xl shadow-sm p-8 border border-gray-200 fade-in">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
                 <div>
-                  <h2 className="text-3xl font-bold bg-gradient-to-r from-rose-500 to-amber-400 bg-clip-text text-transparent">
-                    My Courses
-                  </h2>
-                  <p className="text-gray-400">
+                  <h2 className="text-3xl font-bold text-gray-900">My Courses</h2>
+                  <p className="text-gray-500">
                     {enrolledCourses.length} enrolled course{enrolledCourses.length !== 1 ? 's' : ''}
                   </p>
                 </div>
                 <button 
-                  className="flex items-center bg-gradient-to-r from-rose-600 to-rose-500 hover:from-rose-700 hover:to-rose-600 text-white px-5 py-2.5 rounded-lg font-medium transition-all shadow-lg"
+                  className="bg-primary hover:bg-primary-dull text-white px-5 py-2.5 rounded-lg font-medium transition-colors shadow-sm"
                   onClick={() => navigate('/resources')}
                 >
                   Explore More Courses
@@ -384,16 +314,16 @@ const DashboardContent = () => {
               </div>
 
               {enrolledCourses.length === 0 ? (
-                <div className="text-center py-16">
-                  <div className="mx-auto w-24 h-24 bg-gray-900 rounded-full flex items-center justify-center mb-6 border border-gray-800/30">
-                    <BookOpen className="w-10 h-10 text-rose-500" />
+                <div className="text-center py-16 bg-gray-50 rounded-xl border border-dashed border-gray-300">
+                  <div className="mx-auto w-16 h-16 bg-white rounded-full flex items-center justify-center mb-4 shadow-sm border border-gray-100">
+                    <BookOpen className="w-6 h-6 text-primary" />
                   </div>
-                  <h3 className="text-xl font-semibold mb-2">No Enrolled Courses</h3>
-                  <p className="text-gray-400 mb-6 max-w-md mx-auto">
+                  <h3 className="text-xl font-semibold mb-2 text-gray-900">No Enrolled Courses</h3>
+                  <p className="text-gray-500 mb-6 max-w-md mx-auto">
                     You haven't enrolled in any courses yet. Browse our catalog to start learning.
                   </p>
                   <button
-                    className="bg-gradient-to-r from-rose-600 to-rose-500 hover:from-rose-700 hover:to-rose-600 text-white px-6 py-3 rounded-lg font-medium transition-all shadow-lg"
+                    className="bg-primary hover:bg-primary-dull text-white px-6 py-3 rounded-lg font-medium transition-colors"
                     onClick={() => navigate("/resources")}
                   >
                     Browse Courses
@@ -406,26 +336,19 @@ const DashboardContent = () => {
                   ))}
                 </div>
               )}
-            </motion.section>
+            </section>
           )}
-
-
-        </AnimatePresence>
       </main>
     </div>
   );
 };
 
 const DashboardLoader = () => (
-  <div className="flex items-center justify-center h-screen bg-gradient-to-br from-gray-900 to-gray-950">
+  <div className="flex items-center justify-center h-screen bg-gray-50">
     <div className="text-center">
-      <motion.div
-        animate={{ rotate: 360 }}
-        transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-        className="w-16 h-16 border-4 border-rose-600 border-t-transparent rounded-full mx-auto mb-4"
-      ></motion.div>
-      <h2 className="text-xl font-semibold text-white mb-2">Loading Dashboard</h2>
-      <p className="text-gray-400">Preparing your learning experience</p>
+      <div className="w-12 h-12 border-4 border-gray-200 border-t-primary rounded-full animate-spin mx-auto mb-4"></div>
+      <h2 className="text-xl font-semibold text-gray-900 mb-2">Loading Dashboard</h2>
+      <p className="text-gray-500">Preparing your learning experience</p>
     </div>
   </div>
 );
