@@ -39,7 +39,8 @@ const Navbar = () => {
         <Link onClick={() => { scrollTo(0, 0); setIsOpen(false); }} to='/' className="text-gray-600 hover:text-primary font-medium transition-colors">Home</Link>
         <Link onClick={() => { scrollTo(0, 0); setIsOpen(false); }} to='/pathways' className="text-gray-600 hover:text-primary font-medium transition-colors">Pathways</Link>
         <Link onClick={() => { scrollTo(0, 0); setIsOpen(false); }} to='/comparison-tool-page' className="text-gray-600 hover:text-primary font-medium transition-colors">Career Tool</Link>
-        <Link onClick={() => { scrollTo(0, 0); setIsOpen(false); }} to='/roadmap' className="text-gray-600 hover:text-primary font-medium transition-colors">Roadmap AI</Link>
+        <Link onClick={() => { scrollTo(0, 0); setIsOpen(false); }} to='/roadmap-generator' className="text-gray-600 hover:text-primary font-medium transition-colors">Roadmap AI</Link>
+        <Link onClick={() => { scrollTo(0, 0); setIsOpen(false); }} to='/interview-prep' className="text-gray-600 hover:text-primary font-medium transition-colors">Interview Prep</Link>
       </div>
 
       <div className='flex items-center gap-6'>

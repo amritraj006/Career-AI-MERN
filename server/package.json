@@ -17,7 +17,7 @@
     "@clerk/express": "^1.7.25",
     "@google/generative-ai": "^0.24.1",
     "@sendgrid/mail": "^8.1.5",
-    "body-parse": "^0.1.0",
+    "body-parser": "^1.20.3",
     "cors": "^2.8.5",
     "dotenv": "^17.1.0",
     "express": "^5.1.0",

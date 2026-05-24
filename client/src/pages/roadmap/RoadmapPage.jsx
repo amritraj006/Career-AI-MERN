@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 import { useUser } from '@clerk/clerk-react';
 import { apiService } from '../../services/apiService';
 import ReactMarkdown from 'react-markdown';
@@ -9,13 +10,20 @@ import {
 
 export const RoadmapPage = () => {
   const { user } = useUser();
-  const [prompt, setPrompt] = useState('');
+  const location = useLocation();
+  const [prompt, setPrompt] = useState(location.state?.prefilledPrompt || '');
   const [isGenerating, setIsGenerating] = useState(false);
   const [currentRoadmap, setCurrentRoadmap] = useState(null);
   const [history, setHistory] = useState([]);
   const [isLoadingHistory, setIsLoadingHistory] = useState(true);
   
   const contentRef = useRef(null);
+
+  useEffect(() => {
+    if (location.state?.prefilledPrompt) {
+      setPrompt(location.state.prefilledPrompt);
+    }
+  }, [location.state]);
 
   useEffect(() => {
     if (user?.primaryEmailAddress?.emailAddress) {

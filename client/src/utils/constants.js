@@ -1,13 +1,20 @@
 export const domains = [
-  { id: 'webdev', name: 'Web Development', icon: '🌐' },
-  { id: 'datascience', name: 'Data Science', icon: '📊' },
-  { id: 'cybersecurity', name: 'Cybersecurity', icon: '🔒' },
-  { id: 'cloud', name: 'Cloud Computing', icon: '☁️' },
-  { id: 'blockchain', name: 'Blockchain', icon: '⛓️' },
-  { id: 'ai', name: 'Artificial Intelligence', icon: '🤖' },
-  { id: 'mobile', name: 'Mobile Development', icon: '📱' },
-  { id: 'devops', name: 'DevOps', icon: '🔧' }
+  { id: 'webdev', name: 'Web Development', icon: '🌐', description: 'Build modern websites, apps, and full-stack products' },
+  { id: 'datascience', name: 'Data Science', icon: '📊', description: 'Analyze data, build models, and drive insights' },
+  { id: 'cybersecurity', name: 'Cybersecurity', icon: '🔒', description: 'Protect systems, networks, and sensitive data' },
+  { id: 'cloud', name: 'Cloud Computing', icon: '☁️', description: 'Design scalable infrastructure on AWS, Azure, GCP' },
+  { id: 'blockchain', name: 'Blockchain', icon: '⛓️', description: 'Develop decentralized apps and smart contracts' },
+  { id: 'ai', name: 'Artificial Intelligence', icon: '🤖', description: 'Create intelligent systems with ML and LLMs' },
+  { id: 'mobile', name: 'Mobile Development', icon: '📱', description: 'Ship iOS and Android apps users love' },
+  { id: 'devops', name: 'DevOps', icon: '🔧', description: 'Automate delivery pipelines and cloud operations' }
 ];
+
+export const levelBadgeStyles = {
+  beginner: 'bg-gray-100 text-gray-700 border-gray-200',
+  intermediate: 'bg-blue-100 text-blue-700 border-blue-200',
+  advanced: 'bg-purple-100 text-purple-700 border-purple-200',
+  expert: 'bg-amber-100 text-amber-800 border-amber-200',
+};
 
 export const levelDescriptions = {
   beginner: 'You have early interest and a starting foundation. Focus on core concepts, consistency, and hands-on practice.',

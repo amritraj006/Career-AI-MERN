@@ -37,6 +37,21 @@ export const apiService = {
   },
 
   // Assessment endpoints
+  generateAssessmentQuestions: async ({ domain, domainName, difficulty, questionCount }) => {
+    const res = await api.post('/api/assessment/generate-questions', {
+      domain,
+      domainName,
+      difficulty,
+      questionCount,
+    });
+    return res.data;
+  },
+
+  evaluateAssessment: async (payload) => {
+    const res = await api.post('/api/assessment/evaluate', payload);
+    return res.data;
+  },
+
   saveAssessment: async (assessmentData) => {
     const res = await api.post('/api/assessment', assessmentData);
     return res.data;
@@ -44,6 +59,32 @@ export const apiService = {
 
   getAssessment: async (email) => {
     const res = await api.get('/api/assessment', { params: { email } });
+    return res.data;
+  },
+
+  // Interview prep endpoints
+  generateInterviewQuestions: async (payload) => {
+    const res = await api.post('/api/interview/generate', payload);
+    return res.data;
+  },
+
+  generateMoreInterviewQuestions: async (email, sessionId, count = 3) => {
+    const res = await api.post('/api/interview/generate-more', { email, sessionId, count });
+    return res.data;
+  },
+
+  getInterviewHistory: async (email) => {
+    const res = await api.get('/api/interview/history', { params: { email } });
+    return res.data;
+  },
+
+  getInterviewSession: async (email, sessionId) => {
+    const res = await api.get(`/api/interview/session/${sessionId}`, { params: { email } });
+    return res.data;
+  },
+
+  deleteInterviewHistory: async (id) => {
+    const res = await api.delete(`/api/interview/history/${id}`);
     return res.data;
   },
 };

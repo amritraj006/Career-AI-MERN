@@ -1,7 +1,6 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const bodyParser = require('body-parser');
 
 const connectDB = require('./config/db');          // MongoDB connection
 const setupRoutes = require('./routes/mainRoutes'); // All API routes
@@ -13,13 +12,13 @@ const PORT = process.env.PORT || 3001;
 // Connect to MongoDB
 connectDB();
 
-// Middleware
+// Middleware — parse JSON/urlencoded bodies (required for req.body on POST routes)
 app.use(cors({
   origin: "*",
   credentials: true
 }));
-app.use(bodyParser.json());
-app.use(express.json());
+app.use(express.json({ limit: '2mb' }));
+app.use(express.urlencoded({ extended: true }));
 
 // Health check for Render
 app.get('/', (req, res) => {

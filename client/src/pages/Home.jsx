@@ -6,6 +6,7 @@ import SkillsHub from '../components/SkillsHub'
 import IndustryTrends from '../components/IndustryTrends'
 import ComparisonTool from '../components/ComparisonTool'
 import Faq from '../components/Faq'
+import Testimonials from '../components/Testimonials'
 import FinalCTA from '../components/FinalCTA'
 
 
@@ -20,6 +21,7 @@ const Home = () => {
         <IndustryTrends />
         <ComparisonTool />
         <Faq />
+        <Testimonials />
         <FinalCTA />
         
        

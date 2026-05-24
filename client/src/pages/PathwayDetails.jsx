@@ -1,8 +1,10 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Toaster, toast } from 'sonner';
+import { Bookmark } from 'lucide-react';
 import { pathways } from '../assets/pathwaysData';
 import LoadingSpinner from '../components/LoadingSpinner';
+import { isCareerSaved, toggleSavedCareer } from '../utils/savedCareers';
 
 const PathwayDetails = () => {
   const { pathwayId } = useParams();
@@ -67,18 +69,44 @@ const NavigationBackButton = ({ onClick }) => (
   </button>
 );
 
-const PathwayHeader = ({ pathway }) => (
+const PathwayHeader = ({ pathway }) => {
+  const [saved, setSaved] = useState(() => isCareerSaved(pathway.id));
+
+  useEffect(() => {
+    const sync = () => setSaved(isCareerSaved(pathway.id));
+    window.addEventListener('savedCareersUpdated', sync);
+    return () => window.removeEventListener('savedCareersUpdated', sync);
+  }, [pathway.id]);
+
+  const handleBookmark = () => {
+    const nowSaved = toggleSavedCareer(pathway.id);
+    setSaved(nowSaved);
+    toast.success(nowSaved ? 'Career saved to bookmarks' : 'Removed from saved careers');
+  };
+
+  return (
   <section className="flex flex-col md:flex-row gap-8 items-start bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-200">
     <div className="w-full md:w-1/3 flex-shrink-0">
       <PathwayImage image={pathway.image} title={pathway.title} />
     </div>
     <div className="w-full md:w-2/3 flex flex-col justify-center">
-      <h1 className="text-3xl md:text-4xl font-extrabold mb-4 text-gray-900 tracking-tight">{pathway.title}</h1>
+      <div className="flex items-start justify-between gap-4 mb-4">
+        <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight">{pathway.title}</h1>
+        <button
+          type="button"
+          onClick={handleBookmark}
+          className="flex-shrink-0 p-3 rounded-xl border border-gray-200 hover:bg-gray-50 transition-colors"
+          aria-label={saved ? 'Remove bookmark' : 'Save career'}
+        >
+          <Bookmark className={`w-6 h-6 ${saved ? 'fill-primary text-primary' : 'text-gray-400'}`} />
+        </button>
+      </div>
       <PathwayStats growth={pathway.growth} salary={pathway.salary} />
       <p className="text-gray-600 leading-relaxed text-lg">{pathway.description}</p>
     </div>
   </section>
-);
+  );
+};
 
 const PathwayImage = ({ image, title }) => (
   <div className="bg-gray-100 rounded-xl overflow-hidden aspect-video md:aspect-square border border-gray-200 shadow-sm relative group w-full">

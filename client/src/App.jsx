@@ -14,6 +14,7 @@ import About from './pages/About';
 import NotFound from './pages/NotFound';
 
 import { RoadmapPage } from './pages/roadmap/RoadmapPage';
+import InterviewPrepPage from './pages/InterviewPrepPage';
 
 const App = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -55,6 +56,7 @@ const App = () => {
         
        
         <Route path='/roadmap-generator' element={<RoadmapPage />} />
+        <Route path='/interview-prep' element={<InterviewPrepPage />} />
         <Route path='/pathways/:pathwayId' element={<PathwayDetails />} />
         <Route path='/not-found' element={<NotFound />} />
         <Route path='*' element={<NotFound />} />
