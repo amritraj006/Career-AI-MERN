@@ -200,9 +200,9 @@ const preDefinedQuestions = {
         question: "How familiar are you with machine learning concepts?",
         options: [
           { text: "I understand basic algorithms like linear regression", score: 2 },
-          { text: "I can implement various ML models and evaluate them", score: 3 },
+          { text: "I can implement various ML models and evaluate them", score: 4 },
           { text: "I've heard about it but haven't practiced", score: 1 },
-          { text: "I can design and deploy production ML systems", score: 4 }
+          { text: "I can design and deploy production ML systems", score: 3 }
         ]
       },
       {
@@ -219,9 +219,9 @@ const preDefinedQuestions = {
         question: "How comfortable are you with statistics and probability?",
         options: [
           { text: "I have basic understanding of statistics", score: 1 },
-          { text: "I understand advanced statistical concepts", score: 3 },
-          { text: "I can design and interpret complex statistical models", score: 4 },
-          { text: "I can perform hypothesis testing and analysis", score: 2 },
+          { text: "I understand advanced statistical concepts", score: 4 },
+          { text: "I can design and interpret complex statistical models", score: 2 },
+          { text: "I can perform hypothesis testing and analysis", score: 3 },
         ]
       },
       {
@@ -236,8 +236,8 @@ const preDefinedQuestions = {
       {
         question: "How familiar are you with deep learning frameworks?",
         options: [
-          { text: "I've experimented with TensorFlow/PyTorch", score: 2 },
-          { text: "I've implemented neural networks for projects", score: 3 },
+          { text: "I've experimented with TensorFlow/PyTorch", score: 3 },
+          { text: "I've implemented neural networks for projects", score: 2 },
           { text: "I don't use deep learning", score: 1 },
           { text: "I design and optimize complex deep learning models", score: 4 },
         ]
@@ -255,9 +255,9 @@ const preDefinedQuestions = {
         question: "How would you approach feature engineering?",
         options: [
           { text: "I don't perform feature engineering", score: 1 },
-          { text: "I design comprehensive feature pipelines", score: 4 },
-          { text: "I perform basic feature selection", score: 2 },
-          { text: "I create new features from existing data", score: 3 },
+          { text: "I design comprehensive feature pipelines", score: 3 },
+          { text: "I perform basic feature selection", score: 4 },
+          { text: "I create new features from existing data", score: 2 },
         ]
       },
       {
@@ -557,9 +557,9 @@ const preDefinedQuestions = {
     question: "Which cloud service is best for hosting a containerized microservice?",
     options: [
       { text: "Amazon S3", score: 1 },
-      { text: "Google App Engine", score: 2 },
-      { text: "AWS Fargate or GKE Autopilot", score: 3 },
-      { text: "Kubernetes on multi-cloud platform", score: 4 }
+      { text: "Google App Engine", score: 4 },
+      { text: "AWS Fargate or GKE Autopilot", score: 2 },
+      { text: "Kubernetes on multi-cloud platform", score: 3 }
     ]
   },
   {
@@ -574,10 +574,10 @@ const preDefinedQuestions = {
   {
     question: "Which of the following best describes a use case for AWS Lambda?",
     options: [
-      { text: "Deploying full-stack apps", score: 1 },
-      { text: "Running containers", score: 2 },
-      { text: "Executing event-driven backend logic", score: 3 },
-      { text: "Managing cloud infrastructure", score: 4 }
+      { text: "Deploying full-stack apps", score: 2 },
+      { text: "Running containers", score: 1 },
+      { text: "Executing event-driven backend logic", score: 4 },
+      { text: "Managing cloud infrastructure", score: 3 }
     ]
   },
   {
@@ -740,8 +740,8 @@ const preDefinedQuestions = {
         question: "What's your understanding of blockchain fundamentals?",
         options: [
           { text: "Basic awareness of concepts", score: 1 },
-          { text: "Understand how blockchain works", score: 2 },
-          { text: "Can explain consensus mechanisms", score: 3 },
+          { text: "Understand how blockchain works", score: 3 },
+          { text: "Can explain consensus mechanisms", score: 2 },
           { text: "Expert in blockchain theory", score: 4 }
         ]
       },
@@ -775,10 +775,10 @@ const preDefinedQuestions = {
       {
         question: "What's your experience with consensus algorithms?",
         options: [
-          { text: "Basic understanding of PoW/PoS", score: 1 },
-          { text: "Understand multiple consensus models", score: 2 },
-          { text: "Implemented custom consensus", score: 3 },
-          { text: "Expert in consensus research", score: 4 }
+          { text: "Basic understanding of PoW/PoS", score: 2 },
+          { text: "Understand multiple consensus models", score: 1 },
+          { text: "Implemented custom consensus", score: 4 },
+          { text: "Expert in consensus research", score: 3 }
         ]
       },
       {
@@ -922,36 +922,36 @@ const preDefinedQuestions = {
     question: "What's your understanding of machine learning fundamentals?",
     options: [
       { text: "Basic awareness of concepts", score: 1 },
-      { text: "Understand supervised/unsupervised learning", score: 2 },
-      { text: "Can implement various algorithms", score: 3 },
+      { text: "Understand supervised/unsupervised learning", score: 3 },
+      { text: "Can implement various algorithms", score: 2 },
       { text: "Expert in ML theory", score: 4 }
     ]
   },
   {
     question: "How familiar are you with deep learning?",
     options: [
-      { text: "Basic understanding of neural networks", score: 1 },
-      { text: "Implemented basic neural networks", score: 2 },
-      { text: "Designed complex architectures", score: 3 },
-      { text: "Expert in deep learning research", score: 4 }
+      { text: "Basic understanding of neural networks", score: 2 },
+      { text: "Implemented basic neural networks", score: 1 },
+      { text: "Designed complex architectures", score: 4 },
+      { text: "Expert in deep learning research", score: 3 }
     ]
   },
   {
     question: "What's your experience with NLP?",
     options: [
       { text: "Basic understanding", score: 1 },
-      { text: "Implemented text processing", score: 2 },
-      { text: "Developed NLP models", score: 3 },
+      { text: "Implemented text processing", score: 3 },
+      { text: "Developed NLP models", score: 2 },
       { text: "Expert in advanced NLP", score: 4 }
     ]
   },
   {
     question: "How would you approach computer vision?",
     options: [
-      { text: "Basic image processing", score: 1 },
-      { text: "Implemented basic CV models", score: 2 },
-      { text: "Developed complex vision systems", score: 3 },
-      { text: "Expert in CV research", score: 4 }
+      { text: "Basic image processing", score: 2 },
+      { text: "Implemented basic CV models", score: 4 },
+      { text: "Developed complex vision systems", score: 1 },
+      { text: "Expert in CV research", score: 3 }
     ]
   },
   {
@@ -1114,17 +1114,18 @@ const preDefinedQuestions = {
         options: [
           { text: "Basic awareness", score: 1 },
           { text: "Built apps with Flutter/React Native", score: 2 },
-          { text: "Developed complex cross-platform apps", score: 3 },
+          { text: "Built apps with Flutter/React Native", score: 3 },
+          { text: "Developed complex cross-platform apps", score: 2 },
           { text: "Expert in cross-platform development", score: 4 }
         ]
       },
       {
         question: "What's your experience with mobile UI design?",
         options: [
-          { text: "Basic UI implementation", score: 1 },
-          { text: "Designed custom UI components", score: 2 },
+          { text: "Basic UI implementation", score: 4 },
+          { text: "Designed custom UI components", score: 1 },
           { text: "Created complex animations", score: 3 },
-          { text: "Expert in mobile UX/UI", score: 4 }
+          { text: "Expert in mobile UX/UI", score: 2 }
         ]
       },
       {
@@ -1285,10 +1286,10 @@ const preDefinedQuestions = {
       {
         question: "What's your experience with CI/CD pipelines?",
         options: [
-          { text: "Basic understanding", score: 1 },
-          { text: "Set up basic pipelines", score: 2 },
-          { text: "Designed complex workflows", score: 3 },
-          { text: "Expert in CI/CD architecture", score: 4 }
+          { text: "Basic understanding", score: 2 },
+          { text: "Set up basic pipelines", score: 4 },
+          { text: "Designed complex workflows", score: 1 },
+          { text: "Expert in CI/CD architecture", score: 3 }
         ]
       },
       {
@@ -1312,10 +1313,10 @@ const preDefinedQuestions = {
       {
         question: "How would you approach configuration management?",
         options: [
-          { text: "Basic scripting", score: 1 },
-          { text: "Used Ansible/Puppet/Chef", score: 2 },
+          { text: "Basic scripting", score: 4 },
+          { text: "Used Ansible/Puppet/Chef", score: 1 },
           { text: "Designed configuration systems", score: 3 },
-          { text: "Expert in configuration patterns", score: 4 }
+          { text: "Expert in configuration patterns", score: 2 }
         ]
       },
       {
@@ -1460,6 +1461,98 @@ const preDefinedQuestions = {
           { text: "Promoted collaboration", score: 2 },
           { text: "Led DevOps transformations", score: 3 },
           { text: "Expert in organizational DevOps", score: 4 }
+        ]
+      }
+    ],
+    standard: [
+      {
+        question: "How do you typically approach a complex, multi-layered problem with no clear immediate solution?",
+        options: [
+          { text: "I break it down into smaller, manageable sub-problems and solve them systematically.", score: 3 },
+          { text: "I try multiple quick fixes to see if any immediate solution emerges.", score: 1 },
+          { text: "I research industry best practices and similar cases before designing a comprehensive architecture.", score: 4 },
+          { text: "I consult with peers and brainstorm a list of potential approaches.", score: 2 }
+        ]
+      },
+      {
+        question: "In a fast-paced environment, how do you prioritize tasks when everything seems urgent?",
+        options: [
+          { text: "I focus on the most challenging task first to get it out of the way.", score: 2 },
+          { text: "I use a priority matrix (Eisenhower Box) to categorize tasks by importance and urgency.", score: 4 },
+          { text: "I answer whoever is asking most persistently at the moment.", score: 1 },
+          { text: "I list all tasks and complete the ones that take the least time first.", score: 3 }
+        ]
+      },
+      {
+        question: "How do you integrate new technology or tools into your existing workflow?",
+        options: [
+          { text: "I wait until I absolutely need to use it and then learn on the fly.", score: 1 },
+          { text: "I build a prototype or small project to understand its limitations and strengths.", score: 4 },
+          { text: "I follow official documentation and standard tutorials to get up to speed.", score: 3 },
+          { text: "I watch a few overview videos and read reviews to get a general idea.", score: 2 }
+        ]
+      },
+      {
+        question: "When a project is failing to meet its deadline, what is your most likely response?",
+        options: [
+          { text: "I communicate the delay immediately and propose a revised scope or timeline.", score: 4 },
+          { text: "I work extra hours in isolation to try and catch up as much as possible.", score: 2 },
+          { text: "I hope nobody notices until the last possible minute.", score: 1 },
+          { text: "I identify the bottlenecks and request specific resources or assistance.", score: 3 }
+        ]
+      },
+      {
+        question: "What's your strategy for maintaining high-quality work during repetitive or long-term tasks?",
+        options: [
+          { text: "I automate what I can and create a checklist for manual quality control.", score: 4 },
+          { text: "I take regular breaks and change my environment to stay focused.", score: 2 },
+          { text: "I try to finish as quickly as possible so I can move on to something new.", score: 1 },
+          { text: "I periodically review my own work against the initial requirements.", score: 3 }
+        ]
+      },
+      {
+        question: "How do you handle mentorship and knowledge sharing within a team?",
+        options: [
+          { text: "I prefer to work independently and let others learn on their own.", score: 1 },
+          { text: "I actively mentor junior members and document my findings for the team.", score: 4 },
+          { text: "I share my knowledge only when directly asked by a colleague.", score: 2 },
+          { text: "I participate in code reviews and suggest improvements where I can.", score: 3 }
+        ]
+      },
+      {
+        question: "What is your approach to handling constructive criticism on your work?",
+        options: [
+          { text: "I take it personally and feel discouraged.", score: 1 },
+          { text: "I analyze the feedback objectively and use it to improve my future work.", score: 4 },
+          { text: "I listen to it but only apply the changes I agree with.", score: 2 },
+          { text: "I try to explain my reasoning to show why my initial approach was valid.", score: 3 }
+        ]
+      },
+      {
+        question: "How do you ensure you are staying productive when working remotely or without direct supervision?",
+        options: [
+          { text: "I set clear daily goals and use time-tracking or focus techniques.", score: 4 },
+          { text: "I wait for my manager to give me specific tasks to complete.", score: 1 },
+          { text: "I work mostly when I feel motivated or have a deadline approaching.", score: 2 },
+          { text: "I communicate my progress regularly even if not explicitly asked.", score: 3 }
+        ]
+      },
+      {
+        question: "How do you balance learning new skills versus completing your current project responsibilities?",
+        options: [
+          { text: "I only learn what is strictly necessary for my current task.", score: 1 },
+          { text: "I dedicate a specific portion of my week to learning and development.", score: 4 },
+          { text: "I try to learn on the weekends or after work hours.", score: 2 },
+          { text: "I pick projects that allow me to use new technologies in a controlled way.", score: 3 }
+        ]
+      },
+      {
+        question: "When faced with an ethical dilemma at work (e.g., a security vulnerability or biased data), what is your first step?",
+        options: [
+          { text: "I ignore it if it's not part of my direct responsibility.", score: 1 },
+          { text: "I document the issue and escalate it through the proper internal channels immediately.", score: 4 },
+          { text: "I try to fix it quietly without making it a bigger issue.", score: 2 },
+          { text: "I discuss it with a trusted colleague to see if I'm overreacting.", score: 3 }
         ]
       }
     ]

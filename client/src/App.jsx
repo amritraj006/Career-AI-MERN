@@ -54,7 +54,7 @@ const App = () => {
         <Route path='/about' element={<About />} />
         
        
-        <Route path='/roadmap' element={<RoadmapPage />} />
+        <Route path='/roadmap-generator' element={<RoadmapPage />} />
         <Route path='/pathways/:pathwayId' element={<PathwayDetails />} />
         <Route path='/not-found' element={<NotFound />} />
         <Route path='*' element={<NotFound />} />

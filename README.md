@@ -1,102 +1,129 @@
-# 🎓 Career AI
+# Career AI — Empowering Your Professional Journey 🚀
 
-A full-stack career guidance platform built with **React** for the frontend, **Node.js + Express** for the backend, and **MongoDB** (Atlas) as the database. It includes user authentication with **Clerk**, course enrollment features, admin content management, AI-powered roadmap generation, a career comparison tool, and a user dashboard to track personalized progress.
+Career AI is a modern, AI-driven career guidance platform built with the MERN stack. It leverages the power of Google's Gemini AI to provide personalized career roadmaps, deep career comparisons, and professional assessments, helping users navigate their career paths with data-driven insights.
 
----
+![Career AI Banner](https://images.unsplash.com/photo-1454165833767-1316b34b1195?q=80&w=2070&auto=format&fit=crop)
 
-## 🚀 Features
+## ✨ Core Features
 
-- 👤 User Sign Up / Sign In with Clerk
-- 🛒 Add to Cart, Enroll in Courses
-- 📊 **Career Comparison Tool**:
-  - Select one or more careers
-  - Compare based on: 💰 Salary, 🚀 Growth, ❤️ Work-Life Balance
-  - Export results as **PDF** or **Email** them directly
-- 📧 Send AI-generated and comparison reports to user’s email
-- 🤖 **AI Roadmap Chatbot**: Suggests personalized career learning paths based on user input
-- 📚 Learning Pathways & My Courses
-- 🎯 Filter, Search, and Explore Career Paths
-- 🧑‍💼 **User Dashboard**:
-  - ✅ View Subscribed Learning Pathways
-  - 📘 Track Enrolled Courses
-  - 👤 Profile (image, name, email from Clerk)
-- 🔐 **Admin Dashboard**:
-  - ➕ Quick Stats (Course and Pathways)
-  - 👥 Track Active Logged-In Users
+### 🗺️ AI Roadmap Generator
+Get a step-by-step, actionable career roadmap tailored to your specific goals. 
+- Integrated with **Gemini 2.0 Flash** for high-quality guidance.
+- Saves historical roadmaps to your dashboard for future reference.
+- Export as Markdown or PDF (coming soon).
 
----
+### 📊 Professional Career Comparison
+Compare different career paths side-by-side across multiple metrics:
+- **Salary Data**: Understand your earning potential.
+- **Growth Outlook**: See which industries are booming.
+- **Skills Check**: Identify skill gaps between different roles.
+- **Email Sharing**: Send your comparison reports directly to your inbox.
 
-## 🛠 Tech Stack
+### 🧪 Career Assessment Test
+Not sure where to start? Take our AI-enhanced career test to discover roles that align with your personality and interests.
+- Dynamic questioning powered by AI logic.
+- Instant analysis and pathway recommendations.
 
-| Layer           | Technology                       |
-|------------------|----------------------------------|
-| Frontend         | React, Tailwind CSS              |
-| Backend          | Node.js, Express.js              |
-| Database         | MongoDB, Atlas                   |
-| Authentication   | Clerk.dev                        |
-| AI / Chatbot     | OpenAI API                       |
-| Comparison Tools | Custom logic with career metrics |
-| PDF / Email      | jsPDF, html-to-image, Nodemailer |
-| Hosting          | Render                           |
+### 📈 User Dashboard
+A centralized hub to track your progress:
+- Access saved roadmaps.
+- Review your assessment history.
+- Manage your profile and settings.
 
 ---
 
-## 📁 Project Structure
+## 🛠️ Technology Stack
 
-career-ai/
-├── client/ # React frontend
-│ ├── pages/
-│ ├── components/
-│ └── assets/
-├── server/ # Node.js + Express backend
-│ ├── routes/
-│ ├── config/
-│ └── models/
-│ ├── app.js
-│ ├── .env
+### Frontend
+- **Framework**: `React 19` (Vite)
+- **Styling**: `Tailwind CSS 4`
+- **Icons**: `Lucide React` & `React Icons`
+- **Auth**: `Clerk` (Secure user authentication)
+- **State Management**: React Hooks
+- **Toasts**: `Sonner` & `React Hot Toast`
+
+### Backend
+- **Runtime**: `Node.js`
+- **Framework**: `Express 5`
+- **Databases**: 
+  - `MongoDB` (Primary data storage)
+  - `MySQL` (Relational data / Historical models)
+- **AI**: `Google Generative AI` (Gemini SDK)
+- **Authentication**: `@clerk/express` & `@clerk/clerk-sdk-node`
+- **Emailing**: `Nodemailer` & `SendGrid`
+
+---
+
+## 📂 Project Structure
+
+```text
+├── client/              # React frontend (Vite + Tailwind)
+│   ├── src/
+│   │   ├── components/  # Reusable UI components
+│   │   ├── pages/       # Page-level components (Home, Dashboard, etc.)
+│   │   ├── services/    # API calling functions
+│   │   └── assets/      # Static assets and styles
+├── server/              # Node.js backend (Express)
+│   ├── controllers/     # Route logic handlers
+│   ├── models/          # Database schemas (Mongoose)
+│   ├── routes/          # API endpoint definitions
+│   └── config/          # Database & Middleware configs
 └── README.md
-
-
----
-
-## 💬 AI Roadmap Generator
-
-- User enters goal (e.g., "I want to be a Web Developer")
-- Uses OpenAI API to generate a step-by-step career roadmap
-- Roadmap saved to the database
-- Interactive display and export options
+```
 
 ---
 
-## 📊 Career Comparison Tool
+## 🚀 Getting Started
 
-This tool allows users to:
+### Prerequisites
+- Node.js (v18+)
+- MongoDB Atlas account
+- Clerk account (for Auth)
+- Google AI Studio API Key (for Gemini)
 
-- Select **one or more careers**
-- Compare on key factors:
-  - 💰 **High Salary Potential**
-  - 🚀 **Fastest Growing Fields**
-  - ❤️ **Best Work-Life Balance**
-- Users can:
-  - 📄 **Export the comparison** as a PDF
-  - 📧 **Email the results** directly to their inbox
+### Installation
+
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/your-username/Career-AI-MERN.git
+   cd Career-AI-MERN
+   ```
+
+2. **Setup Backend**:
+   ```bash
+   cd server
+   npm install
+   ```
+   Create a `.env` file in the `server` directory:
+   ```env
+   PORT=3001
+   MONGO_URI=your_mongodb_uri
+   GEMINI_API_KEY=your_gemini_api_key
+   CLERK_SECRET_KEY=your_clerk_secret_key
+   CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
+   # Email Config (Optional)
+   SENDGRID_API_KEY=your_sendgrid_key
+   ```
+
+3. **Setup Frontend**:
+   ```bash
+   cd ../client
+   npm install
+   ```
+   Create a `.env` file in the `client` directory:
+   ```env
+   VITE_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
+   VITE_API_URL=http://localhost:3001
+   ```
+
+4. **Run the Application**:
+   - Start Backend: `cd server && npm run dev`
+   - Start Frontend: `cd client && npm run dev`
 
 ---
 
-## 🔐 Admin Dashboard
+## 🤝 Contributing
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-Includes tools for admins to manage platform content:
-
-- ➕ Add/Edit/Delete Courses
-- ➕ Add Career Pathways
-- 📝 Manage Posts with media and content
-- 👥 Monitor admin login sessions via database
-
----
-
-## 📬 Contact & Contribution
-
-Have suggestions or want to contribute?  
-Feel free to fork this repo, open an issue, or submit a pull request.
-
----
+## 📄 License
+This project is licensed under the ISC License.
