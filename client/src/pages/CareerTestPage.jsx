@@ -56,9 +56,9 @@ const TimerRing = ({ seconds, max = 60 }) => {
   const urgent = sec <= 10;
 
   return (
-    <div className="relative w-14 h-14">
+    <div className={`relative w-14 h-14 ${urgent ? 'animate-pulse' : ''}`}>
       <svg className="w-full h-full -rotate-90" viewBox="0 0 48 48">
-        <circle cx="24" cy="24" r={r} fill="none" stroke="#f3f4f6" strokeWidth="4" />
+        <circle cx="24" cy="24" r={r} fill="none" stroke="rgba(255, 255, 255, 0.15)" strokeWidth="4" />
         <circle
           cx="24"
           cy="24"
@@ -74,8 +74,8 @@ const TimerRing = ({ seconds, max = 60 }) => {
       </svg>
       <span
         className={`absolute inset-0 flex items-center justify-center text-sm font-bold ${
-          urgent ? 'text-red-500' : 'text-gray-800'
-        }`}
+          urgent ? 'text-red-500 scale-110 font-black' : 'text-white'
+        } transition-all`}
       >
         {sec}
       </span>
@@ -104,18 +104,310 @@ const ScoreRing = ({ percentage, animated }) => {
           strokeDasharray={circ}
           strokeDashoffset={offset}
           className="transition-all duration-1000 ease-out"
+          filter="url(#glow)"
         />
         <defs>
           <linearGradient id="scoreGradient" x1="0%" y1="0%" x2="100%" y2="0%">
             <stop offset="0%" stopColor="#F84565" />
             <stop offset="100%" stopColor="#ff8fa3" />
           </linearGradient>
+          <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+            <feDropShadow dx="0" dy="4" stdDeviation="4" floodColor="#F84565" floodOpacity="0.4" />
+          </filter>
         </defs>
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
         <span className="text-4xl font-extrabold text-gray-900">{pct}%</span>
         <span className="text-xs text-gray-500 uppercase tracking-wide">Score</span>
       </div>
+    </div>
+  );
+};
+
+// Skill Mastery Horizontal Bar Chart Component
+const SkillMasteryChart = ({ answerDetails }) => {
+  const details = answerDetails || [];
+  const total = Math.max(details.length, 1);
+
+  const expert = details.filter((d) => d.score === 4).length;
+  const proficient = details.filter((d) => d.score === 3).length;
+  const developing = details.filter((d) => d.score === 2).length;
+  const novice = details.filter((d) => d.score <= 1).length;
+
+  const getPercent = (count) => Math.round((count / total) * 100);
+
+  const categories = [
+    { label: 'Perfect Mastery (Score 4/4)', count: expert, color: 'from-emerald-400 to-teal-500', text: 'text-emerald-600', bg: 'bg-emerald-50' },
+    { label: 'Proficient (Score 3/4)', count: proficient, color: 'from-blue-400 to-indigo-500', text: 'text-blue-600', bg: 'bg-blue-50' },
+    { label: 'Developing (Score 2/4)', count: developing, color: 'from-amber-400 to-orange-500', text: 'text-amber-600', bg: 'bg-amber-50' },
+    { label: 'Novice (Score 1/4)', count: novice, color: 'from-rose-400 to-red-500', text: 'text-rose-600', bg: 'bg-rose-50' },
+  ];
+
+  return (
+    <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm space-y-5">
+      <h4 className="font-bold text-gray-900 text-xs tracking-wide uppercase">Response Strength Profile</h4>
+      <div className="space-y-4">
+        {categories.map((c) => {
+          const pct = getPercent(c.count);
+          return (
+            <div key={c.label} className="space-y-1">
+              <div className="flex justify-between text-xs font-semibold">
+                <span className="text-gray-600">{c.label}</span>
+                <span className={`px-2 py-0.5 rounded-full font-bold ${c.text} ${c.bg}`}>
+                  {c.count} Qs · {pct}%
+                </span>
+              </div>
+              <div className="w-full h-3 bg-gray-100 rounded-full overflow-hidden">
+                <div
+                  className={`h-full bg-gradient-to-r ${c.color} transition-all duration-1000 ease-out`}
+                  style={{ width: `${pct}%` }}
+                />
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
+// Key Performance Indicators Component
+const KpiGrid = ({ answerDetails, result, bestStreak }) => {
+  const scores = (answerDetails || []).map((d) => Number(d.score) || 0);
+  const avgScore = scores.length > 0 ? (scores.reduce((a, b) => a + b, 0) / scores.length).toFixed(1) : '0.0';
+  const accuracy = result.percentage || 0;
+  
+  let accuracyRating = 'Growing';
+  let accuracyColor = 'text-red-500 bg-red-50';
+  if (accuracy >= 85) {
+    accuracyRating = 'Elite (A+)';
+    accuracyColor = 'text-emerald-500 bg-emerald-50';
+  } else if (accuracy >= 70) {
+    accuracyRating = 'Strong (A)';
+    accuracyColor = 'text-indigo-500 bg-indigo-50';
+  } else if (accuracy >= 50) {
+    accuracyRating = 'Capable (B)';
+    accuracyColor = 'text-amber-500 bg-amber-50';
+  }
+
+  return (
+    <div className="grid grid-cols-2 gap-4">
+      {[
+        { label: 'Avg Answer Weight', val: `${avgScore} / 4.0`, desc: 'Average points per question', icon: Target, color: 'text-primary bg-rose-50' },
+        { label: 'Accuracy Rating', val: accuracyRating, desc: 'Overall competency tier', icon: Trophy, color: accuracyColor },
+        { label: 'Longest Streak', val: `${bestStreak || result.bestStreak || 0} correct`, desc: 'Consecutive strong responses', icon: Flame, color: 'text-amber-500 bg-amber-50' },
+        { label: 'Focus & Pace', val: 'Consistent', desc: 'Time limit compliance', icon: Timer, color: 'text-emerald-500 bg-emerald-50' },
+      ].map((item) => {
+        const Icon = item.icon;
+        return (
+          <div key={item.label} className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm flex flex-col justify-between">
+            <div className="flex justify-between items-start">
+              <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">{item.label}</span>
+              <span className={`p-1.5 rounded-lg ${item.color}`}>
+                <Icon className="w-4 h-4" />
+              </span>
+            </div>
+            <div className="mt-3">
+              <p className="text-lg font-extrabold text-gray-900 leading-tight">{item.val}</p>
+              <p className="text-[10px] text-gray-400 mt-0.5 leading-tight">{item.desc}</p>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
+// Question-by-Question Timeline Area Chart Component
+const PerformanceTimelineChart = ({ answerDetails }) => {
+  const [hoveredIdx, setHoveredIdx] = useState(0);
+  const details = answerDetails || [];
+  const N = details.length;
+  if (N === 0) return null;
+
+  // SVG dimensions
+  const width = 500;
+  const height = 150;
+  const paddingLeft = 40;
+  const paddingRight = 30;
+  const paddingTop = 20;
+  const paddingBottom = 25;
+
+  const chartWidth = width - paddingLeft - paddingRight;
+  const chartHeight = height - paddingTop - paddingBottom;
+
+  const points = details.map((d, i) => {
+    const x = paddingLeft + (i * chartWidth) / (N - 1 || 1);
+    const scoreVal = Math.min(4, Math.max(1, Number(d.score) || 1));
+    const y = paddingTop + chartHeight - ((scoreVal - 1) / 3) * chartHeight;
+    return { x, y, ...d, index: i };
+  });
+
+  let linePath = '';
+  let areaPath = '';
+  if (points.length > 0) {
+    linePath = `M ${points[0].x} ${points[0].y} ` + points.slice(1).map(p => `L ${p.x} ${p.y}`).join(' ');
+    const bottomY = paddingTop + chartHeight;
+    areaPath = `${linePath} L ${points[points.length - 1].x} ${bottomY} L ${points[0].x} ${bottomY} Z`;
+  }
+
+  const activePoint = points[hoveredIdx] || points[0];
+
+  const getScoreBadge = (score) => {
+    if (score === 4) return { text: 'Expert (4/4)', bg: 'bg-emerald-100 text-emerald-800' };
+    if (score === 3) return { text: 'Proficient (3/4)', bg: 'bg-blue-100 text-blue-800' };
+    if (score === 2) return { text: 'Developing (2/4)', bg: 'bg-amber-100 text-amber-800' };
+    return { text: 'Novice (1/4)', bg: 'bg-rose-100 text-rose-800' };
+  };
+
+  return (
+    <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <h4 className="font-bold text-gray-900 text-sm tracking-wide uppercase">Question-by-Question Timeline</h4>
+          <p className="text-xs text-gray-400 mt-0.5">Hover or click dots to analyze response details.</p>
+        </div>
+        {activePoint && (
+          <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${getScoreBadge(activePoint.score).bg} self-start sm:self-center transition-all duration-300`}>
+            Q{activePoint.index + 1}: {getScoreBadge(activePoint.score).text}
+          </span>
+        )}
+      </div>
+
+      <div className="relative">
+        <svg className="w-full h-auto" viewBox={`0 0 ${width} ${height}`}>
+          <defs>
+            <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#F84565" stopOpacity="0.25" />
+              <stop offset="100%" stopColor="#F84565" stopOpacity="0.00" />
+            </linearGradient>
+            <linearGradient id="lineGrad" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stopColor="#F84565" />
+              <stop offset="100%" stopColor="#ff8fa3" />
+            </linearGradient>
+          </defs>
+
+          {/* Gridlines */}
+          {[1, 2, 3, 4].map((s) => {
+            const y = paddingTop + chartHeight - ((s - 1) / 3) * chartHeight;
+            return (
+              <g key={s}>
+                <line
+                  x1={paddingLeft}
+                  y1={y}
+                  x2={width - paddingRight}
+                  y2={y}
+                  stroke="#f1f5f9"
+                  strokeWidth="1"
+                  strokeDasharray="4 4"
+                />
+                <text
+                  x={paddingLeft - 8}
+                  y={y + 4}
+                  textAnchor="end"
+                  className="text-[9px] font-bold text-gray-400 fill-current"
+                >
+                  Score {s}
+                </text>
+              </g>
+            );
+          })}
+
+          {/* Filled Area */}
+          {points.length > 0 && (
+            <path d={areaPath} fill="url(#areaGrad)" className="transition-all duration-500" />
+          )}
+
+          {/* Connective Line */}
+          {points.length > 0 && (
+            <path
+              d={linePath}
+              fill="none"
+              stroke="url(#lineGrad)"
+              strokeWidth="3"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="transition-all duration-500"
+            />
+          )}
+
+          {/* Nodes / Dots */}
+          {points.map((p) => {
+            const isHovered = hoveredIdx === p.index;
+            return (
+              <g key={p.index} className="cursor-pointer">
+                {/* Larger invisible hit target */}
+                <circle
+                  cx={p.x}
+                  cy={p.y}
+                  r="12"
+                  fill="transparent"
+                  onMouseEnter={() => setHoveredIdx(p.index)}
+                  onClick={() => setHoveredIdx(p.index)}
+                />
+                {/* Glow ring around hovered point */}
+                {isHovered && (
+                  <circle
+                    cx={p.x}
+                    cy={p.y}
+                    r="8"
+                    fill="rgba(248, 69, 101, 0.2)"
+                    className="animate-ping"
+                  />
+                )}
+                {/* Outer circle */}
+                <circle
+                  cx={p.x}
+                  cy={p.y}
+                  r={isHovered ? "6" : "4.5"}
+                  fill="#ffffff"
+                  stroke={isHovered ? "#F84565" : "#e2e8f0"}
+                  strokeWidth={isHovered ? "3" : "1.5"}
+                  onMouseEnter={() => setHoveredIdx(p.index)}
+                  onClick={() => setHoveredIdx(p.index)}
+                  className="transition-all duration-200"
+                />
+                {/* X axis labels (Q1, Q2, etc.) */}
+                <text
+                  x={p.x}
+                  y={height - 5}
+                  textAnchor="middle"
+                  className={`text-[9px] font-bold fill-current ${
+                    isHovered ? 'text-primary fill-primary' : 'text-gray-400 fill-gray-400'
+                  } transition-colors`}
+                >
+                  Q{p.index + 1}
+                </text>
+              </g>
+            );
+          })}
+        </svg>
+      </div>
+
+      {activePoint && (
+        <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-2 animate-fade-in transition-all duration-300">
+          <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Question Focus</p>
+          <p className="text-sm font-semibold text-gray-900 leading-snug">{activePoint.question}</p>
+          <div className="grid sm:grid-cols-2 gap-2 pt-2 border-t border-slate-100">
+            <div>
+              <p className="text-[10px] font-bold text-gray-400">Selected Answer</p>
+              <p className="text-xs font-medium text-slate-700 mt-0.5">{activePoint.selectedText}</p>
+            </div>
+            {activePoint.score < 4 && activePoint.correctText && (
+              <div>
+                <p className="text-[10px] font-bold text-emerald-500">Expert Standard (Score 4/4)</p>
+                <p className="text-xs font-medium text-emerald-800 mt-0.5">{activePoint.correctText}</p>
+              </div>
+            )}
+            {activePoint.score === 4 && (
+              <div>
+                <p className="text-[10px] font-bold text-emerald-600">✓ Perfect Match</p>
+                <p className="text-xs font-semibold text-emerald-700 mt-0.5">You selected the absolute strongest expert-level strategy!</p>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
@@ -127,6 +419,8 @@ export default function CareerTestPage() {
   const [difficulty, setDifficulty] = useState('Medium');
   const [questionCount, setQuestionCount] = useState(10);
   const [timedMode, setTimedMode] = useState(true);
+  const [customSubject, setCustomSubject] = useState('');
+  const [timeLimit, setTimeLimit] = useState(60);
 
   const [questions, setQuestions] = useState([]);
   const [current, setCurrent] = useState(0);
@@ -284,7 +578,7 @@ export default function CareerTestPage() {
 
   useEffect(() => {
     if (step !== 'test' || !timedMode || questions.length === 0) return;
-    setTimeLeft(60);
+    setTimeLeft(timeLimit);
     clearTimer();
     timerRef.current = setInterval(() => {
       setTimeLeft((prev) => {
@@ -297,7 +591,7 @@ export default function CareerTestPage() {
       });
     }, 1000);
     return clearTimer;
-  }, [current, questions.length, step, timedMode, submitAnswer]);
+  }, [current, questions.length, step, timedMode, timeLimit, submitAnswer]);
 
   useEffect(() => {
     if (step !== 'test') return;
@@ -315,8 +609,16 @@ export default function CareerTestPage() {
   }, [step, current, questions, selectedIdx, submitAnswer]);
 
   const startQuiz = async () => {
-    const domainId = pendingDomain || domain;
+    let domainId = pendingDomain || domain;
     if (!domainId) return;
+
+    if (domainId === 'custom_topic') {
+      if (!customSubject.trim()) {
+        toast.error('Please enter a custom domain or subject!');
+        return;
+      }
+      domainId = customSubject.trim();
+    }
 
     setLoading(true);
     setError(null);
@@ -441,6 +743,8 @@ export default function CareerTestPage() {
     setStep('select');
     setDomain('');
     setPendingDomain(null);
+    setCustomSubject('');
+    setTimeLimit(60);
     setQuestions([]);
     currentRef.current = 0;
     setCurrent(0);
@@ -567,13 +871,56 @@ Next steps: ${result.next_steps?.join('; ')}`;
                   <p className="text-xs text-gray-500 mt-1 line-clamp-2">{d.description}</p>
                 </button>
               ))}
+
+              {/* Custom Topic Card */}
+              <button
+                type="button"
+                onClick={() => {
+                  setPendingDomain('custom_topic');
+                }}
+                className={`group text-left p-5 rounded-2xl border-2 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg cursor-pointer ${
+                  pendingDomain === 'custom_topic' || (pendingDomain && !domains.find((d) => d.id === pendingDomain))
+                    ? 'border-primary bg-white shadow-md ring-4 ring-primary/10'
+                    : 'border-gray-100 bg-white/80 hover:border-primary/40'
+                }`}
+              >
+                <span className="text-4xl block mb-3 group-hover:scale-110 transition-transform">
+                  ✨
+                </span>
+                <p className="font-bold text-gray-900">Custom Topic / Subject</p>
+                <p className="text-xs text-gray-500 mt-1 line-clamp-2">
+                  Test your skills on any custom technology, subject, or niche career skill.
+                </p>
+              </button>
             </div>
+
+            {/* Custom Subject Input Field (if selected) */}
+            {(pendingDomain === 'custom_topic' || (pendingDomain && !domains.find((d) => d.id === pendingDomain))) && (
+              <div className="p-6 bg-white border border-gray-200 rounded-3xl shadow-xl animate-fade-in space-y-3">
+                <label className="block text-sm font-bold text-gray-700 flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-primary" /> Enter Custom Domain or Subject details
+                </label>
+                <input
+                  type="text"
+                  value={customSubject}
+                  onChange={(e) => {
+                    setCustomSubject(e.target.value);
+                    setPendingDomain(e.target.value || 'custom_topic');
+                  }}
+                  placeholder="e.g., React Native Development, Organic Chemistry, Kubernetes Administration..."
+                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary font-medium text-gray-900 placeholder-gray-400 transition-all"
+                />
+                <p className="text-xs text-gray-400">
+                  AI will generate completely fresh, tailored questions to evaluate your competency in this exact subject.
+                </p>
+              </div>
+            )}
 
             {pendingDomain && (
               <div className="bg-white rounded-3xl border border-gray-200 shadow-xl p-8">
                 <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
                   <Target className="w-5 h-5 text-primary" />
-                  Configure your quiz — {getDomainName(pendingDomain)}
+                  Configure your quiz — {getDomainName(pendingDomain === 'custom_topic' ? 'Custom Topic' : pendingDomain)}
                 </h3>
 
                 <div className="grid md:grid-cols-3 gap-6 mb-8">
@@ -623,8 +970,30 @@ Next steps: ${result.next_steps?.join('; ')}`;
                       }`}
                     >
                       <Timer className="w-4 h-4" />
-                      {timedMode ? '60s per question' : 'Untimed'}
+                      {timedMode ? 'Timed' : 'Untimed'}
                     </button>
+                    {/* Dynamic Timer Limit Picker */}
+                    {timedMode && (
+                      <div className="mt-3 space-y-1.5 animate-fade-in">
+                        <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Time Limit per Q</p>
+                        <div className="flex gap-1.5">
+                          {[15, 30, 60, 90].map((t) => (
+                            <button
+                              key={t}
+                              type="button"
+                              onClick={() => setTimeLimit(t)}
+                              className={`flex-1 py-1.5 rounded-lg text-xs font-extrabold transition-all border ${
+                                timeLimit === t
+                                  ? 'bg-primary text-white border-primary shadow-sm'
+                                  : 'bg-gray-50 text-gray-500 border-gray-100 hover:bg-gray-100'
+                              }`}
+                            >
+                              {t}s
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -657,7 +1026,7 @@ Next steps: ${result.next_steps?.join('; ')}`;
               {/* Top bar */}
               <div className="px-6 py-4 bg-gray-900 text-white flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <span className="text-2xl">{domainInfo?.icon}</span>
+                  <span className="text-2xl">{domainInfo?.icon || '✨'}</span>
                   <div>
                     <p className="text-xs text-gray-400 uppercase tracking-wider">Question</p>
                     <p className="font-bold">
@@ -671,7 +1040,7 @@ Next steps: ${result.next_steps?.join('; ')}`;
                       <Flame className="w-4 h-4" /> {streak} streak
                     </span>
                   )}
-                  {timedMode && <TimerRing seconds={timeLeft} />}
+                  {timedMode && <TimerRing seconds={timeLeft} max={timeLimit} />}
                 </div>
               </div>
 
@@ -807,6 +1176,31 @@ Next steps: ${result.next_steps?.join('; ')}`;
                   </div>
                 </div>
               </div>
+            </div>
+
+            {/* UPGRADE: Premium Visual Analytics Dashboard */}
+            <div className="bg-white rounded-3xl shadow-xl border border-gray-100 p-8 space-y-8 animate-fade-in">
+              <div>
+                <h3 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+                  <Target className="w-5 h-5 text-primary" /> Visual Analytics & Diagnostics
+                </h3>
+                <p className="text-sm text-gray-500 mt-1">
+                  A real-time visual breakdown of your performance, question pacing, and mastery profile.
+                </p>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-8">
+                {/* 1. Skill Mastery Strength Profile */}
+                <SkillMasteryChart answerDetails={answerDetails} />
+
+                {/* 2. Key Performance Indicators Grid */}
+                <KpiGrid answerDetails={answerDetails} result={result} bestStreak={bestStreak} />
+              </div>
+
+              <hr className="border-gray-100" />
+
+              {/* 3. Performance Timeline Area Chart */}
+              <PerformanceTimelineChart answerDetails={answerDetails} />
             </div>
 
             <div className="grid md:grid-cols-2 gap-4">
