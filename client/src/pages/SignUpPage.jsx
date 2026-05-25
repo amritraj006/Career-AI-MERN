@@ -1,15 +1,15 @@
 import React from 'react';
-import { SignIn } from '@clerk/clerk-react';
+import { SignUp } from '@clerk/clerk-react';
 import AuthLayout from '../components/layout/AuthLayout';
 
-const SignInPage = () => {
+const SignUpPage = () => {
   return (
     <AuthLayout>
-      <SignIn 
+      <SignUp 
         routing="path" 
-        path="/sign-in" 
-        signUpUrl="/sign-up" 
-        fallbackRedirectUrl="/my-dashboard" 
+        path="/sign-up" 
+        signInUrl="/sign-in" 
+        fallbackRedirectUrl="/my-dashboard"
         appearance={{
           elements: {
             rootBox: "mx-auto w-full",
@@ -21,4 +21,4 @@ const SignInPage = () => {
   );
 };
 
-export default SignInPage;
+export default SignUpPage;

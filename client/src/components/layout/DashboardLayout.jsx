@@ -13,7 +13,6 @@ export const DashboardLayout = () => {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const location = useLocation();
   const { user, isSignedIn } = useUser();
-  const { openSignIn } = useClerk();
 
   useEffect(() => {
     localStorage.setItem('sidebar-collapsed', JSON.stringify(isCollapsed));
@@ -148,14 +147,14 @@ export const DashboardLayout = () => {
                   />
                 </>
               ) : (
-                <button
+                <Link
                   id="header-sign-in-btn"
-                  onClick={() => openSignIn()}
+                  to="/sign-in"
                   className="flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary-dull text-white text-xs font-bold rounded-full transition-colors shadow-sm cursor-pointer"
                 >
                   <LogIn className="w-3.5 h-3.5" />
                   Sign In
-                </button>
+                </Link>
               )}
             </div>
           </div>

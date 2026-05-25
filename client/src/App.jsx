@@ -13,6 +13,9 @@ import NotFound from './pages/NotFound';
 import { RoadmapPage } from './pages/roadmap/RoadmapPage';
 import InterviewPrepPage from './pages/InterviewPrepPage';
 import DashboardLayout from './components/layout/DashboardLayout';
+import SignInPage from './pages/SignInPage';
+import SignUpPage from './pages/SignUpPage';
+import ProtectedRoute from './components/ProtectedRoute';
 
 const SplashScreen = () => (
   <div className="fixed inset-0 flex flex-col items-center justify-center bg-slate-950 z-50">
@@ -46,17 +49,26 @@ const App = () => {
     <>
       <Toaster richColors position="top-center" />
       <Routes>
+        {/* Public Auth Routes */}
+        <Route path='/sign-in/*' element={<SignInPage />} />
+        <Route path='/sign-up/*' element={<SignUpPage />} />
+
         {/* Everything lives inside the Dashboard shell */}
         <Route element={<DashboardLayout />}>
+          {/* Public Routes */}
           <Route path='/' element={<Home />} />
           <Route path='/about' element={<About />} />
-          <Route path='/my-dashboard' element={<Dashboard />} />
-          <Route path='/roadmap-generator' element={<RoadmapPage />} />
-          <Route path='/interview-prep' element={<InterviewPrepPage />} />
-          <Route path='/career-test' element={<CareerTestPage />} />
-          <Route path='/pathways' element={<AllPathways />} />
-          <Route path='/pathways/:pathwayId' element={<PathwayDetails />} />
-          <Route path='/comparison-tool-page' element={<ComparisonToolPage />} />
+          
+          {/* Protected Routes */}
+          <Route element={<ProtectedRoute />}>
+            <Route path='/my-dashboard' element={<Dashboard />} />
+            <Route path='/roadmap-generator' element={<RoadmapPage />} />
+            <Route path='/interview-prep' element={<InterviewPrepPage />} />
+            <Route path='/career-test' element={<CareerTestPage />} />
+            <Route path='/pathways' element={<AllPathways />} />
+            <Route path='/pathways/:pathwayId' element={<PathwayDetails />} />
+            <Route path='/comparison-tool-page' element={<ComparisonToolPage />} />
+          </Route>
         </Route>
 
         <Route path='/not-found' element={<NotFound />} />
