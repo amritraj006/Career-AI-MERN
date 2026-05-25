@@ -779,10 +779,10 @@ Next steps: ${result.next_steps?.join('; ')}`;
   };
 
   return (
-    <div className="min-h-screen pt-20 pb-16 relative overflow-hidden">
+    <div className="min-h-[calc(100vh-64px)] py-10 relative overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-br from-rose-50 via-white to-slate-50 -z-10" />
-      <div className="absolute top-20 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl -z-10" />
+      <div className="absolute top-10 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl -z-10" />
       <div className="absolute bottom-0 left-0 w-80 h-80 bg-purple-100/40 rounded-full blur-3xl -z-10" />
 
       <div className="max-w-5xl mx-auto px-4">

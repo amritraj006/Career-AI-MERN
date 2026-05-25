@@ -109,7 +109,7 @@ export const RoadmapPage = () => {
   };
 
   return (
-    <div className="flex h-[calc(100vh-80px)] mt-[80px] bg-slate-50 overflow-hidden font-sans">
+    <div className="flex h-[calc(100vh-64px)] bg-slate-50 overflow-hidden font-sans">
       
       {/* Sidebar: History */}
       <aside className="w-80 bg-white border-r border-slate-200 flex flex-col shadow-sm z-10 hidden md:flex">

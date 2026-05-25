@@ -309,13 +309,13 @@ export default function InterviewPrepPage() {
   const typeMeta = TYPE_META[questionType] || TYPE_META.Technical;
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-24 pb-16">
+    <div className="min-h-[calc(100vh-64px)] bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4 flex gap-6">
         {/* History sidebar */}
         <aside
           className={`${
             historyOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
-          } fixed lg:static inset-y-0 left-0 z-40 w-72 bg-white border-r border-gray-200 shadow-xl lg:shadow-none transition-transform pt-24 lg:pt-0 lg:block shrink-0`}
+          } fixed lg:static inset-y-0 left-0 z-40 w-72 bg-white border-r border-gray-200 shadow-xl lg:shadow-none transition-transform pt-16 lg:pt-0 lg:block shrink-0`}
         >
           <div className="p-4 border-b border-gray-100 flex items-center justify-between">
             <h3 className="font-semibold text-gray-900 flex items-center gap-2">
