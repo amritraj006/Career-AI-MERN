@@ -1,6 +1,7 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 import { BrainCircuit, Target, CheckCircle2 } from 'lucide-react';
+import Logo from '../Logo';
 
 const AuthLayout = ({ children }) => {
   return (
@@ -16,12 +17,8 @@ const AuthLayout = ({ children }) => {
 
         {/* Top Logo */}
         <div className="relative z-10 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-lg shadow-primary/30">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" className="w-6 h-6">
-              <path d="M12 3L1 9l11 6 9-4.91V17h2V9M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82Z" />
-            </svg>
-          </div>
-          <span className="text-white font-bold text-xl tracking-wide">CareerAI</span>
+          <Logo className="w-10 h-10" />
+          <span className="text-white font-bold text-xl tracking-wide">PathCraft</span>
         </div>
 
         {/* Center Content */}
@@ -65,12 +62,8 @@ const AuthLayout = ({ children }) => {
       <div className="w-full lg:w-1/2 flex flex-col items-center justify-center p-6 relative">
         {/* Mobile Header (Only visible on small screens) */}
         <div className="lg:hidden flex flex-col items-center gap-3 mb-8">
-          <div className="w-12 h-12 rounded-xl bg-primary flex items-center justify-center shadow-lg shadow-primary/30">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" className="w-6 h-6">
-              <path d="M12 3L1 9l11 6 9-4.91V17h2V9M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82Z" />
-            </svg>
-          </div>
-          <h1 className="text-slate-800 font-bold text-2xl tracking-wide">CareerAI</h1>
+          <Logo className="w-12 h-12" />
+          <h1 className="text-slate-800 font-bold text-2xl tracking-wide">PathCraft</h1>
         </div>
 
         {/* Auth Component */}

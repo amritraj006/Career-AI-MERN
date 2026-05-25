@@ -1,62 +1,61 @@
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import { FaLinkedin, FaGithub, FaEnvelope } from "react-icons/fa";
 import { ArrowLeft, Sparkles, Code2, Layers, Users } from "lucide-react";
+import Logo from '../components/Logo';
+import apiService from '../services/apiService';
+
 
 const teamMembers = [
   {
     id: 1,
     name: "Amrit Raj",
-    role: "Team Lead",
+
     bio: "Handles backend development and project coordination. Ensures smooth integration between frontend and backend.",
-    image: "https://media.licdn.com/dms/image/v2/D5603AQGjrun6J6XnEA/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1696413288165?e=1757548800&v=beta&t=Advuzq3N8FmLLWlPhICpLS1dY7nmd4LnEyQsXr2WX1U",
+  // Add image from public folder
+
+    image: "/amritraj.png",
     github: "https://www.linkedin.com/in/amrit-raj-54652b294/",
     linkedin: "https://linkedin.com/in/amritraj",
     email: "amritraj23@lpu.in",
     color: "bg-primary",
     initials: "AR",
   },
-  {
-    id: 2,
-    name: "Harsh Kumar",
-    role: "Frontend Developer",
-    bio: "Focuses on UI/UX and React components. Implements responsive designs and user interactions.",
-    image: "https://media.licdn.com/dms/image/v2/D5603AQHFrUYNyV2_Yw/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1689089288664?e=1757548800&v=beta&t=EW6CpR10wJryLvWTlxUtJpEawlfD-YuFxoLmy5br47w",
-    github: "https://github.com/harshkumar",
-    linkedin: "https://www.linkedin.com/in/harshkumar-0001-/",
-    email: "harsh@careerai.com",
-    color: "bg-violet-500",
-    initials: "HK",
-  },
-  {
-    id: 3,
-    name: "Vaibhav Tiwari",
-    role: "Full Stack Developer",
-    bio: "Works on both frontend and backend features. Implements core functionality and API integrations.",
-    image: "https://media.licdn.com/dms/image/v2/D5603AQGxl9imYRmQKg/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1718318372649?e=1757548800&v=beta&t=jkDtlqxFOvrbARrgZ792dxaTXAT3sCqsoPClg9ZFQjg",
-    github: "https://github.com/vaibhavtiwari",
-    linkedin: "https://www.linkedin.com/in/vaibhav-tiwari-664444284/",
-    email: "vaibhav@careerai.com",
-    color: "bg-emerald-500",
-    initials: "VT",
-  },
+  
 ];
 
 const stats = [
-  { icon: Users, label: "Active Users", value: "2,000+" },
-  { icon: Sparkles, label: "AI Features", value: "6" },
-  { icon: Layers, label: "Career Paths", value: "100+" },
-  { icon: Code2, label: "Lines of Code", value: "15,000+" },
+  { id: 'users', icon: Users, label: "Active Users", value: "0" },
+  { id: 'assessments', icon: Sparkles, label: "Assessments Taken", value: "0" },
+  { id: 'roadmaps', icon: Layers, label: "Roadmaps Generated", value: "0" },
+  { id: 'interviews', icon: Code2, label: "Interviews Practiced", value: "0" },
 ];
 
 const About = () => {
   const navigate = useNavigate();
+  const [dynamicStats, setDynamicStats] = useState(stats);
+
+  useEffect(() => {
+    apiService.getStats()
+      .then(data => {
+        if (data.success && data.stats) {
+          setDynamicStats([
+            { id: 'users', icon: Users, label: "Active Users", value: `${data.stats.users}+` },
+            { id: 'assessments', icon: Sparkles, label: "Assessments Taken", value: `${data.stats.assessments}` },
+            { id: 'roadmaps', icon: Layers, label: "Roadmaps Generated", value: `${data.stats.roadmaps}` },
+            { id: 'interviews', icon: Code2, label: "Interviews Practiced", value: `${data.stats.interviews}` },
+          ]);
+        }
+      })
+      .catch(err => console.error("Error fetching stats:", err));
+  }, []);
 
   return (
     <div className="min-h-screen bg-[#f8fafc]">
 
       {/* Page Header */}
       <div className="bg-white border-b border-slate-100 px-6 py-10">
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           <button
             onClick={() => navigate("/")}
             className="flex items-center gap-2 text-sm text-slate-500 hover:text-slate-900 font-semibold mb-6 transition-colors cursor-pointer group"
@@ -64,26 +63,22 @@ const About = () => {
             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
             Back to Home
           </button>
-          <div className="flex items-center gap-3 mb-3">
-            <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-md shadow-primary/10">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" className="w-5 h-5">
-                <path d="M12 3L1 9l11 6 9-4.91V17h2V9M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82Z" />
-              </svg>
-            </div>
-            <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">About CareerAI</h1>
+          <div className="flex items-center justify-center gap-3 mb-6">
+            <Logo className="w-10 h-10" />
+            <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">About PathCraft</h1>
           </div>
-          <p className="text-slate-500 text-sm max-w-xl leading-relaxed">
+          <p className="text-center text-slate-500 text-sm max-w-xl mx-auto leading-relaxed">
             A student-built, AI-powered career guidance platform helping thousands discover their perfect career paths.
           </p>
         </div>
       </div>
 
-      <div className="max-w-5xl mx-auto px-6 py-12 space-y-16">
+      <div className="max-w-6xl mx-auto px-6 py-12 space-y-16">
 
         {/* Stats Row */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {stats.map(({ icon: Icon, label, value }) => (
-            <div key={label} className="bg-white border border-slate-100 rounded-2xl p-5 text-center hover:shadow-md transition-shadow">
+          {dynamicStats.map(({ id, icon: Icon, label, value }) => (
+            <div key={id} className="bg-white border border-slate-100 rounded-2xl p-5 text-center hover:shadow-md transition-shadow">
               <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center mx-auto mb-3">
                 <Icon className="w-5 h-5 text-primary" />
               </div>
@@ -142,9 +137,7 @@ const About = () => {
                   <span className={`text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full mb-3 ${member.color} bg-opacity-10 text-slate-700`}
                     style={{ backgroundColor: undefined }}
                   >
-                    <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest bg-slate-100 text-slate-600`}>
-                      {member.role}
-                    </span>
+                    
                   </span>
                   <p className="text-xs text-slate-500 leading-relaxed mb-5">{member.bio}</p>
 

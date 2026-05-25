@@ -29,7 +29,7 @@ export const DashboardLayout = () => {
     const searchParams = new URLSearchParams(location.search);
     const tab = searchParams.get('tab') || 'overview';
 
-    const crumbs = [{ label: 'CareerAI', to: '/' }];
+    const crumbs = [{ label: 'PathCraft', to: '/' }];
 
     if (path === '/') {
       crumbs.push({ label: 'Home' });

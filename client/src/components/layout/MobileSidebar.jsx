@@ -20,6 +20,7 @@ import {
   LogIn,
 } from 'lucide-react';
 import SidebarItem from './SidebarItem';
+import Logo from '../Logo';
 
 export const MobileSidebar = ({ isOpen, onClose }) => {
   const { user, isSignedIn } = useUser();
@@ -86,13 +87,9 @@ export const MobileSidebar = ({ isOpen, onClose }) => {
           >
             {/* Header */}
             <div className="p-5 flex items-center justify-between border-b border-slate-50">
-              <Link to="/" onClick={onClose} className="flex items-center gap-2.5">
-                <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-md shadow-primary/10">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" className="w-5 h-5">
-                    <path d="M12 3L1 9l11 6 9-4.91V17h2V9M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82Z" />
-                  </svg>
-                </div>
-                <span className="text-xl font-bold text-slate-900 tracking-tight">CareerAI</span>
+              <Link to="/" className="flex items-center gap-3 group" onClick={onClose}>
+                <Logo className="w-10 h-10" />
+                <span className="text-xl font-bold text-slate-900 tracking-tight">PathCraft</span>
               </Link>
               <button
                 onClick={onClose}

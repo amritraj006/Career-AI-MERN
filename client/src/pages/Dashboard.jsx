@@ -29,7 +29,8 @@ import {
   ArrowRight,
   BookmarkCheck,
   TrendingUp,
-  BrainCircuit
+  BrainCircuit,
+  Plus
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
@@ -263,7 +264,7 @@ const DashboardContent = () => {
                       variant="outline"
                       size="sm"
                       onClick={() => navigate('/roadmap-generator')}
-                      className="px-5 py-2.5 border-slate-700 hover:bg-slate-800 text-white font-bold"
+                      className="px-5 py-2.5 border-slate-700 !bg-transparent hover:!bg-slate-800 text-white font-bold"
                     >
                       Generate Roadmap
                     </Button>

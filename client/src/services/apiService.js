@@ -13,6 +13,11 @@ export const apiService = {
     return res.data;
   },
 
+  getStats: async () => {
+    const res = await api.get('/api/stats');
+    return res.data;
+  },
+
   sendComparisonImage: async (formData) => {
     const res = await api.post('/api/send-comparison-image', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },

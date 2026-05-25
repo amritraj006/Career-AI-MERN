@@ -15,6 +15,8 @@ import {
   Shield,
   TrendingUp,
 } from 'lucide-react';
+import Logo from '../components/Logo';
+import apiService from '../services/apiService';
 
 // ─── Animated Counter ───────────────────────────────────────────────────────
 const useCountUp = (target, duration = 1800, active = false) => {
@@ -71,7 +73,7 @@ const testimonials = [
     name: 'Priya Sharma',
     role: 'Software Engineer @ Google',
     avatar: 'PS',
-    text: 'CareerAI helped me transition from backend to ML in 6 months. The roadmap was incredibly precise.',
+    text: 'PathCraft helped me transition from backend to ML in 6 months. The roadmap was incredibly precise.',
     stars: 5,
   },
   {
@@ -85,7 +87,7 @@ const testimonials = [
     name: 'Ananya Gupta',
     role: 'Data Scientist @ Microsoft',
     avatar: 'AG',
-    text: 'I never knew which career suited me. CareerAI\'s assessment changed everything for me.',
+    text: 'I never knew which career suited me. PathCraft\'s assessment changed everything for me.',
     stars: 5,
   },
 ];
@@ -97,6 +99,21 @@ const Home = () => {
   const { openSignIn } = useClerk();
   const statsRef = useRef(null);
   const [statsVisible, setStatsVisible] = useState(false);
+  const [dynamicStats, setDynamicStats] = useState({
+    users: 0,
+    roadmaps: 0,
+    assessments: 0
+  });
+
+  useEffect(() => {
+    apiService.getStats()
+      .then(data => {
+        if (data.success && data.stats) {
+          setDynamicStats(data.stats);
+        }
+      })
+      .catch(err => console.error("Error fetching stats:", err));
+  }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -176,7 +193,7 @@ const Home = () => {
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl -translate-y-1/2" />
         <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-violet-500/5 rounded-full blur-3xl translate-y-1/2" />
 
-        <div className="relative max-w-5xl mx-auto px-6 pt-20 pb-24 flex flex-col items-center text-center">
+        <div className="relative max-w-6xl mx-auto px-6 pt-20 pb-24 flex flex-col items-center text-center">
           {/* Badge */}
           <div className="inline-flex items-center gap-2 mb-6 px-4 py-2 bg-primary/5 border border-primary/10 rounded-full">
             <BrainCircuit className="w-4 h-4 text-primary" />
@@ -229,10 +246,10 @@ const Home = () => {
 
       {/* ─── Stats Strip ────────────────────────────────────────────────────── */}
       <section ref={statsRef} className="bg-white border-b border-slate-100 py-10">
-        <div className="max-w-4xl mx-auto px-6 grid grid-cols-3 gap-8">
-          <Stat value={10000} suffix="+" label="Career Paths" active={statsVisible} />
-          <Stat value={97} suffix="%" label="Accuracy Rate" active={statsVisible} />
-          <Stat value={50} suffix="+" label="Industries" active={statsVisible} />
+        <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8">
+          <Stat value={dynamicStats.users} suffix="+" label="Active Users" active={statsVisible} />
+          <Stat value={dynamicStats.roadmaps} suffix="" label="Roadmaps Generated" active={statsVisible} />
+          <Stat value={dynamicStats.assessments} suffix="" label="Assessments Taken" active={statsVisible} />
         </div>
       </section>
 
@@ -257,7 +274,7 @@ const Home = () => {
 
       {/* ─── How It Works ────────────────────────────────────────────────────── */}
       <section className="bg-white border-y border-slate-100 py-20">
-        <div className="max-w-5xl mx-auto px-6">
+        <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-14">
             <p className="text-xs font-bold text-primary uppercase tracking-widest mb-3">How It Works</p>
             <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight">
@@ -321,7 +338,7 @@ const Home = () => {
             Ready to Find Your Direction?
           </h2>
           <p className="text-slate-500 mb-8 text-sm leading-relaxed">
-            Join thousands of professionals who used CareerAI to land their dream careers.
+            Join thousands of professionals who used PathCraft to land their dream careers.
             It's completely free to get started.
           </p>
           <button
@@ -342,14 +359,10 @@ const Home = () => {
       <footer className="border-t border-slate-100 py-8 bg-white">
         <div className="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" className="w-4 h-4">
-                <path d="M12 3L1 9l11 6 9-4.91V17h2V9M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82Z" />
-              </svg>
-            </div>
-            <span className="text-sm font-bold text-slate-900">CareerAI</span>
+            <Logo className="w-7 h-7" />
+            <span className="text-sm font-bold text-slate-900">PathCraft</span>
           </div>
-          <p className="text-xs text-slate-400">© {new Date().getFullYear()} CareerAI. All rights reserved.</p>
+          <p className="text-xs text-slate-400">© {new Date().getFullYear()} PathCraft. All rights reserved.</p>
           <div className="flex items-center gap-4 text-xs text-slate-400">
             <button onClick={() => navigate('/about')} className="hover:text-primary transition-colors cursor-pointer">About</button>
             <button onClick={() => navigate('/pathways')} className="hover:text-primary transition-colors cursor-pointer">Pathways</button>

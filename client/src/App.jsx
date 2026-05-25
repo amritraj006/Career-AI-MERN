@@ -16,16 +16,13 @@ import DashboardLayout from './components/layout/DashboardLayout';
 import SignInPage from './pages/SignInPage';
 import SignUpPage from './pages/SignUpPage';
 import ProtectedRoute from './components/ProtectedRoute';
+import Logo from './components/Logo';
 
 const SplashScreen = () => (
   <div className="fixed inset-0 flex flex-col items-center justify-center bg-slate-950 z-50">
     <div className="flex flex-col items-center gap-4">
-      <div className="w-14 h-14 rounded-2xl bg-primary flex items-center justify-center shadow-lg shadow-primary/30">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" className="w-7 h-7">
-          <path d="M12 3L1 9l11 6 9-4.91V17h2V9M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82Z" />
-        </svg>
-      </div>
-      <p className="text-white font-semibold text-lg tracking-wide">CareerAI</p>
+      <Logo className="w-14 h-14 animate-pulse" />
+      <p className="text-white font-semibold text-lg tracking-wide">PathCraft</p>
       <div className="flex gap-1.5 mt-2">
         <span className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: '0ms' }} />
         <span className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: '150ms' }} />

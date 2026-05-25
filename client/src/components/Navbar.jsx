@@ -6,6 +6,7 @@ import {
   XIcon,
 } from 'lucide-react';
 import { useClerk, UserButton, useUser } from '@clerk/clerk-react';
+import Logo from './Logo';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -17,12 +18,8 @@ const Navbar = () => {
     <div className='fixed top-0 left-0 z-[9999] w-full flex items-center justify-between px-6 md:px-16 lg:px-36 py-4 bg-white/80 backdrop-blur-md border-b border-gray-100 shadow-sm'>
       <Link to='/' className='max-md:flex-1 flex items-center gap-2'>
         <div className="flex items-center">
-          <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center mr-2 shadow-sm">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" className="w-5 h-5">
-              <path d="M12 3L1 9l11 6 9-4.91V17h2V9M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82Z" />
-            </svg>
-          </div>
-          <span className="text-xl max-md:hidden font-bold text-gray-900 tracking-tight">CareerAI</span>
+          <Logo className="w-9 h-9 mr-2" />
+          <span className="text-xl max-md:hidden font-bold text-gray-900 tracking-tight">PathCraft</span>
         </div>
       </Link>
 

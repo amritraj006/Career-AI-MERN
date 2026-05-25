@@ -7,7 +7,7 @@ const testimonials = [
     role: 'Former Marketing → UX Designer',
     rating: 5,
     quote:
-      'CareerAI helped me pivot from marketing to UX design. The career test pinpointed my strengths, and the roadmap gave me a clear 6-month plan I could actually follow.',
+      'PathCraft helped me pivot from marketing to UX design. The career test pinpointed my strengths, and the roadmap gave me a clear 6-month plan I could actually follow.',
   },
   {
     initials: 'MR',
@@ -43,7 +43,7 @@ const Testimonials = () => (
           Students Who <span className="text-primary">Transformed</span> Their Careers
         </h2>
         <p className="text-gray-600 max-w-2xl mx-auto">
-          Real stories from learners who used CareerAI to discover their path and land their dream roles
+          Real stories from learners who used PathCraft to discover their path and land their dream roles
         </p>
       </div>
 

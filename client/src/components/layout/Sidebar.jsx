@@ -20,6 +20,7 @@ import {
   LogIn,
 } from 'lucide-react';
 import SidebarItem from './SidebarItem';
+import Logo from '../Logo';
 
 export const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
   const { user, isSignedIn } = useUser();
@@ -41,6 +42,8 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
         {
           label: 'Dashboard',
           icon: <LayoutDashboard className="w-5 h-5" />,
+          to: '/my-dashboard',
+          tab: 'overview',
           subItems: [
             { label: 'Overview', to: '/my-dashboard', tab: 'overview', icon: <Compass className="w-4 h-4" /> },
             { label: 'Saved Careers', to: '/my-dashboard', tab: 'saved', icon: <Bookmark className="w-4 h-4" /> },
@@ -73,14 +76,10 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
       <div className="flex flex-col flex-1 min-h-0">
         {/* Logo */}
         <div className={`p-5 flex items-center border-b border-slate-50 ${isCollapsed ? 'justify-center' : 'justify-between'}`}>
-          <Link to="/" className="flex items-center gap-2.5">
-            <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-md shadow-primary/10 flex-shrink-0">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" className="w-5 h-5">
-                <path d="M12 3L1 9l11 6 9-4.91V17h2V9M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82Z" />
-              </svg>
-            </div>
+          <Link to="/" className="flex items-center gap-3 group px-2">
+            <Logo className="w-10 h-10" />
             {!isCollapsed && (
-              <span className="text-xl font-bold text-slate-900 tracking-tight">CareerAI</span>
+              <span className="text-xl font-bold text-slate-900 tracking-tight">PathCraft</span>
             )}
           </Link>
         </div>
@@ -154,12 +153,18 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
         {isSignedIn && !isCollapsed && user && (
           <div className="flex items-center gap-3 px-3.5 py-2.5 mb-1 bg-slate-50 rounded-xl">
             <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-              <span className="text-xs font-bold text-primary">
+        {/** If image url is present display image else First Letter */}
+        {user.imageUrl ? (
+            <img src={user.imageUrl} alt="" className="w-full h-full object-cover rounded-full" />
+        ) : (
+            <span className="text-xs font-bold text-primary">
                 {user.firstName?.charAt(0) || '?'}
               </span>
+        )}
             </div>
             <div className="min-w-0 flex-1">
               <p className="text-xs font-bold text-slate-800 truncate">{user.fullName}</p>
+              
               <p className="text-[10px] text-slate-400 truncate">{user.primaryEmailAddress?.emailAddress}</p>
             </div>
           </div>
