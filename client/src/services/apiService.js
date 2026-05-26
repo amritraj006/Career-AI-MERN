@@ -25,6 +25,11 @@ export const apiService = {
     return res.data;
   },
 
+  generateComparisonInsights: async (payload) => {
+    const res = await api.post('/api/comparison/ai-insights', payload);
+    return res.data;
+  },
+
   // Roadmap endpoints
   generateRoadmap: async (email, prompt, signal) => {
     const res = await api.post('/api/roadmap', { email, prompt }, { signal });

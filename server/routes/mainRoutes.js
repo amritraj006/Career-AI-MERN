@@ -4,6 +4,7 @@ const assessmentRoutes = require('./assessment');
 const roadmapRoutes = require('./roadmap');
 const interviewRoutes = require('./interview');
 const statsRoutes = require('./stats');
+const comparisonRoutes = require('./comparison');
 
 module.exports = function mainRoutes(app) {
   app.use('/api/send-comparison-image', sendComparisonImage); 
@@ -11,4 +12,5 @@ module.exports = function mainRoutes(app) {
   app.use('/api/roadmap', roadmapRoutes);
   app.use('/api/interview', interviewRoutes);
   app.use('/api/stats', statsRoutes);
+  app.use('/api/comparison', comparisonRoutes);
 };

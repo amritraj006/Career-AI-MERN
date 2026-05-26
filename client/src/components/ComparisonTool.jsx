@@ -1,171 +1,136 @@
 import React from 'react';
-import { ArrowRight, BarChart2, BookOpen, Clock, DollarSign } from 'lucide-react';
+import { ArrowRight, BarChart2, Clock, DollarSign, Sparkles, Target, TrendingUp } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+
+const sampleCareers = [
+  {
+    id: 1,
+    title: 'AI Engineer',
+    salary: '$158k',
+    growth: '38%',
+    entry: '24 mo',
+    fit: 91,
+    skills: ['Python', 'LLMs', 'MLOps'],
+  },
+  {
+    id: 2,
+    title: 'Data Scientist',
+    salary: '$124k',
+    growth: '36%',
+    entry: '20 mo',
+    fit: 84,
+    skills: ['SQL', 'Statistics', 'ML'],
+  },
+  {
+    id: 3,
+    title: 'UX Designer',
+    salary: '$98k',
+    growth: '16%',
+    entry: '10 mo',
+    fit: 76,
+    skills: ['Figma', 'Research', 'Testing'],
+  },
+];
+
+const metrics = [
+  { name: 'Salary', icon: DollarSign, key: 'salary' },
+  { name: 'Growth', icon: TrendingUp, key: 'growth' },
+  { name: 'Entry Time', icon: Clock, key: 'entry' },
+  { name: 'Fit Score', icon: Target, key: 'fit' },
+];
 
 const ComparisonTool = () => {
   const navigate = useNavigate();
+
   const handleButtonClick = () => {
     navigate('/comparison-tool-page');
     window.scrollTo(0, 0);
   };
 
-  const careers = [
-    {
-      id: 1,
-      title: "Data Scientist",
-      salary: "$112,000",
-      education: "Master's",
-      growth: "31%",
-      skills: ["Python", "Machine Learning", "Statistics"],
-      workLife: "Moderate"
-    },
-    {
-      id: 2,
-      title: "UX Designer",
-      salary: "$92,000",
-      education: "Bachelor's",
-      growth: "22%",
-      skills: ["Figma", "User Research", "Prototyping"],
-      workLife: "Good"
-    },
-    {
-      id: 3,
-      title: "Cloud Engineer",
-      salary: "$120,000",
-      education: "Bachelor's",
-      growth: "27%",
-      skills: ["AWS", "Azure", "DevOps"],
-      workLife: "Moderate"
-    }
-  ];
-
-  const metrics = [
-    {
-      name: "Salary",
-      icon: <DollarSign className="w-4 h-4" />,
-      key: "salary"
-    },
-    {
-      name: "Education",
-      icon: <BookOpen className="w-4 h-4" />,
-      key: "education"
-    },
-    {
-      name: "Growth",
-      icon: <BarChart2 className="w-4 h-4" />,
-      key: "growth"
-    },
-    {
-      name: "Work-Life",
-      icon: <Clock className="w-4 h-4" />,
-      key: "workLife"
-    }
-  ];
-
-  const takeaways = [
-    {
-      title: "Highest Paying",
-      value: "Cloud Engineer",
-      description: "$120k average salary",
-      icon: "💵"
-    },
-    {
-      title: "Fastest Growing",
-      value: "Data Scientist",
-      description: "31% projected growth",
-      icon: "📈"
-    },
-    {
-      title: "Best Work-Life",
-      value: "UX Designer",
-      description: "Most flexible schedules",
-      icon: "⚖️"
-    }
-  ];
-
   return (
-    <section className="py-16 md:py-24 bg-gray-50 text-gray-900 border-t border-gray-100">
+    <section className="border-t border-slate-100 bg-slate-50 py-16 text-slate-950 md:py-24">
       <div className="container mx-auto px-6">
-        {/* Section Header */}
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            Compare <span className="text-primary">Career Paths</span>
-          </h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">
-            See how different careers stack up across key metrics
-          </p>
+        <div className="mb-12 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+          <div>
+            <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-white px-3 py-1 text-sm font-semibold text-primary">
+              <Sparkles className="h-4 w-4" />
+              AI-ready comparison
+            </div>
+            <h2 className="text-3xl font-bold md:text-4xl">
+              Compare <span className="text-primary">Career Paths</span>
+            </h2>
+            <p className="mt-3 max-w-2xl text-slate-600">
+              Score roles by income, growth, time to entry, work-life fit, and your own priorities.
+            </p>
+          </div>
+
+          <button
+            onClick={handleButtonClick}
+            className="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-dull"
+          >
+            Launch Tool
+            <ArrowRight className="h-5 w-5" />
+          </button>
         </div>
 
-        {/* Comparison Table */}
-        <div className="bg-white border border-gray-200 shadow-sm rounded-xl overflow-hidden mb-12">
-          <div className="grid grid-cols-4 gap-px bg-gray-200">
-            {/* Header Row */}
-            <div className="bg-gray-50 p-4 flex items-center gap-2">
-              <span className="text-gray-600 font-medium">Metric</span>
-            </div>
-            {careers.map((career) => (
-              <div
-                key={career.id}
-                className="bg-gray-50 p-4 text-center"
-              >
-                <h3 className="font-bold text-gray-900">{career.title}</h3>
-              </div>
-            ))}
-
-            {/* Metric Rows */}
-            {metrics.map((metric) => (
-              <React.Fragment key={metric.key}>
-                <div className="bg-white p-4 flex items-center gap-2 text-gray-700 font-medium">
-                  {metric.icon}
-                  <span>{metric.name}</span>
+        <div className="grid gap-6 lg:grid-cols-[1.25fr_0.75fr]">
+          <div className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
+            <div className="grid grid-cols-4 border-b border-slate-200 bg-slate-50">
+              <div className="p-4 text-sm font-bold text-slate-600">Metric</div>
+              {sampleCareers.map((career) => (
+                <div key={career.id} className="border-l border-slate-200 p-4 text-center">
+                  <p className="text-sm font-bold text-slate-950">{career.title}</p>
                 </div>
-                {careers.map((career) => (
-                  <div key={`${metric.key}-${career.id}`} className="bg-white p-4 text-center flex justify-center items-center">
-                    {metric.key === 'skills' ? (
-                      <div className="flex flex-wrap justify-center gap-2">
-                        {career.skills.slice(0, 2).map((skill) => (
-                          <span key={skill} className="text-xs bg-primary/10 text-primary px-3 py-1 rounded-full font-medium">
-                            {skill}
-                          </span>
-                        ))}
-                      </div>
-                    ) : (
-                      <span className="text-gray-800">{career[metric.key]}</span>
-                    )}
+              ))}
+            </div>
+
+            {metrics.map((metric) => (
+              <div key={metric.key} className="grid grid-cols-4 border-b border-slate-100 last:border-b-0">
+                <div className="flex items-center gap-2 p-4 text-sm font-semibold text-slate-700">
+                  {React.createElement(metric.icon, { className: 'h-4 w-4 text-slate-400' })}
+                  {metric.name}
+                </div>
+                {sampleCareers.map((career) => (
+                  <div key={`${career.id}-${metric.key}`} className="border-l border-slate-100 p-4 text-center text-sm font-semibold text-slate-800">
+                    {metric.key === 'fit' ? `${career.fit}%` : career[metric.key]}
                   </div>
                 ))}
-              </React.Fragment>
+              </div>
             ))}
           </div>
-        </div>
 
-        {/* Key Takeaways */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-          {takeaways.map((item, index) => (
-            <div
-              key={index}
-              className="bg-white border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-300 rounded-xl p-6"
-            >
-              <div className="flex items-start gap-4">
-                <span className="text-3xl">{item.icon}</span>
-                <div>
-                  <h3 className="font-bold mb-1 text-gray-900">{item.title}</h3>
-                  <p className="text-primary font-medium mb-1">{item.value}</p>
-                  <p className="text-gray-500 text-sm">{item.description}</p>
-                </div>
+          <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+            <div className="mb-5 flex items-center gap-3">
+              <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                <BarChart2 className="h-5 w-5" />
+              </div>
+              <div>
+                <h3 className="font-bold text-slate-950">Weighted Fit Ranking</h3>
+                <p className="text-sm text-slate-500">Live scores adjust to your priorities.</p>
               </div>
             </div>
-          ))}
-        </div>
 
-        {/* CTA */}
-        <div className="text-center">
-          <button 
-            onClick={handleButtonClick}
-            className="inline-flex items-center gap-2 px-8 py-3.5 bg-primary hover:bg-primary-dull text-white rounded-full font-medium shadow-md transition-all"
-          >
-            Launch Full Comparison Tool <ArrowRight className="w-5 h-5" />
-          </button>
+            <div className="space-y-4">
+              {sampleCareers.map((career) => (
+                <div key={career.id}>
+                  <div className="mb-1 flex items-center justify-between text-sm">
+                    <span className="font-semibold text-slate-700">{career.title}</span>
+                    <span className="font-bold text-slate-950">{career.fit}%</span>
+                  </div>
+                  <div className="h-2 overflow-hidden rounded-full bg-slate-100">
+                    <div className="h-full rounded-full bg-primary" style={{ width: `${career.fit}%` }} />
+                  </div>
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    {career.skills.map((skill) => (
+                      <span key={skill} className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-600">
+                        {skill}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </section>
