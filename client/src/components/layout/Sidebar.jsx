@@ -42,8 +42,6 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
         {
           label: 'Dashboard',
           icon: <LayoutDashboard className="w-5 h-5" />,
-          to: '/my-dashboard',
-          tab: 'overview',
           subItems: [
             { label: 'Overview', to: '/my-dashboard', tab: 'overview', icon: <Compass className="w-4 h-4" /> },
             { label: 'Saved Careers', to: '/my-dashboard', tab: 'saved', icon: <Bookmark className="w-4 h-4" /> },
@@ -96,7 +94,12 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
             )}
             <div className="space-y-1">
               {appItems.map((item, idx) => (
-                <SidebarItem key={idx} {...item} isCollapsed={isCollapsed} />
+                <SidebarItem 
+                  key={idx} 
+                  {...item} 
+                  isCollapsed={isCollapsed} 
+                  onExpandSidebar={() => setIsCollapsed(false)}
+                />
               ))}
             </div>
           </div>
@@ -111,7 +114,12 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
               )}
               <div className="space-y-1">
                 {workspaceItems.map((item, idx) => (
-                  <SidebarItem key={idx} {...item} isCollapsed={isCollapsed} />
+                  <SidebarItem 
+                    key={idx} 
+                    {...item} 
+                    isCollapsed={isCollapsed} 
+                    onExpandSidebar={() => setIsCollapsed(false)}
+                  />
                 ))}
               </div>
             </div>
@@ -126,7 +134,12 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
             )}
             <div className="space-y-1">
               {aiCoachingItems.map((item, idx) => (
-                <SidebarItem key={idx} {...item} isCollapsed={isCollapsed} />
+                <SidebarItem 
+                  key={idx} 
+                  {...item} 
+                  isCollapsed={isCollapsed} 
+                  onExpandSidebar={() => setIsCollapsed(false)}
+                />
               ))}
             </div>
           </div>
@@ -140,7 +153,12 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
             )}
             <div className="space-y-1">
               {explorerItems.map((item, idx) => (
-                <SidebarItem key={idx} {...item} isCollapsed={isCollapsed} />
+                <SidebarItem 
+                  key={idx} 
+                  {...item} 
+                  isCollapsed={isCollapsed} 
+                  onExpandSidebar={() => setIsCollapsed(false)}
+                />
               ))}
             </div>
           </div>

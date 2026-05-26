@@ -11,7 +11,7 @@ const teamMembers = [
     id: 1,
     name: "Amrit Raj",
 
-    bio: "Handles backend development and project coordination. Ensures smooth integration between frontend and backend.",
+    bio: "I am a full stack web developer with real world projects and handle backend development and project coordination.",
   // Add image from public folder
 
     image: "/amritraj.png",

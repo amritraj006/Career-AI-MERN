@@ -11,6 +11,7 @@ export const SidebarItem = ({
   subItems = [],
   isCollapsed = false,
   onClick,
+  onExpandSidebar,
 }) => {
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
@@ -66,7 +67,12 @@ export const SidebarItem = ({
   const renderedLink = to ? (
     <Link
       to={to + (tab ? `?tab=${tab}` : '')}
-      onClick={onClick}
+      onClick={(e) => {
+        if (isCollapsed && onExpandSidebar) {
+          onExpandSidebar();
+        }
+        if (onClick) onClick(e);
+      }}
       className={`${baseClasses} ${isActive && !hasSubItems ? activeClasses : inactiveClasses}`}
     >
       {isActive && !hasSubItems && (
@@ -81,6 +87,9 @@ export const SidebarItem = ({
   ) : (
     <button
       onClick={() => {
+        if (isCollapsed && onExpandSidebar) {
+          onExpandSidebar();
+        }
         if (hasSubItems) {
           setIsOpen(!isOpen);
         } else if (onClick) {

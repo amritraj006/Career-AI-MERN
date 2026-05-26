@@ -315,7 +315,7 @@ export default function InterviewPrepPage() {
         <aside
           className={`${
             historyOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
-          } fixed lg:static inset-y-0 left-0 z-40 w-72 bg-white border-r border-gray-200 shadow-xl lg:shadow-none transition-transform pt-16 lg:pt-0 lg:block shrink-0`}
+          } fixed lg:static inset-y-0 left-0 z-20 w-72 bg-white border-r border-gray-200 shadow-xl lg:shadow-none transition-transform pt-16 lg:pt-0 lg:block shrink-0`}
         >
           <div className="p-4 border-b border-gray-100 flex items-center justify-between">
             <h3 className="font-semibold text-gray-900 flex items-center gap-2">
@@ -338,7 +338,7 @@ export default function InterviewPrepPage() {
             ) : (
               history.map((h) => (
                 <button
-                  key={h.id}
+                   key={h.id}
                   type="button"
                   onClick={() => loadSession(h.id)}
                   className={`w-full text-left p-3 rounded-xl border transition-all group ${
@@ -376,7 +376,7 @@ export default function InterviewPrepPage() {
 
         {historyOpen && (
           <div
-            className="fixed inset-0 bg-black/30 z-30 lg:hidden"
+            className="fixed inset-0 bg-black/30 z-10 lg:hidden"
             onClick={() => setHistoryOpen(false)}
           />
         )}
