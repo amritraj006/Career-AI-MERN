@@ -4,6 +4,7 @@ import { UserButton, useUser, useClerk } from '@clerk/clerk-react';
 import { Menu, Sparkles, ChevronRight, LogIn } from 'lucide-react';
 import Sidebar from './Sidebar';
 import MobileSidebar from './MobileSidebar';
+import { pathways } from '../../assets/pathwaysData';
 
 export const DashboardLayout = () => {
   const [isCollapsed, setIsCollapsed] = useState(() => {
@@ -60,7 +61,12 @@ export const DashboardLayout = () => {
         crumbs.push({ label: 'Career Pathways', to: '/pathways' });
       } else {
         crumbs.push({ label: 'Pathways', to: '/pathways' });
-        crumbs.push({ label: 'Pathway Details' });
+        const pathwayId = path.split('/').pop();
+        const currentPathway = pathways.find((p) => p.id === pathwayId);
+        const pathwayLabel = currentPathway
+          ? currentPathway.title
+          : pathwayId.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+        crumbs.push({ label: pathwayLabel });
       }
     } else if (path.startsWith('/comparison-tool-page')) {
       crumbs.push({ label: 'Explore' });
@@ -92,7 +98,7 @@ export const DashboardLayout = () => {
           <div className="flex items-center space-x-4">
             <button
               id="mobile-menu-toggle"
-              onClick={() => setIsMobileOpen(true)}
+              onClick={() => setIsMobileOpen(!isMobileOpen)}
               className="md:hidden p-2 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-900 focus:outline-none cursor-pointer"
             >
               <Menu className="w-5 h-5" />

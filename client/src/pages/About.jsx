@@ -107,11 +107,11 @@ const About = () => {
             <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight">Meet the Builders</h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <div className="flex flex-wrap justify-center gap-6">
             {teamMembers.map((member) => (
               <div
                 key={member.id}
-                className="bg-white border border-slate-100 rounded-2xl p-6 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group"
+                className="w-full max-w-sm bg-white border border-slate-100 rounded-2xl p-6 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group"
               >
                 <div className="flex flex-col items-center text-center">
                   {/* Avatar */}

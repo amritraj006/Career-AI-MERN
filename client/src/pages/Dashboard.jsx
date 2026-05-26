@@ -54,6 +54,7 @@ const DashboardContent = () => {
   const setActiveSection = (section) => setSearchParams({ tab: section });
 
   const [assessment, setAssessment] = useState(null);
+  const [assessmentHistory, setAssessmentHistory] = useState([]);
   const [roadmapHistory, setRoadmapHistory] = useState([]);
   const [savedCareerIds, setSavedCareerIds] = useState([]);
   const [expandedRoadmapId, setExpandedRoadmapId] = useState(null);
@@ -116,12 +117,18 @@ const DashboardContent = () => {
     if (!email) return;
     setLoadingData(true);
     try {
-      const [assessmentRes, roadmapRes] = await Promise.all([
+      const [assessmentRes, assessmentHistoryRes, roadmapRes] = await Promise.all([
         apiService.getAssessment(email).catch(() => ({ success: false })),
+        apiService.getAssessmentHistory(email).catch(() => ({ success: false, history: [] })),
         apiService.getRoadmapHistory(email).catch(() => ({ success: false, history: [] })),
       ]);
       if (assessmentRes.success && assessmentRes.assessment) {
         setAssessment(assessmentRes.assessment);
+      } else {
+        setAssessment(null);
+      }
+      if (assessmentHistoryRes.success) {
+        setAssessmentHistory(assessmentHistoryRes.history || []);
       }
       if (roadmapRes.success) {
         setRoadmapHistory(roadmapRes.history || []);
@@ -156,9 +163,26 @@ const DashboardContent = () => {
     }
   };
 
+  const handleDeleteAssessment = async (id, e) => {
+    e.stopPropagation();
+    try {
+      const res = await apiService.deleteAssessmentHistory(id);
+      if (res.success) {
+        const updatedHistory = assessmentHistory.filter((a) => a._id !== id);
+        setAssessmentHistory(updatedHistory);
+        if (assessment && assessment._id === id) {
+          setAssessment(updatedHistory.length > 0 ? updatedHistory[0] : null);
+        }
+        toast.success('Assessment deleted successfully');
+      }
+    } catch {
+      toast.error('Failed to delete assessment');
+    }
+  };
+
   const stats = [
     { label: 'Roadmaps Generated', value: roadmapHistory.length, icon: <Map className="w-5 h-5 text-primary" />, desc: 'Custom learning pathways structured' },
-    { label: 'Assessments Taken', value: assessment ? 1 : 0, icon: <ClipboardList className="w-5 h-5 text-indigo-500" />, desc: 'AI evaluated benchmark trials' },
+    { label: 'Assessments Taken', value: assessmentHistory.length, icon: <ClipboardList className="w-5 h-5 text-indigo-500" />, desc: 'AI evaluated benchmark trials' },
     { label: 'Saved Careers', value: savedCareerIds.length, icon: <Bookmark className="w-5 h-5 text-amber-500" />, desc: 'Bookmarked professional pathways' },
     { label: 'Days Active', value: daysActive, icon: <Clock className="w-5 h-5 text-emerald-500" />, desc: 'Consistent platform engagement' },
   ];
@@ -748,6 +772,55 @@ const DashboardContent = () => {
                     </div>
                   </CardContent>
                 </Card>
+              )}
+
+              {/* Assessment History Section */}
+              {assessmentHistory.length > 0 && (
+                <div className="space-y-4 mt-8">
+                  <div>
+                    <h3 className="text-lg font-bold text-slate-900 tracking-tight">Assessment History</h3>
+                    <p className="text-xs text-slate-500 font-medium">All completed career mock benchmark records</p>
+                  </div>
+
+                  <div className="space-y-4">
+                    {assessmentHistory.map((item) => (
+                      <Card key={item._id} className="overflow-hidden">
+                        <div className="p-5 flex items-center justify-between hover:bg-slate-50/50 transition-colors select-none">
+                          <div className="flex items-center space-x-3.5 min-w-0 pr-4">
+                            <div className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center shrink-0">
+                              <ClipboardList className="w-5 h-5 text-indigo-500" />
+                            </div>
+                            <div className="min-w-0">
+                              <p className="font-bold text-sm text-slate-900 truncate leading-snug">
+                                {domains.find((d) => d.id === item.domain)?.name || item.domain} Assessment
+                              </p>
+                              <div className="flex flex-wrap items-center gap-2 mt-1">
+                                <span className={`px-2 py-0.5 rounded-full text-[10px] font-extrabold border capitalize ${levelBadgeStyles[item.level] || levelBadgeStyles.beginner}`}>
+                                  {item.level}
+                                </span>
+                                <span className="text-[10px] text-slate-400 font-semibold">
+                                  Score: {item.percentage}% ({item.totalScore}/{item.maxPossibleScore})
+                                </span>
+                                <span className="text-[10px] text-slate-400 font-medium hidden sm:inline">
+                                  • {new Date(item.createdAt).toLocaleString()}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="flex items-center space-x-3">
+                            <button
+                              onClick={(e) => handleDeleteAssessment(item._id, e)}
+                              className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50/50 rounded-xl transition-colors cursor-pointer"
+                              title="Delete assessment record"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </div>
+                      </Card>
+                    ))}
+                  </div>
+                </div>
               )}
             </motion.div>
           )}
