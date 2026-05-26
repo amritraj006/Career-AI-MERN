@@ -67,6 +67,16 @@ export const apiService = {
     return res.data;
   },
 
+  getAssessmentHistory: async (email) => {
+    const res = await api.get('/api/assessment/history', { params: { email } });
+    return res.data;
+  },
+
+  deleteAssessmentHistory: async (id) => {
+    const res = await api.delete(`/api/assessment/history/${id}`);
+    return res.data;
+  },
+
   // Interview prep endpoints
   generateInterviewQuestions: async (payload) => {
     const res = await api.post('/api/interview/generate', payload);

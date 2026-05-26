@@ -169,8 +169,8 @@ exports.saveAssessment = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Email and domain are required' });
     }
 
-    const filter = { email };
-    const update = {
+    const assessment = new Assessment({
+      email,
       domain,
       level,
       percentage,
@@ -180,12 +180,9 @@ exports.saveAssessment = async (req, res) => {
       strengths,
       areas_for_improvement,
       next_steps,
-    };
-
-    const assessment = await Assessment.findOneAndUpdate(filter, update, {
-      new: true,
-      upsert: true,
     });
+
+    await assessment.save();
 
     res.status(200).json({ success: true, assessment });
   } catch (error) {
@@ -202,7 +199,7 @@ exports.getAssessment = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Email is required' });
     }
 
-    const assessment = await Assessment.findOne({ email });
+    const assessment = await Assessment.findOne({ email }).sort({ createdAt: -1 });
 
     if (!assessment) {
       return res.status(404).json({ success: false, message: 'Assessment not found' });
@@ -212,5 +209,39 @@ exports.getAssessment = async (req, res) => {
   } catch (error) {
     console.error('Error in getAssessment:', error);
     res.status(500).json({ success: false, message: 'Server error fetching assessment' });
+  }
+};
+
+exports.getAssessmentHistory = async (req, res) => {
+  try {
+    const { email } = req.query;
+
+    if (!email) {
+      return res.status(400).json({ success: false, message: 'Email is required' });
+    }
+
+    const history = await Assessment.find({ email }).sort({ createdAt: -1 });
+
+    res.status(200).json({ success: true, history });
+  } catch (error) {
+    console.error('Error in getAssessmentHistory:', error);
+    res.status(500).json({ success: false, message: 'Server error fetching assessment history' });
+  }
+};
+
+exports.deleteAssessmentHistory = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const deletedAssessment = await Assessment.findByIdAndDelete(id);
+
+    if (!deletedAssessment) {
+      return res.status(404).json({ success: false, message: 'Assessment not found' });
+    }
+
+    res.status(200).json({ success: true, message: 'Assessment deleted successfully' });
+  } catch (error) {
+    console.error('Error in deleteAssessmentHistory:', error);
+    res.status(500).json({ success: false, message: 'Server error deleting assessment' });
   }
 };

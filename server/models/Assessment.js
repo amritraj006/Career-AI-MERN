@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const AssessmentSchema = new mongoose.Schema(
   {
-    email: { type: String, required: true, unique: true },
+    email: { type: String, required: true },
     domain: { type: String, required: true },
     level: { type: String, required: true },
     percentage: { type: Number, required: true },
